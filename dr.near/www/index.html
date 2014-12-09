@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="starter">
+<html ng-app ="Myapp">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
@@ -31,7 +31,29 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('app', ['ionic'])
+//angular.module('app', ['ionic'])
+//↑コメントアウト↓追加
+var module = angular.module( 'Myapp', [] );
+module.controller( 'MyController', ['$scope',
+function($scope){
+    $scope.users = [
+        {"name":"Nakagawa Shintaro","diseases":"Distal Myopathy","medicine":"medicine1"},
+    ];
+    $scope.diseases = [ 
+        { name: 'Distal Myopathy', medicines: [ { name: 'medicine1', users: [ { name: 'userA' }, { name: 'userB' }, { name: 'userC'} ] },
+                                                { name: 'medicine2', users: [ { name: 'userD' }, { name: 'userE' } ] },
+                                                { name: 'medicine3', users: [ { name: 'userF' } ] },
+                                                { name: 'medicine4', users: [ { name: 'userG' } ] },
+                                                { name: 'medicine5', users: [ { name: 'userH' } ] } ] },
+
+        { name: 'Hand-Schuller-Christain disease', medicines: [ { name: 'medicine6', users: [ { name: 'userI' } ] } ]  },
+
+        { name: 'muscular dystrophy', medicines:[ { name: 'medicine7', users: [ { name: 'userJ' } ] },
+                                                  { name: 'medicine8', users: [ { name: 'userK' } ] },
+                                                  { name: 'medicine9', users: [ { name: 'userL' } ] } ] },
+         ];
+        } ] );
+
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -231,10 +253,9 @@ angular.module('app', ['ionic'])
                         <ion-list>
                             <ion-item class="medicine1">medicine 1</ion-item>
                             <ion-item class="medicine2">medicine 2</ion-item>
-                            <ion-item class="medicine3">medicine 3</ion-item>
                         </ion-list>
                         <div>
-                            <p>他4 処方箋</p>
+                            <p>他3 処方箋</p>
                         </div>
                     </div>
                 </div>
@@ -243,10 +264,10 @@ angular.module('app', ['ionic'])
                     <div class="item item-body">
                         <button class="button button-stable button-block">Hand-Schuller-Christain disease</button>
                         <ion-list>
-                            <ion-item>Grivec</ion-item>
+                            <ion-item>Medicine6</ion-item>
                         </ion-list>
                         <div>
-                            <p>他3 処方箋</p>
+                            <p>他0 処方箋</p>
                         </div>
                     </div>
                 </div>
@@ -254,9 +275,9 @@ angular.module('app', ['ionic'])
                     <div class="item item-body">
                         <button class="button button-stable button-block">muscular dystrophy</button>
                         <ion-list>
-                            <ion-item>Item 1</ion-item>
-                            <ion-item>Item 2</ion-item>
-                            <ion-item>Item 3</ion-item>
+                            <ion-item>medicine 7</ion-item>
+                            <ion-item>medicine 8</ion-item>
+                            <ion-item>medicine 9</ion-item>
                         </ion-list>
                     </div>
                 </div>
