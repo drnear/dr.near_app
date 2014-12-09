@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="starter">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
@@ -17,7 +17,7 @@
 
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
-
+    <script src="js/myscript.js"></script>
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
     <link href="css/ionic.app.css" rel="stylesheet">
     -->
@@ -197,6 +197,7 @@ angular.module('app', ['ionic'])
                 </div>
             </ion-content>
         </ion-tab>
+
         <ion-tab title="Search" icon="ion-search">
             <ion-content padding="true" class="has-header">
                 <div></div>
@@ -211,6 +212,19 @@ angular.module('app', ['ionic'])
                         </button>
                     </div>
                 </div>
+//　users・medicineを出力
+                <div class="list card">
+                    <div class="item item-body">
+                        <div ng-controller="mainCtrl">
+                        <p>{{users.length}}a</p>
+                        <dl>
+                            <dt ng-repeat="user in users">{{user.disease}}</dt>
+                                <dd　ng-repeat="user in users">{{user.medicine}}</dd>
+                        </dl>
+                        </div>
+                    </div>
+                </div>
+//　ここまで
                 <div class="list card">
                     <div class="item item-body">
                         <a href="#/modal" class="button button-stable button-block">Distal Myopathy</a>
@@ -224,13 +238,16 @@ angular.module('app', ['ionic'])
                         </div>
                     </div>
                 </div>
-                <ion-list></ion-list>
+
                 <div class="list card">
                     <div class="item item-body">
                         <button class="button button-stable button-block">Hand-Schuller-Christain disease</button>
                         <ion-list>
                             <ion-item>Grivec</ion-item>
                         </ion-list>
+                        <div>
+                            <p>他3 処方箋</p>
+                        </div>
                     </div>
                 </div>
                 <div class="list card">
