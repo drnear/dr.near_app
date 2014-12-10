@@ -31,9 +31,9 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('app', ['ionic'])
-//↑コメントアウト↓追加
-var module = angular.module( 'Myapp', [] );
+//angular.module('app', ['ionic'])
+//↓追加
+var module = angular.module( 'Myapp', ['ionic'] );
 module.controller( 'MyController', ['$scope',
 function($scope){
     $scope.users = [
