@@ -135,6 +135,26 @@ module.controller( 'MyController', ['$scope',
   // Each state's controller can be found in controllers.js
   $stateProvider
 
+   .state('login1', {
+      url: '/login',
+      templateUrl: 'login1.html'
+    })
+
+  .state('signup1', {
+      url: '/signup',
+      templateUrl: 'signup1.html'
+    })
+
+  .state('messages1', {
+      url: '/messages',
+      templateUrl: 'messages1.html'
+    })
+
+  .state('disease1', {
+      url: '/disease',
+      templateUrl: 'disease1.html'
+    })
+  
   .state('page12', {
       url: '/page12',
       templateUrl: 'page12.html'
@@ -186,6 +206,109 @@ module.controller( 'MyController', ['$scope',
   <button class="button button-clear button-positive">Edit</button>
 </div>
 
+<script id="login1.html" type="text/ng-template">
+<ion-view title="Login">
+    <ion-content padding="true" class="has-header">
+        <form>
+            <div class="spacer" style="height: 100px;"></div>
+            <ion-list>
+                <label class="item item-input">
+                    <span class="input-label">Username</span>
+                    <input type="text" placeholder="">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Password</span>
+                    <input type="password" placeholder="">
+                </label>
+            </ion-list>
+            <div class="spacer" style="height: 40px;"></div>
+            <button class="button button-stable button-block">Log in</button>
+            <a href="#/signup" class="button button-positive button-clear button-block">Or create an account</a>
+        </form>
+    </ion-content>
+</ion-view></script>
+<script id="signup1.html" type="text/ng-template">
+<ion-view title="Signup">
+    <ion-content padding="true" scroll="false" class="has-header">
+        <form>
+            <ion-list>
+                <label class="item item-input">
+                    <span class="input-label">Name</span>
+                    <input type="text" placeholder="">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Username</span>
+                    <input type="text" placeholder="">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">Password</span>
+                    <input type="text" placeholder="">
+                </label>
+            </ion-list>
+            <button class="button button-stable button-block">Sign up</button>
+        </form>
+    </ion-content>
+</ion-view></script>
+<script id="messages1.html" type="text/ng-template">
+<div class="messages">
+    <ion-header-bar class="bar-stable">
+        <h1 class="title">Messages</h1>
+        <div class="buttons">
+            <button class="button button-stable button-clear">Close</button>
+        </div>
+    </ion-header-bar>
+    <ion-content padding="true" scroll="false" class="has-header">
+        <ion-list>
+            <ion-item class="item-thumbnail-left">
+                <img src="/img/avatar-img.png">
+                <h2>Title</h2>
+            </ion-item>
+            <ion-item class="item-thumbnail-left">
+                <img src="/img/avatar-img.png">
+                <h2>Title</h2>
+            </ion-item>
+            <ion-item class="item-thumbnail-left">
+                <img src="/img/avatar-img.png">
+                <h2>Title</h2>
+            </ion-item>
+            <ion-item class="item-thumbnail-left">
+                <img src="/img/avatar-img.png">
+                <h2>Title</h2>
+            </ion-item>
+            <ion-item class="item-thumbnail-left">
+                <img src="/img/avatar-img.png">
+                <h2>Title</h2>
+            </ion-item>
+            <ion-item class="item-thumbnail-left">
+                <img src="/img/avatar-img.png">
+                <h2>Title</h2>
+            </ion-item>
+        </ion-list>
+        <button class="button button-stable button-block">Log in</button>
+    </ion-content>
+</div></script>
+<script id="disease1.html" type="text/ng-template">
+<div class="disease">
+    <ion-header-bar class="bar-stable">
+        <h1 class="title">disease</h1>
+        <div class="buttons">
+            <button class="button button-stable button-clear">Close</button>
+        </div>
+    </ion-header-bar>
+    <ion-content padding="true" scroll="false" class="has-header">
+        <div style="line-height: 250px; background-color: rgb(255, 255, 255); border: 1px solid rgb(238, 238, 238); border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; text-align: center;">
+            <i class="icon ion-image" style="font-size: 64px; color: rgb(136, 136, 136); vertical-align: middle;"></i>
+        </div>
+        <button class="button button-stable button-block">Distal Myopasy</button>
+        <h2>medicine</h2>
+        <ion-list>
+            <ion-item>3←Medicine1</ion-item>
+            <ion-item>photo</ion-item>
+            <ion-item>2←Medicine</ion-item>
+        </ion-list>
+        <h2>Condition</h2>
+    </ion-content>
+</div></script>
 
 <script id="modal2.html" type="text/ng-template">
 <div class="modal">
@@ -255,7 +378,7 @@ The distal dystrophies, or DDs, are caused by many different genetic defects, no
           </ion-list>
 
           <div class="button-bar">
-            <button class="button button-light ">message</button>
+            <button class="button button-light ">Message</button>
           </div>
           <div class="spacer" style="width: 300px; height: 41px;"></div>
             <div class="list card">
