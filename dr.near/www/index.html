@@ -49,6 +49,11 @@ module.controller( 'MyController', ['$scope',
           comment:"I'm not much better,and there is a little hope of recovery",
           userphoto :"user photo"}
         ];
+        $scope.messages = [
+        { 
+          name: "Miyazaki Hayao"}
+        ];
+
         $scope.diseases = [ 
         { 
           name: 'Distal Myopathy', 
@@ -111,7 +116,32 @@ module.controller( 'MyController', ['$scope',
         },
        ];
     } ] )
-
+module.controller( 'MessageController', ['$scope',
+    function($scope){
+        $scope.messages = [
+        { 
+          name : "Nakagawa Shintaro", 
+          body : "Party hard - this is YOUR day, and only yours! Happy Birthday!",
+          photo : "Userphoto", },
+        ];
+    } ] )
+module.controller( 'DiseaseController', ['$scope',
+    function($scope){
+        $scope.diseases = [
+        { 
+          name : "Distal Myopathy", 
+          medicine : "MIDAZOLAM,",
+          photo : "Userphoto", },
+        ];
+    } ] )
+module.controller( 'MedicineController', ['$scope',
+    function($scope){
+        $scope.medicines = [
+        { 
+          company : "Novartis Pharma", 
+          medicine : "Glivec", },
+        ];
+    } ] )
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -154,17 +184,12 @@ module.controller( 'MyController', ['$scope',
       url: '/disease',
       templateUrl: 'disease1.html'
     })
+
+  .state('medicine1', {
+      url: '/medicine',
+      templateUrl: 'medicine1.html'
+    })
   
-  .state('page12', {
-      url: '/page12',
-      templateUrl: 'page12.html'
-  })
-
-  .state('modal2', {
-      url: '/modal',
-      templateUrl: 'modal2.html'
-  })
-
   .state('page16', {
       url: '/page16',
       templateUrl: 'page16.html'
@@ -173,13 +198,7 @@ module.controller( 'MyController', ['$scope',
   .state('home', {
       url: '/home',
       templateUrl: 'home.html'
-  })
-
-  .state('modal3', {
-      url: '/modal',
-      templateUrl: 'modal3.html'
-  })
-  ;
+  });
 
   // if none of the above states are matched, use this as the fallback
   
@@ -193,17 +212,14 @@ module.controller( 'MyController', ['$scope',
 <body ng-app="Myapp" animation="slide-left-right-ios7">
   <div>
     <div>
-        <ion-nav-bar class="bar-stable">
-        <ion-nav-back-button class="button-icon icon ion-ios7-arrow-back">Back</ion-nav-back-button>
-    </ion-nav-bar>
-    <ion-nav-view></ion-nav-view>
+        <ion-nav-view>
+        </ion-nav-view>
+        <div class="bar bar-header">
+        <button class="button button-icon icon ion-navicon"></button>
+        <div class="h1 title">Dr.near</div>
+        <img src="../images/logo.jpg" alt="logo">
 </div>
 </div>
-
-<div class="bar bar-header">
-  <button class="button button-icon icon ion-navicon"></button>
-  <div class="h1 title">Dr.near</div>
-  <button class="button button-clear button-positive">Edit</button>
 </div>
 
 <script id="login1.html" type="text/ng-template">
@@ -222,11 +238,12 @@ module.controller( 'MyController', ['$scope',
                 </label>
             </ion-list>
             <div class="spacer" style="height: 40px;"></div>
-            <button class="button button-stable button-block">Log in</button>
+            <a href="#/home" button class="button button-stable button-block">Log in</button>
             <a href="#/signup" class="button button-positive button-clear button-block">Or create an account</a>
         </form>
     </ion-content>
 </ion-view></script>
+
 <script id="signup1.html" type="text/ng-template">
 <ion-view title="Signup">
     <ion-content padding="true" scroll="false" class="has-header">
@@ -249,7 +266,9 @@ module.controller( 'MyController', ['$scope',
         </form>
     </ion-content>
 </ion-view></script>
+
 <script id="messages1.html" type="text/ng-template">
+<div ng-controller="MyController">
 <div class="messages">
     <ion-header-bar class="bar-stable">
         <h1 class="title">Messages</h1>
@@ -257,11 +276,12 @@ module.controller( 'MyController', ['$scope',
             <button class="button button-stable button-clear">Close</button>
         </div>
     </ion-header-bar>
-    <ion-content padding="true" scroll="false" class="has-header">
+    <ion-content padding="true" scroll="true" class="has-header">
         <ion-list>
             <ion-item class="item-thumbnail-left">
                 <img src="/img/avatar-img.png">
-                <h2>Title</h2>
+                <h2 ng-repeat="message in messages">{{message.name}}</h2>
+                <h3 ng-repeat="message in messages">{{message.body}}</h3>
             </ion-item>
             <ion-item class="item-thumbnail-left">
                 <img src="/img/avatar-img.png">
@@ -284,73 +304,56 @@ module.controller( 'MyController', ['$scope',
                 <h2>Title</h2>
             </ion-item>
         </ion-list>
-        <button class="button button-stable button-block">Log in</button>
     </ion-content>
-</div></script>
+</div></div></script>
+
 <script id="disease1.html" type="text/ng-template">
 <div class="disease">
     <ion-header-bar class="bar-stable">
-        <h1 class="title">disease</h1>
+        <h1 class="title">Disease</h1>
         <div class="buttons">
             <button class="button button-stable button-clear">Close</button>
         </div>
     </ion-header-bar>
     <ion-content padding="true" scroll="false" class="has-header">
-        <div style="line-height: 250px; background-color: rgb(255, 255, 255); border: 1px solid rgb(238, 238, 238); border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; text-align: center;">
+        <div style="line-height: 250px; border: 1px solid rgb(238, 238, 238); border-radius: 3px; text-align: center; background-color: rgb(255, 255, 255);">
             <i class="icon ion-image" style="font-size: 64px; color: rgb(136, 136, 136); vertical-align: middle;"></i>
         </div>
+        <ion-list></ion-list>
         <button class="button button-stable button-block">Distal Myopasy</button>
-        <h2>medicine</h2>
+        <h3>Medicine</h3>
         <ion-list>
             <ion-item>3←Medicine1</ion-item>
-            <ion-item>photo</ion-item>
-            <ion-item>2←Medicine</ion-item>
+            <ion-item>user photo</ion-item>
+            <ion-item>2←Medicine2</ion-item>
+            <ion-item class="user photo">userphoto</ion-item>
+            <ion-item>Item 2</ion-item>
+            <ion-item>Item 3</ion-item>
         </ion-list>
-        <h2>Condition</h2>
     </ion-content>
 </div></script>
 
-<script id="modal2.html" type="text/ng-template">
-<div class="modal">
-<ion-header-bar class="bar-stable">
-<h1 class="title">About disease</h1>
-<div class="buttons">
-<button class="button button-stable button-clear">Close</button>
-</div>
-</ion-header-bar>
-<ion-content padding="true" scroll="false" class="has-header">
-<ion-list></ion-list>
-<div class="list card">
-<div class="item item-divider">Distal Myopathy</div>
-<div class="item item-body">
-<div>
-<p>
-
-The distal dystrophies, or DDs, are caused by many different genetic defects, not all of which are yet known. Also, some of the DDs have been given different names based on various symptoms but may actually be caused by defects in the same gene.
-</p>
-</div>
-</div>
-</div>
-<button class="button button-calm button-outline">Medicine</button>
-<ion-list>
-<ion-item class="item-thumbnail-left">
-<img src="/img/avatar-img.png">
-<h2>medicine1</h2>
-<p>and 5 users</p>
-<div class="button-bar"></div>
-<img src="sample.gif" alt="サンプル" width="170" height="30">
-</ion-item>
-<ion-item class="item-thumbnail-left">
-<img src="/img/avatar-img.png">
-<h2>medicine2</h2>
-<p>1 user</p>
-</ion-item>
-<ion-item>Item 2</ion-item>
-<ion-item>Item 3</ion-item>
-</ion-list>
-<button class="button button-stable button-block">Tap me!</button>
-</ion-content>
-</div></script>
+<script id="medicine1.html" type="text/ng-template">
+<div ng-controller="MedicineController">
+<div class="medicine">
+    <ion-header-bar class="bar-stable">
+        <h1 class="title">Medicine</h1>
+        <div class="buttons">
+            <button class="button button-stable button-clear">Close</button>
+        </div>
+    </ion-header-bar>
+    <ion-content padding="true" scroll="false" class="has-header">
+        <ion-list></ion-list>
+        <button class="button button-stable button-block">Grivec</button>
+        <h3>Same disease</h3>
+        <ion-list>
+            <ion-item><b>Company nameーmedicine name</b></ion-item>
+            <ion-item><p ng-repeat="medicine in medicines">{{medicine.company}}　ー　{{medicine.medicine}}</p>
+            </ion-item>
+            <ion-item>Sawai seiyaku - Imanitib sawai</ion-item>
+        </ion-list>
+    </ion-content>
+</div></div></script>
 
 <script id="page16.html" type="text/ng-template">
 <ion-view title="Plus 1">
@@ -370,6 +373,9 @@ The distal dystrophies, or DDs, are caused by many different genetic defects, no
           <ion-list>
             <ion-item class="item-thumbnail-left">
             <img src="/img/avatar-img.png">
+            <div align="right">
+              <button class="button button-clear button-positive icon ion-gear-b"></button>
+              </div>
             <h2 ng-repeat="user in users">{{user.name}}</h2>
             <p ng-repeat="user in users">{{user.position}}</p>
             <h3 ng-repeat="user in users">{{user.diseases}}</h3>
@@ -381,11 +387,16 @@ The distal dystrophies, or DDs, are caused by many different genetic defects, no
             <button class="button button-light ">Message</button>
           </div>
           <div class="spacer" style="width: 300px; height: 41px;"></div>
-            <div class="list card">
+
+            <div class="timeline card">
             <div ng-repeat ="timeline in timelines">
               <div class="item item-divider">{{timeline.title}} was updated.</div>
               <div class="item item-body">{{timeline.comment}}</div>
-              <div class="item item-divider">{{timeline.userphoto}}</div>
+              <div class="item item-avatar">
+                <div align="right">
+                <img src="mcfly.jpg">
+                </div>
+              </div>
             </div>
             </div>
         <div class="list card">
