@@ -21,7 +21,7 @@
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
     <link href="css/ionic.app.css" rel="stylesheet">
 -->
-
+  <script src="https://www.parsecdn.com/js/parse-1.3.2.min.js"></script>
 
 <script>
 // Ionic Starter App
@@ -33,6 +33,28 @@
 // 'starter.controllers' is found in controllers.js
 //angular.module('app', ['ionic'])
 //↓追加
+Parse.initialize("9gKD3uVKGnAYKcQqFMpTjSqRFkYgnzZWrK9XRBic", "sNgRKL57Gc2BI1resCzLQjM0mpymjq663Xu93o1e");
+var UserObject = Parse.Object.extend("UserObject");
+var userObject = new UserObject();
+userObject.save({ 
+         name : "Nakagawa Shintaro", 
+         position : "patient",
+         diseases : "Hand-Schuller-Christain", 
+         medicine :"Grivec"
+         
+                          });
+var query = new Parse.Query(UserObject);
+query.get("f6qOguzvz1", {
+  success: function(userObject) {
+    // The object was retrieved successfully.
+    userObject.get(name)
+    userObject.get(position)
+    userObject.get(diseases)
+    userObject.get(medicine)
+  },
+
+});
+
 var module = angular.module( 'Myapp', ['ionic'] );
 module.controller( 'MyController', ['$scope',
     function($scope){
@@ -49,11 +71,7 @@ module.controller( 'MyController', ['$scope',
           comment:"I'm not much better,and there is a little hope of recovery",
           userphoto :"user photo"}
         ];
-        $scope.messages = [
-        { 
-          name: "Miyazaki Hayao"}
-        ];
-
+        
         $scope.diseases = [ 
         { 
           name: 'Distal Myopathy', 
@@ -120,7 +138,7 @@ module.controller( 'MessageController', ['$scope',
     function($scope){
         $scope.messages = [
         { 
-          name : "Nakagawa Shintaro", 
+          name : "Eto Satoru", 
           body : "Party hard - this is YOUR day, and only yours! Happy Birthday!",
           photo : "Userphoto", },
         ];
@@ -229,12 +247,10 @@ module.controller( 'MedicineController', ['$scope',
             <div class="spacer" style="height: 100px;"></div>
             <ion-list>
                 <label class="item item-input">
-                    <span class="input-label">Username</span>
-                    <input type="text" placeholder="">
+                    <input type="text" placeholder="Mail address">
                 </label>
                 <label class="item item-input">
-                    <span class="input-label">Password</span>
-                    <input type="password" placeholder="">
+                    <input type="password" placeholder="Password">
                 </label>
             </ion-list>
             <div class="spacer" style="height: 40px;"></div>
@@ -254,7 +270,7 @@ module.controller( 'MedicineController', ['$scope',
                     <input type="text" placeholder="">
                 </label>
                 <label class="item item-input">
-                    <span class="input-label">Username</span>
+                    <span class="input-label">Mail address</span>
                     <input type="text" placeholder="">
                 </label>
                 <label class="item item-input">
@@ -268,8 +284,8 @@ module.controller( 'MedicineController', ['$scope',
 </ion-view></script>
 
 <script id="messages1.html" type="text/ng-template">
-<div ng-controller="MyController">
-<div class="messages">
+<div ng-controller="MessageController">
+<div class="messagelist">
     <ion-header-bar class="bar-stable">
         <h1 class="title">Messages</h1>
         <div class="buttons">
@@ -384,7 +400,7 @@ module.controller( 'MedicineController', ['$scope',
           </ion-list>
 
           <div class="button-bar">
-            <button class="button button-light ">Message</button>
+            <a href="#/messages" button class="button button-light ">Message</button></a>
           </div>
           <div class="spacer" style="width: 300px; height: 41px;"></div>
 
