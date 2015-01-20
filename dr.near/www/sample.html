@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html ng-app="App">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title>Dr.near</title>
+    <link href="/css/preview-frame.css" rel="stylesheet">
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="/css/frostedGlass.css" rel="stylesheet">
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <script src="js/app.js"></script>
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="https://www.parsecdn.com/js/parse-1.3.3.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
+    <script>
+//不安要素
+angular
+    .module( 'Myapp', ['ionic'] );
+    .run( function() {
+        // Parse.com の初期化
+        Parse.initialize("9gKD3uVKGnAYKcQqFMpTjSqRFkYgnzZWrK9XRBic", "sNgRKL57Gc2BI1resCzLQjM0mpymjq663Xu93o1e");
+    })
+    .run(function($ionicPlatform) {
+    $ionicPlatform.ready(function() {
+    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+    // for form inputs)
+    if(window.cordova && window.cordova.plugins.Keyboard) {
+      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+    }
+    if(window.StatusBar) {
+      // org.apache.cordova.statusbar required
+      StatusBar.styleDefault();
+    }
+    });
+    })
+    .config(function($stateProvider, $urlRouterProvider) {
+  // Ionic uses AngularUI Router which uses the concept of states
+  // Learn more here: https://github.com/angular-ui/ui-router
+  // Set up the various states which the app can be in.
+  // Each state's controller can be found in controllers.js
+        $stateProvider
+       .state('login1', {
+          url: '/login',
+          templateUrl: 'login1.html'
+        })
+      .state('signup1', {
+          url: '/signup',
+          templateUrl: 'signup1.html'
+        })
+      .state('messages1', {
+          url: '/messages',
+          templateUrl: 'messages1.html'
+        })
+      .state('amessages1', {
+          url: '/amessages',
+          templateUrl: 'amessages1.html'
+        })
+      .state('disease1', {
+          url: '/disease',
+          templateUrl: 'disease1.html'
+        })
+      .state('medicine1', {
+          url: '/medicine',
+          templateUrl: 'medicine1.html'
+        })
+      .state('page16', {
+          url: '/page16',
+          templateUrl: 'page16.html'
+      })
+      .state('home', {
+          url: '/home',
+          templateUrl: 'home.html'
+      });
+      // if none of the above states are matched, use this as the fallback      
+      $urlRouterProvider.otherwise('/home');      
+    })
+    .controller( 'MainController', ['$scope',
+    function($scope){
+        $scope.users = '';
+        $scope.timelines = '';
+        $scope.diseases = '';
+        
+        var MainObject = Parse.Object.extend("MainObject");
+        var query = new Parse.Query(MainObject);
+        query.find({
+            success: function( results ) {
+                $scope.$apply( function(){
+                    for ( var i = 0;i < results.length; i++ ) {
+                        $scope.users.unshift
+                    }
+                })
+            }
+        }
+            )
+    }])
+    .controller( 'MessagesController', ['$scope',
+    function($scope){
+        $scope.fromName = '';
+        $scope.fromPhoto = '';
+        $scope.toName = '';
+        $scope.content ='';
+        $scope.messages = [];
+        var MessagesObject = Parse.Object.extend("MessagesObject");
+        var query = new Parse.Query(MessagesObject);
+        query.limit( 10 );
+        query.find({
+            success: function( results ) {
+                $scope.$apply( function(){ // <-- 遅延実行の都合により angularjs に直接描画を指示する
+                    // $scope.messages に追加
+                    for ( var i = 0; i < results.length; i++ ) {
+                        $scope.messages.unshift({
+                            fromName  : results[i].get('fromName'),
+                            fromPhoto : results[i].get('fromPhoto'),
+                            content   : results[i].get('content'),
+                            toName    : results[i].get('toName'),
+                            id        : results[i].id,
+                            createdAt : results[i].createdAt,
+                            updatedAt : results[i].up
+                            datedAt
+                        });
+                    }
+                });
+            },
+            error  : function( err ) {
+                console.log( err );
+            }
+        })
+    }]);
+
+    .controller('AmessageController', function($scope, $ionicFrostedDelegate, $ionicScrollDelegate, $rootScope) {
+      var amessageOptions = [
+        { content: '<p>Wow, this is really something huh?</p>' },
+        { content: '<p>Yea, it\'s pretty sweet</p>' },
+        { content: '<p>I think I like Ionic more than I like ice cream!</p>' },
+        { content: '<p>Gee wiz, this is something special.</p>' },
+      ];
+     
+      var amessageIter = 0;
+      $scope.amessages = amessageOptions.slice(0, amessageOptions.length);
+
+      $scope.add = function() {
+        var nextAmessage = amessageOptions[amessageIter++ % amessageOptions.length];
+        $scope.amessages.push(angular.extend({}, nextAmessage));
+
+        // Update the scroll area and tell the frosted glass to redraw itself
+        $ionicFrostedDelegate.update();
+        $ionicScrollDelegate.scrollBottom(true);
+      };
+    });
+    .controller( 'DiseaseController', ['$scope',
+    function($scope){
+        $scope.diseases = [
+        { 
+          name : "Distal Myopathy", 
+          medicine : "MIDAZOLAM,",
+          photo : "Userphoto", },
+        ];
+    }])
+    .controller( 'MedicineController', ['$scope',
+    function($scope){
+        $scope.medicines = [
+        { 
+          company : "Novartis Pharma", 
+          medicine : "Glivec", },
+        ];
+    }]);
+    </script>
+  </head>
+
+  <body ng-app="Myapp" animation="slide-left-right-ios7">
+    <div>
+    <div>
+        <ion-nav-view>
+        </ion-nav-view>
+        <div class="bar bar-header">
+        <a href="#/settings" button class="button button-icon icon ion-navicon"></button>
+        <div class="h1 title">Dr.near</div>
+        <img src="../images/logo.jpg" alt="logo">
+        </div>
+    </div>
+    </div>
+
+    <script id="messages1.html" type="text/ng-template">
+    <div ng-controller="MessagesController">
+    <div class="messageslist">
+        <ion-header-bar class="bar-stable">
+            <h1 class="title">Messages</h1>
+            <div class="buttons">
+                <button class="button button-stable button-clear">Close</button>
+            </div>
+        </ion-header-bar>
+        <ion-content padding="true" scroll="true" class="has-header">
+            <ion-list>
+                <ion-item class="item-thumbnail-left" ng-repeat="message in messages">
+                    <img src="/img/avatar-img.png">
+                    <h2>{{message.fromName}}</h2>
+                    <h3>{{message.content}}</h3>
+                </ion-item>
+            </ion-list>
+        </ion-content>
+    </div></div></script>
+
+    <script id="amessages1.html" type="text/ng-template">
+        <ion-pane ng-controller="AmessagesController">
+            <ion-header-bar frosted-bar class="bar-frosted">
+            <h1 class="title">Blurred!</h1>
+            </ion-header-bar>
+        <ion-content class="padding" start-y="120">
+            <ol class="amessages">
+              <li ng-repeat="message in amessages" ng-bind-html="message.content"></li>
+            </ol>
+        </ion-content>
+      <ion-footer-bar class="bar-frosted">
+        <button class="button button-clear button-positive" ng-click="add()">Add Message</button>
+      </ion-footer-bar>
+        </ion-pane>
+    </script>
+
+  </body>
+</html>

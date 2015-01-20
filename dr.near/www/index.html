@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title></title>
+    <title>Dr.near</title>
 
     <style>
     .angular-google-map-container {
@@ -14,217 +14,308 @@
 
   <link href="/css/preview-frame.css" rel="stylesheet">
   <link href="lib/ionic/css/ionic.css" rel="stylesheet">
-
-  <!-- ionic/angularjs js -->
+  <link href="/css/frostedGlass.css" rel="stylesheet">
   <script src="lib/ionic/js/ionic.bundle.js"></script>
   <script src="js/app.js"></script>
-    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
-    <link href="css/ionic.app.css" rel="stylesheet">
--->
   <script src="https://www.parsecdn.com/js/parse-1.3.2.min.js"></script>
 
 <script>
-// Ionic Starter App
-
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-// 'starter.services' is found in services.js
-// 'starter.controllers' is found in controllers.js
-//angular.module('app', ['ionic'])
-//↓追加
-Parse.initialize("9gKD3uVKGnAYKcQqFMpTjSqRFkYgnzZWrK9XRBic", "sNgRKL57Gc2BI1resCzLQjM0mpymjq663Xu93o1e");
-var UserObject = Parse.Object.extend("UserObject");
-var userObject = new UserObject();
-userObject.save({ 
-         name : "Nakagawa Shintaro", 
-         position : "patient",
-         diseases : "Hand-Schuller-Christain", 
-         medicine :"Grivec"
-         
-                          });
-var query = new Parse.Query(UserObject);
-query.get("f6qOguzvz1", {
-  success: function(userObject) {
-    // The object was retrieved successfully.
-    userObject.get(name)
-    userObject.get(position)
-    userObject.get(diseases)
-    userObject.get(medicine)
-  },
-
-});
-
 var module = angular.module( 'Myapp', ['ionic'] );
-module.controller( 'MyController', ['$scope',
-    function($scope){
-        $scope.users = [
-        { 
-          name : "Nakagawa Shintaro", 
-          position : "patient",
-          diseases : "Hand-Schuller-Christain", 
-          medicine :"Grivec"},
-        ];
-        $scope.timelines = [
-        { 
-          title: "medicine", 
-          comment:"I'm not much better,and there is a little hope of recovery",
-          userphoto :"user photo"}
-        ];
-        
-        $scope.diseases = [ 
-        { 
-          name: 'Distal Myopathy', 
-          medicines: [ 
-            { name: 'medicine1', 
-              users: [ 
-                { name: 'userA' }, 
-                { name: 'userB' }, 
-                { name: 'userC'} 
-              ] 
-            },
-            { name: 'medicine2', 
-              users: [ 
-                { name: 'userD' }, 
-                { name: 'userE' } 
-              ] 
-            },
-            { name: 'medicine3', 
-              users: [ { name: 'userF' } 
-              ] 
-            },
-            { name: 'medicine4',
-              users: [ { name: 'userG' } 
-              ] 
-            },
-            { name: 'medicine5', 
-              users: [ { name: 'userH' } 
-              ] 
-            } 
-          ] 
-        },
-
-        { 
-          name: 'Hand-Schuller-Christain disease', 
-          medicines: [ 
-            { name: 'medicine6', 
-              users: [ 
-                { name: 'userI' } 
-              ] 
-            } 
-          ]  
-        },
-
-        { name: 'muscular dystrophy',
-          medicines:[ 
-            { name: 'medicine7', 
-              users: [ 
-                { name: 'userJ' }
-              ] 
-            },
-            { name: 'medicine8', 
-              users: [ { name: 'userK' } 
-              ] 
-            },
-            { name: 'medicine9', 
-              users: [ { name: 'userL' } 
-              ] 
-            } 
-          ] 
-        },
-       ];
-    } ] )
-module.controller( 'MessageController', ['$scope',
-    function($scope){
-        $scope.messages = [
-        { 
-          name : "Eto Satoru", 
-          body : "Party hard - this is YOUR day, and only yours! Happy Birthday!",
-          photo : "Userphoto", },
-        ];
-    } ] )
-module.controller( 'DiseaseController', ['$scope',
-    function($scope){
-        $scope.diseases = [
-        { 
-          name : "Distal Myopathy", 
-          medicine : "MIDAZOLAM,",
-          photo : "Userphoto", },
-        ];
-    } ] )
-module.controller( 'MedicineController', ['$scope',
-    function($scope){
-        $scope.medicines = [
-        { 
-          company : "Novartis Pharma", 
-          medicine : "Glivec", },
-        ];
-    } ] )
-
-.run(function($ionicPlatform) {
-  $ionicPlatform.ready(function() {
+module.run( function(){
+    Parse.initialize("9gKD3uVKGnAYKcQqFMpTjSqRFkYgnzZWrK9XRBic", "sNgRKL57Gc2BI1resCzLQjM0mpymjq663Xu93o1e");
+    })
+module.run(function($ionicPlatform) {
+    $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
-  if(window.cordova && window.cordova.plugins.Keyboard) {
+    if(window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-  }
-  if(window.StatusBar) {
+    }
+    if(window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
-  }
-});
-})
-
-.config(function($stateProvider, $urlRouterProvider) {
-
-  // Ionic uses AngularUI Router which uses the concept of states
-  // Learn more here: https://github.com/angular-ui/ui-router
-  // Set up the various states which the app can be in.
-  // Each state's controller can be found in controllers.js
-  $stateProvider
-
-   .state('login1', {
-      url: '/login',
-      templateUrl: 'login1.html'
+    }
+    });
     })
+module.config(function($stateProvider, $urlRouterProvider) {
+        $stateProvider
+           .state('login1', {
+              url: '/login',
+              templateUrl: 'login1.html'
+            })
+          .state('signup1', {
+              url: '/signup',
+              templateUrl: 'signup1.html'
+            })
+          .state('messages1', {
+              url: '/messages',
+              templateUrl: 'messages1.html'
+            })
+          .state('amessage1', {
+            url: '/amessage/:uid',
+            templateUrl: 'amessage1.html'
+          })
+          .state('disease1', {
+              url: '/disease',
+              templateUrl: 'disease1.html'
+            })
+         .state('medicine1', {
+              url: '/medicine',
+              templateUrl: 'medicine1.html'
+            })
+          .state('page16', {
+              url: '/page16',
+              templateUrl: 'page16.html'
+          })
+          .state('home', {
+              url: '/home',
+              templateUrl: 'home.html'
+          });
+        // if none of the above states are matched, use this as the fallback
+        $urlRouterProvider.otherwise('/home');
+      })
+module.factory( 'LoginUser', function() {
+        // ログインユーザーは仮に「最初のユーザー」とする
+        var UserObject = Parse.Object.extend( 'User2' );
+        var query = new Parse.Query( UserObject );
+        query.limit(1);
+        query.ascending( 'createdAt' );
+        return query.first().then( function( result ) { return result.fetch(); } );
+      })
+module.controller( 'MainController', ['$scope',
+        function($scope){
+            $scope.users = [
+            { 
+              name : "Nakagawa Shintaro", 
+              position : "patient",
+              diseases : "Hand-Schuller-Christain", 
+              medicine :"Grivec"},
+            ];
+            $scope.timelines = [
+            { 
+              title: "medicine", 
+              comment:"I'm not much better,and there is a little hope of recovery",
+              userphoto :"user photo"}
+            ];
+            
+            $scope.diseases = [ 
+            { 
+              name: 'Distal Myopathy', 
+              medicines: [ 
+                { name: 'medicine1', 
+                  users: [ 
+                    { name: 'userA' }, 
+                    { name: 'userB' }, 
+                    { name: 'userC'} 
+                  ] 
+                },
+                { name: 'medicine2', 
+                  users: [ 
+                    { name: 'userD' }, 
+                    { name: 'userE' } 
+                  ] 
+                },
+                { name: 'medicine3', 
+                  users: [ { name: 'userF' } 
+                  ] 
+                },
+                { name: 'medicine4',
+                  users: [ { name: 'userG' } 
+                  ] 
+                },
+                { name: 'medicine5', 
+                  users: [ { name: 'userH' } 
+                  ] 
+                } 
+              ] 
+            },
 
-  .state('signup1', {
-      url: '/signup',
-      templateUrl: 'signup1.html'
-    })
+            { 
+              name: 'Hand-Schuller-Christain disease', 
+              medicines: [ 
+                { name: 'medicine6', 
+                  users: [ 
+                    { name: 'userI' } 
+                  ] 
+                } 
+              ]  
+            },
 
-  .state('messages1', {
-      url: '/messages',
-      templateUrl: 'messages1.html'
-    })
+            { name: 'muscular dystrophy',
+              medicines:[ 
+                { name: 'medicine7', 
+                  users: [ 
+                    { name: 'userJ' }
+                  ] 
+                },
+                { name: 'medicine8', 
+                  users: [ { name: 'userK' } 
+                  ] 
+                },
+                { name: 'medicine9', 
+                  users: [ { name: 'userL' } 
+                  ] 
+                } 
+              ] 
+            },
+           ];
+        } ] )
+    module.controller( 'MessagesController', [ '$scope', '$location', 'LoginUser', function( $scope, $location, LoginUser ) {
+        $scope.loginUser;
+        $scope.messages  = [];
 
-  .state('disease1', {
-      url: '/disease',
-      templateUrl: 'disease1.html'
-    })
+        LoginUser.then( function( user ) {
+            $scope.loginUser = user;
 
-  .state('medicine1', {
-      url: '/medicine',
-      templateUrl: 'medicine1.html'
-    })
-  
-  .state('page16', {
-      url: '/page16',
-      templateUrl: 'page16.html'
-  })
+            var MessageObject = Parse.Object.extend( 'Message2' );
 
-  .state('home', {
-      url: '/home',
-      templateUrl: 'home.html'
-  });
+            var queryFrom = new Parse.Query( MessageObject );
+            queryFrom.equalTo( 'from', $scope.loginUser );
+            var queryTo = new Parse.Query( MessageObject );
+            queryTo.equalTo( 'to', $scope.loginUser );
 
-  // if none of the above states are matched, use this as the fallback
-  
-  $urlRouterProvider.otherwise('/home');
-  
-});
+            var query = Parse.Query.or( queryFrom, queryTo );
+            query.limit( 50 );
+            query.descending( 'createdAt' );
+            query.include( 'from' ); // from を一緒に取り出す
+            query.include( 'to' );   // to を一緒に取り出す
+            query.find().then( function( results ) {
+                $scope.$apply( function(){
+                    var uniqueUsers = {};
+                    for ( var i = 0; i < results.length; i++ ) {
+                        var type = (results[i].get('from').id == $scope.loginUser.id) ? 'sent' : 'received';
+                        var userMessageId = (type == 'sent') // 同じ相手との重複表示を避ける
+                            ? results[i].get('from').id + ':' + results[i].get('to').id
+                            : results[i].get('to').id + ':' + results[i].get('from').id;
+                        if ( !uniqueUsers[userMessageId] || ( uniqueUsers[userMessageId] < results[i].createdAt ) ) {
+                            uniqueUsers[userMessageId] = results[i].createdAt;
+                            $scope.messages.push({
+                                umid   : userMessageId,
+                                object : angular.copy( results[i] ),
+                                type   : type
+                            });
+                        }
+                    }
+                });
+            });
+        });
+        $scope.init = function() { // サンプルデータの設定
+            if ( !confirm( '初期データを設定します。よろしいですか？' ) ) {
+                return;
+            }
 
+            var MessageObject = Parse.Object.extend( 'Message2' );
+            var UserObject = Parse.Object.extend( 'User2' );
 
+            var query;
+            query = new Parse.Query( MessageObject );
+            query.find().then( function( results ) {
+                for ( var i = 0; i < results.length; i++ ) {
+                    results[i].destroy();
+                }
+            }).then( function(){
+                query = new Parse.Query( UserObject );
+                query.find().then( function( results ) {
+                    for ( var i = 0; i < results.length; i++ ) {
+                        results[i].destroy();
+                    }
+                });
+            }).then( function(){
+                var users = [];
+                for ( var i = 0; i < 5; i++ ) {
+                    var user = new UserObject();
+                    user.set( 'name', 'user ' + i );
+                    users.push( user );
+                }
+
+                for ( var i = 0; i < 40; i++ ) {
+                    var msg = new MessageObject();
+                    var from, to;
+                    if ( 1 < Math.random() * 2 ) {
+                        from = users[0];
+                        to   = users[Math.floor(Math.random() * 4) + 1];
+                    }
+                    else {
+                        from = users[Math.floor(Math.random() * 4) + 1];
+                        to   = users[0];
+                    }
+                    msg.set( 'from', from );
+                    msg.set( 'to', to );
+                    msg.set( 'content', 'message ' + i );
+                    msg.save();
+                }
+            });
+        };
+
+        $scope.detail = function( msg ) {
+            var user = (msg.type == 'sent') ? msg.object.get('to') : msg.object.get('from');
+            $location.path( '/message/' + user.id );
+        };
+    }])           
+    module.controller('AmessageController', [ '$scope', '$location', '$routeParams', 'LoginUser', function( $scope, $location, $routeParams, LoginUser ) {
+        $scope.loginUser;
+        $scope.messages = [];
+
+        LoginUser.then( function( user ) {
+            $scope.loginUser  = user;
+
+            var MessageObject = Parse.Object.extend( 'Message2' );
+            var UserObject = Parse.Object.extend( 'User2' );
+
+            var targetUser = new UserObject();
+            targetUser.id = $routeParams.uid; // 特定のユーザーとのやりとりを検索
+
+            var queryFrom = new Parse.Query( MessageObject );
+            queryFrom.equalTo( 'from', $scope.loginUser );    // 自分から
+            queryFrom.equalTo( 'to', targetUser );            // 特定ユーザー
+
+            var queryTo = new Parse.Query( MessageObject );
+            queryTo.equalTo( 'from', targetUser );            // 特定ユーザーから
+            queryTo.equalTo( 'to', $scope.loginUser );        // 自分
+
+            var query = Parse.Query.or( queryFrom, queryTo ); // のいずれか
+            query.limit( 50 );
+            query.descending( 'createdAt' );
+            query.include( 'from' );
+            query.include( 'to' );
+            query.find().then( function( results ) {
+                $scope.$apply( function(){
+                    for ( var i = 0; i < results.length; i++ ) {
+                        var type = (results[i].get('from').id == $scope.loginUser.id) ? 'sent' : 'received';
+                        $scope.messages.push({
+                            object : angular.copy( results[i] ),
+                            type   : type,
+                            user   : user
+                        });
+                        if ( !$scope.targetUser ) {
+                            $scope.targetUser = (type == 'sent') ? results[i].get('to') : results[i].get('from');
+                        }
+                    }
+                });
+            });
+        });
+
+        $scope.back = function() {
+            $location.path( '/' );
+        };
+    }]);
+    module.controller( 'DiseaseController', ['$scope',
+        function($scope){
+            $scope.diseases = [
+            { 
+              name : "Distal Myopathy", 
+              medicine : "MIDAZOLAM,",
+              photo : "Userphoto", },
+            ];
+        } ] )
+    module.controller( 'MedicineController', ['$scope',
+        function($scope){
+            $scope.medicines = [
+            { 
+              company : "Novartis Pharma", 
+              medicine : "Glivec", },
+            ];
+        }])
 </script>
 </head>
 <body ng-app="Myapp" animation="slide-left-right-ios7">
@@ -284,44 +375,43 @@ module.controller( 'MedicineController', ['$scope',
 </ion-view></script>
 
 <script id="messages1.html" type="text/ng-template">
-<div ng-controller="MessageController">
-<div class="messagelist">
-    <ion-header-bar class="bar-stable">
-        <h1 class="title">Messages</h1>
-        <div class="buttons">
-            <button class="button button-stable button-clear">Close</button>
-        </div>
-    </ion-header-bar>
-    <ion-content padding="true" scroll="true" class="has-header">
-        <ion-list>
-            <ion-item class="item-thumbnail-left">
-                <img src="/img/avatar-img.png">
-                <h2 ng-repeat="message in messages">{{message.name}}</h2>
-                <h3 ng-repeat="message in messages">{{message.body}}</h3>
-            </ion-item>
-            <ion-item class="item-thumbnail-left">
-                <img src="/img/avatar-img.png">
-                <h2>Title</h2>
-            </ion-item>
-            <ion-item class="item-thumbnail-left">
-                <img src="/img/avatar-img.png">
-                <h2>Title</h2>
-            </ion-item>
-            <ion-item class="item-thumbnail-left">
-                <img src="/img/avatar-img.png">
-                <h2>Title</h2>
-            </ion-item>
-            <ion-item class="item-thumbnail-left">
-                <img src="/img/avatar-img.png">
-                <h2>Title</h2>
-            </ion-item>
-            <ion-item class="item-thumbnail-left">
-                <img src="/img/avatar-img.png">
-                <h2>Title</h2>
-            </ion-item>
-        </ion-list>
-    </ion-content>
-</div></div></script>
+    <div ng-controller="MessagesController">
+    <div class="messageslist">
+        <ion-header-bar class="bar-stable">
+            <h1 class="title">{{ loginUser.get('name') }}Messages</h1>
+            <div class="buttons">
+                <button class="button button-stable button-clear">Close</button>
+            </div>
+        </ion-header-bar>
+
+        <ion-content padding="true" scroll="true" class="has-header">
+            <ion-list>
+                <ion-item class="item-thumbnail-left" ng-repeat="msg in messages">
+                    <img src="/img/avatar-img.png">
+                    <h2 ng-click="detail( msg )">
+                    {{ msg.type == 'sent' ? msg.object.get('to').get('name') : msg.object.get('from').get('name') }}
+                    </h2>
+                    <h3>{{ msg.type == 'sent' ? msg.object.get('to').get('content') : msg.object.get('from').get('content') }}</h3>
+                </ion-item>
+            </ion-list>
+        </ion-content>
+    </div></div>
+</script>
+<script id="amessage1.html" type="text/ng-template">
+        <ion-pane ng-controller="AmessageController">
+            <ion-header-bar frosted-bar class="bar-frosted">
+            <h1 class="title">Blurred!</h1>
+            </ion-header-bar>
+        <ion-content class="padding" start-y="120">
+            <ol class="amessage">
+              <li ng-repeat="msg in messages" ng-bind-html="message.content"></li>
+            </ol>
+        </ion-content>
+      <ion-footer-bar class="bar-frosted">
+        <button class="button button-clear button-positive" ng-click="add()">Add Message</button>
+      </ion-footer-bar>
+        </ion-pane>
+</script>
 
 <script id="disease1.html" type="text/ng-template">
 <div class="disease">
@@ -383,7 +473,7 @@ module.controller( 'MedicineController', ['$scope',
 <script id="home.html" type="text/ng-template">
   <ion-view title="Dr.near">
     <ion-tabs class="tabs-stable tabs-icon-top">
-      <div ng-controller="MyController">
+      <div ng-controller="MainController">
       <ion-tab title="Home" icon="ion-home">
         <ion-content padding="true" class="has-header">
           <ion-list>
@@ -480,3 +570,4 @@ module.controller( 'MedicineController', ['$scope',
 </ion-view></script>
 </body>
 </html>
+
