@@ -11,14 +11,11 @@
       height: 504px;
   }
   </style>
-
-  <link href="/css/preview-frame.css" rel="stylesheet">
   <link href="lib/ionic/css/ionic.css" rel="stylesheet">
   <link href="/css/frostedGlass.css" rel="stylesheet">
   <script src="lib/ionic/js/ionic.bundle.js"></script>
   <script src="js/app.js"></script>
   <script src="https://www.parsecdn.com/js/parse-1.3.2.min.js"></script>
-
 <script>
 var module = angular.module( 'Myapp', ['ionic'] );
 module.run( function(){
@@ -80,7 +77,8 @@ module.factory( 'LoginUser', function() {
         var query = new Parse.Query( UserObject );
         query.limit(1);
         query.ascending( 'createdAt' );
-        return query.first().then( function( result ) { return result.fetch(); } );
+        return query.first().then( function( result ) { 
+          return result.hello(); } );
       })
 module.controller( 'MainController', ['$scope',
         function($scope){
@@ -242,7 +240,7 @@ module.controller( 'MainController', ['$scope',
                     msg.set( 'from', from );
                     msg.set( 'to', to );
                     msg.set( 'content', 'message ' + i );
-                    msg.save();
+                    msg.save().then( function( data ) { console.log( 'complete', data ); } );
                 }
             });
         };
@@ -325,8 +323,9 @@ module.controller( 'MainController', ['$scope',
         </ion-nav-view>
         <div class="bar bar-header">
         <button class="button button-icon icon ion-navicon"></button>
-        <div class="h1 title">Dr.near</div>
+        <div class="h1 title">
         <img src="../images/logo.jpg" alt="logo">
+        </div>
 </div>
 </div>
 </div>
@@ -387,7 +386,7 @@ module.controller( 'MainController', ['$scope',
         <ion-content padding="true" scroll="true" class="has-header">
             <ion-list>
                 <ion-item class="item-thumbnail-left" ng-repeat="msg in messages">
-                    <img src="/img/avatar-img.png">
+                    <img src="/images/avatar-img.png">
                     <h2 ng-click="detail( msg )">
                     {{ msg.type == 'sent' ? msg.object.get('to').get('name') : msg.object.get('from').get('name') }}
                     </h2>
@@ -478,7 +477,7 @@ module.controller( 'MainController', ['$scope',
         <ion-content padding="true" class="has-header">
           <ion-list>
             <ion-item class="item-thumbnail-left">
-            <img src="/img/avatar-img.png">
+            <img src="/images/avatar-img.png">
             <div align="right">
               <button class="button button-clear button-positive icon ion-gear-b"></button>
               </div>
@@ -500,7 +499,6 @@ module.controller( 'MainController', ['$scope',
               <div class="item item-body">{{timeline.comment}}</div>
               <div class="item item-avatar">
                 <div align="right">
-                <img src="mcfly.jpg">
                 </div>
               </div>
             </div>
@@ -570,4 +568,6 @@ module.controller( 'MainController', ['$scope',
 </ion-view></script>
 </body>
 </html>
+
+
 
