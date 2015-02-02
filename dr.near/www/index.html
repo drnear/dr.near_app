@@ -20,7 +20,46 @@
 var module = angular.module( 'Myapp', ['ionic'] );
 module.run( function(){
     Parse.initialize("9gKD3uVKGnAYKcQqFMpTjSqRFkYgnzZWrK9XRBic", "sNgRKL57Gc2BI1resCzLQjM0mpymjq663Xu93o1e");
-    })
+    var MessageObject = Parse.Object.extend( 'Message2' );
+    var UserObject = Parse.Object.extend( 'User2' );
+
+    var userObject = new UserObject();
+    userObject.set("name","user0");
+    userObject.save();
+    var userObject = new UserObject();
+    userObject.set("name","user1");
+    userObject.save();
+    var userObject = new UserObject();
+    userObject.set("name","user2");
+    userObject.save();
+    var userObject = new UserObject();
+    userObject.set("name","user3");
+    userObject.save();
+    var userObject = new UserObject();
+    userObject.set("name","user4");
+    userObject.save();
+
+    var messageObject = new MessageObject();
+    messageObject.set("from","user0");
+    messageObject.set("to","user1");
+    messageObject.set("content","I love the healthy food");
+    messageObject.save();
+    var messageObject = new MessageObject();
+    messageObject.set("from","user1");
+    messageObject.set("to","user0");
+    messageObject.set("content","Do you love yourself?");
+    messageObject.save();
+    var messageObject = new MessageObject();
+    messageObject.set("from","user3");
+    messageObject.set("to","user0");
+    messageObject.set("content","I love myself");
+    messageObject.save();
+    var messageObject = new MessageObject();
+    messageObject.set("from","user0");
+    messageObject.set("to","user4");
+    messageObject.set("content","Hey,Jack");
+    messageObject.save();
+});
 module.run(function($ionicPlatform) {
     $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -77,8 +116,7 @@ module.factory( 'LoginUser', function() {
         var query = new Parse.Query( UserObject );
         query.limit(1);
         query.ascending( 'createdAt' );
-        return query.first().then( function( result ) { 
-          return result.hello(); } );
+        return query.first().then( function( result ) { return result.fetch();  } );
       })
 module.controller( 'MainController', ['$scope',
         function($scope){
@@ -178,6 +216,7 @@ module.controller( 'MainController', ['$scope',
             query.include( 'from' ); // from を一緒に取り出す
             query.include( 'to' );   // to を一緒に取り出す
             query.find().then( function( results ) {
+                console.log('complete',data);
                 $scope.$apply( function(){
                     var uniqueUsers = {};
                     for ( var i = 0; i < results.length; i++ ) {
@@ -197,54 +236,6 @@ module.controller( 'MainController', ['$scope',
                 });
             });
         });
-        $scope.init = function() { // サンプルデータの設定
-            if ( !confirm( '初期データを設定します。よろしいですか？' ) ) {
-                return;
-            }
-
-            var MessageObject = Parse.Object.extend( 'Message2' );
-            var UserObject = Parse.Object.extend( 'User2' );
-
-            var query;
-            query = new Parse.Query( MessageObject );
-            query.find().then( function( results ) {
-                for ( var i = 0; i < results.length; i++ ) {
-                    results[i].destroy();
-                }
-            }).then( function(){
-                query = new Parse.Query( UserObject );
-                query.find().then( function( results ) {
-                    for ( var i = 0; i < results.length; i++ ) {
-                        results[i].destroy();
-                    }
-                });
-            }).then( function(){
-                var users = [];
-                for ( var i = 0; i < 5; i++ ) {
-                    var user = new UserObject();
-                    user.set( 'name', 'user ' + i );
-                    users.push( user );
-                }
-
-                for ( var i = 0; i < 40; i++ ) {
-                    var msg = new MessageObject();
-                    var from, to;
-                    if ( 1 < Math.random() * 2 ) {
-                        from = users[0];
-                        to   = users[Math.floor(Math.random() * 4) + 1];
-                    }
-                    else {
-                        from = users[Math.floor(Math.random() * 4) + 1];
-                        to   = users[0];
-                    }
-                    msg.set( 'from', from );
-                    msg.set( 'to', to );
-                    msg.set( 'content', 'message ' + i );
-                    msg.save().then( function( data ) { console.log( 'complete', data ); } );
-                }
-            });
-        };
-
         $scope.detail = function( msg ) {
             var user = (msg.type == 'sent') ? msg.object.get('to') : msg.object.get('from');
             $location.path( '/message/' + user.id );
