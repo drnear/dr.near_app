@@ -20,45 +20,65 @@
 var module = angular.module( 'Myapp', ['ionic'] );
 module.run( function(){
     Parse.initialize("9gKD3uVKGnAYKcQqFMpTjSqRFkYgnzZWrK9XRBic", "sNgRKL57Gc2BI1resCzLQjM0mpymjq663Xu93o1e");
-    var MessageObject = Parse.Object.extend( 'Message2' );
     var UserObject = Parse.Object.extend( 'User2' );
 
-    var userObject = new UserObject();
-    userObject.set("name","user0");
-    userObject.save();
-    var userObject = new UserObject();
-    userObject.set("name","user1");
-    userObject.save();
-    var userObject = new UserObject();
-    userObject.set("name","user2");
-    userObject.save();
-    var userObject = new UserObject();
-    userObject.set("name","user3");
-    userObject.save();
-    var userObject = new UserObject();
-    userObject.set("name","user4");
-    userObject.save();
+    var user0 = new UserObject();
+    user0.set( 'name', 'user0' );
+    user0.save();
 
-    var messageObject = new MessageObject();
-    messageObject.set("from","user0");
-    messageObject.set("to","user1");
-    messageObject.set("content","I love the healthy food");
-    messageObject.save();
-    var messageObject = new MessageObject();
-    messageObject.set("from","user1");
-    messageObject.set("to","user0");
-    messageObject.set("content","Do you love yourself?");
-    messageObject.save();
-    var messageObject = new MessageObject();
-    messageObject.set("from","user3");
-    messageObject.set("to","user0");
-    messageObject.set("content","I love myself");
-    messageObject.save();
-    var messageObject = new MessageObject();
-    messageObject.set("from","user0");
-    messageObject.set("to","user4");
-    messageObject.set("content","Hey,Jack");
-    messageObject.save();
+    var user1 = new UserObject();
+    user1.set( 'name', 'user1' );
+    user1.save();
+
+    var user2 = new UserObject();
+    user2.set( 'name', 'user2' );
+    user2.save();
+
+    var user3 = new UserObject();
+    user3.set( 'name', 'user3' );
+    user3.save();
+
+    var user4 = new UserObject();
+    user4.set( 'name', 'user4' );
+    user4.save();
+
+    var MessageObject = Parse.Object.extend( 'Message2' );
+    var message0 = new MessageObject();
+    message0.save({
+      'from': user0,
+      'to': user1,
+      'content':"I'm gonna be there."
+    })
+    var message4 = new MessageObject();
+    message4.save({
+      'from': user0,
+      'to': user1,
+      'content':"I'm gonna be my love."
+    })
+    var message1 = new MessageObject();
+    message1.save({
+      'from': user4,
+      'to': user0,
+      'content':'I love the healthy food.'
+    })
+    var message2 = new MessageObject();
+    message2.save({
+      'from': user3,
+      'to': user0,
+      'content':'I love myself.'
+    })
+    var message3 = new MessageObject();
+    message3.save({
+      'from': user0,
+      'to': user2,
+      'content':'Hey,Jack'
+    })
+    var message = new MessageObject();
+    message3.save({
+      'from': user0,
+      'to': user2,
+      'content':'Hey,Jack'
+    })
 });
 module.run(function($ionicPlatform) {
     $ionicPlatform.ready(function() {
@@ -196,7 +216,7 @@ module.controller( 'MainController', ['$scope',
             },
            ];
         } ] )
-    module.controller( 'MessagesController', [ '$scope', '$location', 'LoginUser', function( $scope, $location, LoginUser ) {
+module.controller( 'MessagesController', [ '$scope', '$location', 'LoginUser', function( $scope, $location, LoginUser ) {
         $scope.loginUser;
         $scope.messages  = [];
 
@@ -216,7 +236,6 @@ module.controller( 'MainController', ['$scope',
             query.include( 'from' ); // from を一緒に取り出す
             query.include( 'to' );   // to を一緒に取り出す
             query.find().then( function( results ) {
-                console.log('complete',data);
                 $scope.$apply( function(){
                     var uniqueUsers = {};
                     for ( var i = 0; i < results.length; i++ ) {
@@ -238,7 +257,7 @@ module.controller( 'MainController', ['$scope',
         });
         $scope.detail = function( msg ) {
             var user = (msg.type == 'sent') ? msg.object.get('to') : msg.object.get('from');
-            $location.path( '/message/' + user.id );
+            $location.path( '/amessage/' + user.id );
         };
     }])           
     module.controller('AmessageController', [ '$scope', '$location', '$routeParams', 'LoginUser', function( $scope, $location, $routeParams, LoginUser ) {
@@ -368,24 +387,31 @@ module.controller( 'MainController', ['$scope',
     <div ng-controller="MessagesController">
     <div class="messageslist">
         <ion-header-bar class="bar-stable">
-            <h1 class="title">{{ loginUser.get('name') }}Messages</h1>
+        <h1 class="title">{{ loginUser.get('name') }}Messages</h1>
             <div class="buttons">
-                <button class="button button-stable button-clear">Close</button>
+            <button class="button button-stable button-clear">Close
+            </button>
             </div>
         </ion-header-bar>
 
         <ion-content padding="true" scroll="true" class="has-header">
-            <ion-list>
-                <ion-item class="item-thumbnail-left" ng-repeat="msg in messages">
-                    <img src="/images/avatar-img.png">
-                    <h2 ng-click="detail( msg )">
-                    {{ msg.type == 'sent' ? msg.object.get('to').get('name') : msg.object.get('from').get('name') }}
-                    </h2>
-                    <h3>{{ msg.type == 'sent' ? msg.object.get('to').get('content') : msg.object.get('from').get('content') }}</h3>
+            <ion-list can-swipe="listCanSwipe">
+                <ion-item class="item-thumbnail-left">
+                <h1>Message List</h1>
+                    <ul>
+                        <li ng-repeat="msg in messages">
+                            <div>
+                            {{ msg.type == 'sent' ? msg.object.get('to').get('name') : msg.object.get('from').get('name') }}
+                            {{ msg.object.get('content') }}
+                            <button class="btn btn-xs btn-default" ng-click="detail( msg )">detail</button>
+                            </div>
+                        </li>
+                    </ul>
                 </ion-item>
             </ion-list>
         </ion-content>
-    </div></div>
+    </div>
+    </div>
 </script>
 <script id="amessage1.html" type="text/ng-template">
         <ion-pane ng-controller="AmessageController">
