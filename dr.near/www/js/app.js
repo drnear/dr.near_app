@@ -260,7 +260,9 @@ angular.module('Myapp', ['ionic'])
 
             var queryTo = new Parse.Query( MessageObject );
             queryTo.equalTo( 'from', targetUser );            // 特定ユーザーから
-            queryTo.equalTo( 'to', $scope.loginUser );        // 自分
+            queryTo.equalTo( 'to', $scope.loginUser );
+
+            console.log(targetUser)        // 自分
 
             var query = Parse.Query.or( queryFrom, queryTo ); // のいずれか
             query.limit( 50 );

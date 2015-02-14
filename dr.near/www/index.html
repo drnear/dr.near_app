@@ -102,9 +102,11 @@
 </script>
 <script id="amessage1.html" type="text/ng-template">
         <ion-pane ng-controller="AmessageController">
-            <ion-header-bar frosted-bar class="bar-frosted">
-            <h1 class="title">Blurred!</h1>
-            </ion-header-bar>
+
+        <ion-header-bar frosted-bar class="bar-frosted">
+        <h1 class="title">{{ targetUser.get('name') }}</h1>
+        </ion-header-bar>
+
         <ion-content class="padding" start-y="120">
             <ol class="amessage">
               <li ng-repeat="msg in messages" ng-bind-html="message.content"></li>
