@@ -100,13 +100,13 @@
     <ion-content padding="true" scroll="true" class="padding" start-y="120">
         <ol class="amessage">
           <h1>Message / {{ targetUser.get('name') }}</h1>
-          <li ng-repeat="msg in messages">
+          <div ng-repeat="msg in messages">
            {{ msg.object.get('from').get('name') }}
             &gt;
             {{ msg.object.get('to').get('name') }}
             :
             {{ msg.object.get('content') }}
-          </li>
+          </div>
         </ol>
     </ion-content>
     <ion-footer-bar class="bar-frosted">
