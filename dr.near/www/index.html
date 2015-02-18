@@ -75,47 +75,46 @@
 </ion-view></script>
 
 <script id="messages1.html" type="text/ng-template">
-    <div ng-controller="MessagesController">
-    <div class="messageslist">
-        <ion-header-bar class="bar-stable">
-        <h1 class="title">{{ loginUser.get('name') }}Messages</h1>
-            <div class="buttons">
-            <button class="button button-stable button-clear">Close
-            </button>
-            </div>
-        </ion-header-bar>
-
-        <ion-content>
-        <div class="list">
-              <a ng-repeat="msg in messages"
-                 ng-click="detail( msg )"
-                 class="item item-thumbnail-left">
-                 <img ng-src="{{ item.image }}">
-                <h2> {{ msg.type == 'sent' ? msg.object.get('to').get('name') : msg.object.get('from').get('name') }}</h2>
-                <h4>{{ msg.object.get('content') }}</h4>
-              </a>
-            </div>
-            </ion-list>
-        </ion-content>
-    </div>
-    </div>
+<ion-view title="Messages">
+    <ion-content padding="true" scroll="false" class="has-header">
+        <div ng-controller="MessagesController">
+         <span>Login : {{ loginUser.get('name') }}</span>
+        <div class="messageslist">
+            <div class="list">
+                  <a ng-repeat="msg in messages"
+                     ng-click="detail( msg )"
+                     class="item item-thumbnail-left">
+                     <img ng-src="{{ item.image }}">
+                    <h2> {{ msg.type == 'sent' ? msg.object.get('to').get('name') : msg.object.get('from').get('name') }}</h2>
+                    <h4>{{ msg.object.get('content') }}</h4>
+                  </a>
+                </div>
+                </ion-list>
+        </div>
+        </div>
+    </ion-content>
+</ion-view>
 </script>
 <script id="amessage1.html" type="text/ng-template">
-        <ion-pane ng-controller="AmessageController">
-
-        <ion-header-bar frosted-bar class="bar-frosted">
-        <h1 class="title">{{ targetUser.get('name') }}</h1>
-        </ion-header-bar>
-
+<ion-view title="Amessage">
+    <ion-content padding="true" scroll="false" class="has-header">
         <ion-content class="padding" start-y="120">
             <ol class="amessage">
-              <li ng-repeat="msg in messages" ng-bind-html="message.content"></li>
+              <li ng-repeat="msg in messages" ng-bind-html="message.content">
+                {{ msg.object.get('from').get('name') }}
+            &gt;
+            {{ msg.object.get('to').get('name') }}
+            :
+            {{ msg.object.get('content') }}
+              </li>
             </ol>
         </ion-content>
       <ion-footer-bar class="bar-frosted">
         <button class="button button-clear button-positive" ng-click="add()">Add Message</button>
       </ion-footer-bar>
         </ion-pane>
+    <ion-content>
+</ion-view>
 </script>
 
 <script id="disease1.html" type="text/ng-template">

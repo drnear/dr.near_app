@@ -118,6 +118,12 @@ angular.module('Myapp', ['ionic'])
       'to': user2,
       'content':'Hey,Jack'
     })
+     var message6 = new MessageObject();
+    message6.save({
+      'from': user2,
+      'to': user0,
+      'content':"Let's get it on"
+    })
 })
 .controller( 'MainController', ['$scope',
         function($scope){
