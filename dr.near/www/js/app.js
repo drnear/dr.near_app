@@ -206,7 +206,6 @@ angular.module('Myapp', ['ionic'])
 .controller( 'MessagesController', [ '$scope', '$location', 'LoginUser', function( $scope, $location, LoginUser ) {
         $scope.loginUser;
         $scope.messages  = [];
-
         LoginUser.then( function( user ) {
             $scope.loginUser = user;
 
