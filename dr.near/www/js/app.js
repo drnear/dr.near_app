@@ -26,6 +26,7 @@ angular.module('Myapp', ['ionic'])
         .state('login1', {
             url: '/login',
             templateUrl: 'login1.html'
+
         })
         .state('signup1', {
             url: '/signup',
@@ -33,11 +34,13 @@ angular.module('Myapp', ['ionic'])
         })
         .state('messages1', {
             url: '/messages',
-            templateUrl: 'messages1.html'
+            templateUrl: 'messages1.html',
+            controller: 'MessagesController'
         })
         .state('amessage1', {
             url: '/amessage/:uid',
-            templateUrl: 'amessage1.html'
+            templateUrl: 'amessage1.html',
+            controller: 'AmessageController'
         })
         .state('disease1', {
             url: '/disease',
@@ -247,6 +250,7 @@ angular.module('Myapp', ['ionic'])
         };
     }])           
 .controller('AmessageController', [ '$scope', '$location', '$routeParams', 'LoginUser', function( $scope, $location, $routeParams, LoginUser ) {
+        console.log("hello");
         $scope.loginUser;
         $scope.messages = [];
 

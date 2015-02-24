@@ -79,7 +79,6 @@
 <ion-nav-bar class="bar-positive">
 </ion-nav-bar>
     <ion-content padding="true" scroll="false" class="has-header">
-        <div ng-controller="MessagesController">
          <span>Login : {{ loginUser.get('name') }}</span>
         <div class="messageslist">
             <div class="list">
@@ -102,7 +101,6 @@
 <ion-nav-bar class="bar-positive">
 </ion-nav-bar>
     <ion-content padding="true" scroll="false" class="has-header">
-        <div ng-controller="AmessageController">
              <a ng-repeat="msg in messages">
                 {{ msg.object.get('from').get('name') }}
                 &gt;
