@@ -249,7 +249,7 @@ angular.module('Myapp', ['ionic'])
             $location.path( '/amessage/' + user.id );
         };
     }])           
-.controller('AmessageController', [ '$scope', '$location', '$routeParams', 'LoginUser', function( $scope, $location, $routeParams, LoginUser ) {
+.controller('AmessageController', [ '$scope', '$location', '$stateParams', 'LoginUser', function( $scope, $location, $stateParams, LoginUser ) {
         console.log("hello");
         $scope.loginUser;
         $scope.messages = [];
@@ -261,7 +261,7 @@ angular.module('Myapp', ['ionic'])
             var UserObject = Parse.Object.extend( 'User2' );
 
             var targetUser = new UserObject();
-            targetUser.id = $routeParams.uid; // 特定のユーザーとのやりとりを検索
+            targetUser.id = $stateParams.uid; // 特定のユーザーとのやりとりを検索
 
             var queryFrom = new Parse.Query( MessageObject );
             queryFrom.equalTo( 'from', $scope.loginUser );    // 自分から
