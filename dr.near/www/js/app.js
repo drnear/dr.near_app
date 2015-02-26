@@ -23,10 +23,15 @@ angular.module('Myapp', ['ionic'])
 })
 .config(function($stateProvider, $urlRouterProvider) {
     $stateProvider
+        .state('intro', {
+            url: '/',
+            templateUrl: 'intro.html',
+            controller: 'introController'
+          })
         .state('login1', {
             url: '/login',
-            templateUrl: 'login1.html'
-
+            templateUrl: 'login1.html',
+            controller: 'loginController'
         })
         .state('signup1', {
             url: '/signup',
@@ -59,7 +64,7 @@ angular.module('Myapp', ['ionic'])
             templateUrl: 'home.html'
         });
         // if none of the above states are matched, use this as the fallback
-      $urlRouterProvider.otherwise('/messages');
+      $urlRouterProvider.otherwise('/home');
 })
 .run( function(){
     var UserObject = Parse.Object.extend( 'User2' );
@@ -206,6 +211,24 @@ angular.module('Myapp', ['ionic'])
             },
            ];
         } ] )
+.controller('introController', function($scope, $state, $ionicSlideBoxDelegate) {
+ 
+  // Called to navigate to the main app
+  $scope.startApp = function() {
+    $state.go('home');
+  };
+  $scope.next = function() {
+    $ionicSlideBoxDelegate.next();
+  };
+  $scope.previous = function() {
+    $ionicSlideBoxDelegate.previous();
+  };
+
+  // Called each time the slide changes
+  $scope.slideChanged = function(index) {
+    $scope.slideIndex = index;
+  };
+})
 .controller( 'MessagesController', [ '$scope', '$location', 'LoginUser', function( $scope, $location, LoginUser ) {
         $scope.loginUser;
         $scope.messages  = [];
