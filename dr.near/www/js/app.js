@@ -59,10 +59,16 @@ angular.module('Myapp', ['ionic'])
             url: '/page16',
             templateUrl: 'page16.html'
           })
+        .state('menu', {
+            url: "/side",
+            abstract: true,
+            templateUrl: "side-menu.html"
+        })
         .state('home', {
-            url: '/home',
-            templateUrl: 'home.html'
-        });
+          url: '/home',
+          templateUrl: 'home.html',
+          controller: 'MainController'
+        })
         // if none of the above states are matched, use this as the fallback
       $urlRouterProvider.otherwise('/home');
 })
