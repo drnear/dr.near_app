@@ -4,9 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 angular.module('Myapp', ['ionic'])
-.run( function(){
-    Parse.initialize("9gKD3uVKGnAYKcQqFMpTjSqRFkYgnzZWrK9XRBic", "sNgRKL57Gc2BI1resCzLQjM0mpymjq663Xu93o1e");
-})
+
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -24,7 +22,7 @@ angular.module('Myapp', ['ionic'])
 .config(function($stateProvider, $urlRouterProvider) {
     $stateProvider
         .state('intro', {
-            url: '/',
+            url: '/intro',
             templateUrl: 'intro.html',
             controller: 'introController'
           })
@@ -65,12 +63,12 @@ angular.module('Myapp', ['ionic'])
             templateUrl: "side-menu.html"
         })
         .state('home', {
-          url: '/home',
+          url: '/',
           templateUrl: 'home.html',
           controller: 'MainController'
         })
         // if none of the above states are matched, use this as the fallback
-      $urlRouterProvider.otherwise('/home');
+      $urlRouterProvider.otherwise('/');
 })
 .run( function(){
     var UserObject = Parse.Object.extend( 'User2' );
@@ -218,7 +216,7 @@ angular.module('Myapp', ['ionic'])
            ];
         } ] )
 .controller('introController', function($scope, $state, $ionicSlideBoxDelegate) {
- 
+  console.log("Hello");
   // Called to navigate to the main app
   $scope.startApp = function() {
     $state.go('home');
