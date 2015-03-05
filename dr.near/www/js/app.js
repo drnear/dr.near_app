@@ -4,17 +4,21 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 angular.module('Myapp', ['ionic'])
-
+ 
 .run(function($ionicPlatform) {
+ 
+        (function(d, s, id){
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
   $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
     if(window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
     }
     if(window.StatusBar) {
-      // Set the statusbar to use the default style, tweak this to
-      // remove the status bar on iOS or change it to use white instead of dark colors.
       StatusBar.styleDefault();
     }
   });
@@ -24,12 +28,12 @@ angular.module('Myapp', ['ionic'])
         .state('intro', {
             url: '/intro',
             templateUrl: 'intro.html',
-            controller: 'introController'
+            controller: 'IntroController'
           })
         .state('login1', {
             url: '/login',
             templateUrl: 'login1.html',
-            controller: 'loginController'
+            controller: 'LoginController'
         })
         .state('signup1', {
             url: '/signup',
@@ -68,7 +72,7 @@ angular.module('Myapp', ['ionic'])
           controller: 'MainController'
         })
         // if none of the above states are matched, use this as the fallback
-      $urlRouterProvider.otherwise('/');
+      $urlRouterProvider.otherwise('/login');
 })
 .run( function(){
     var UserObject = Parse.Object.extend( 'User2' );
@@ -215,7 +219,7 @@ angular.module('Myapp', ['ionic'])
             },
            ];
         } ] )
-.controller('introController', function($scope, $state, $ionicSlideBoxDelegate) {
+.controller('IntroController', function($scope, $state, $ionicSlideBoxDelegate) {
   console.log("Hello");
   // Called to navigate to the main app
   $scope.startApp = function() {
@@ -233,6 +237,48 @@ angular.module('Myapp', ['ionic'])
     $scope.slideIndex = index;
   };
 })
+.controller( 'LoginController', function( $scope, $location ) {
+        $scope.user  = {};
+        $scope.fbLogin = function() {
+            Parse.FacebookUtils.logIn(null, {
+                success: function( user ) {
+                    if (!user.existed()) {
+                        alert("User signed up and logged in through Facebook!");
+                    }
+                    else {
+                        alert("User logged in through Facebook!");
+                    }
+
+                    $scope.$apply( function(){ $scope.user = user; });
+                },
+                error: function(user, error) {
+                    alert("User cancelled the Facebook login or did not fully authorize.");
+                }
+            });
+            var facebookAuthData = {
+
+            "id": result.id+"",
+            "access_token": result["accessToken"],
+            "expiration_date": result["expirationDate"].slice(0, -1).replace("+", ".")+"Z"
+            }
+                        
+            Parse.FacebookUtils.logIn(facebookAuthData, {
+
+            success: function(_user) {
+                console.log("User is logged into Parse");
+            },
+
+            error: function(error1, error2){
+                console.log("Unable to create/login to as Facebook user");
+                console.log("  ERROR1 = "+JSON.stringify(error1));
+                console.log("  ERROR2 = "+JSON.stringify(error2));
+            }
+            });
+        };
+        $scope.logout = function() {
+            $location.path( '/logout' );
+        };
+    })
 .controller( 'MessagesController', [ '$scope', '$location', 'LoginUser', function( $scope, $location, LoginUser ) {
         $scope.loginUser;
         $scope.messages  = [];
