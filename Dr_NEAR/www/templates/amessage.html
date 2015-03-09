@@ -1,0 +1,14 @@
+<ion-view title="Amessage">
+<ion-nav-bar class="bar-positive">
+</ion-nav-bar>
+<ion-content class="padding" start-y="120">
+<ol class="messages">
+<li ng-repeat="msg in messages" 
+ng-bind-html="msg.object.get('content')">
+</li>
+</ol>
+</ion-content>
+<ion-footer-bar class="bar-frosted">
+<button class="button button-clear button-positive" ng-click="add()">Add Message</button>
+</ion-footer-bar>
+</ion-view>
