@@ -49,7 +49,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
   })
   .state('amessage1', {
     url: '/amessage/:uid',
-    templateUrl: 'amessage.html',
+    templateUrl: 'templates/amessage.html',
     controller: 'AmessageCtrl'
   })
   .state('disease1', {

@@ -18,34 +18,6 @@ angular.module('starter.controllers', ['Myapp.services'])
     $scope.slideIndex = index;
   };
 })
-.controller('LoginCtrl', function( $scope, $location ) {
-        $scope.user  = {};
-        $scope.fbLogin = function() {
-            var myExpDate = new Date();
-            myExpDate.setMonth( myExpDate.getMonth( ) + 2 );
-            myExpDate = myExpDate.toISOString();
-            var facebookAuthData = {
-            "id": result.id+"",
-            "access_token": result["accessToken"],
-            "expiration_date": result["expirationDate"].slice(0, -1).replace("+", ".")+"Z"
-            }
-        Parse.FacebookUtils.logIn(facebookAuthData, {
-
-        success: function(_user) {
-            console.log("User is logged into Parse");
-        },
-
-        error: function(error1, error2){
-            console.log("Unable to create/login to as Facebook user");
-            console.log("  ERROR1 = "+JSON.stringify(error1));
-            console.log("  ERROR2 = "+JSON.stringify(error2));
-        }
-        });
-        };
-        $scope.logout = function() {
-            $location.path( '/logout' );
-        };
-    })
 .controller( 'MessagesCtrl', [ '$scope', '$location', 'LoginUser', function( $scope, $location, LoginUser ) {
         $scope.loginUser;
         $scope.messages  = [];
@@ -170,7 +142,82 @@ angular.module('starter.controllers', ['Myapp.services'])
         }
     });
 })
-.controller( 'MainCtrl',function($scope, $ionicModal, $timeout){
+.controller( 'SignupCtrl', function( $scope, $location ) {
+        Parse.User.logOut();
+
+        $scope.username = '';
+        $scope.password = '';
+        $scope.email    = '';
+        $scope.error    = '';
+
+        $scope.signup = function() {
+            var user = new Parse.User();
+            user.set( 'username', $scope.username );
+            user.set( 'password', $scope.password );
+            if ( $scope.email ) {
+                user.set( 'email', $scope.email );
+            };
+            user.signUp( null, {
+                success: function( user ) {
+                    $scope.$apply( function(){
+                        $scope.username = '';
+                        $scope.password = '';
+                        $scope.email    = '';
+                        $scope.error    = '';
+
+                        $location.path( '/' );
+                    });
+                },
+                error  : function( user, error ) {
+                    $scope.$apply( function(){
+                        $scope.error = error.message;
+                    });
+                }
+            });
+        };
+
+        $scope.back = function () {
+            $location.path('/');
+        };
+    })
+.controller( 'LoginCtrl', function( $scope, $location ) {
+    Parse.User.logOut();
+
+    $scope.username = '';
+    $scope.password = '';
+    $scope.error    = '';
+
+    $scope.login = function() {
+        Parse.User.logIn( $scope.username, $scope.password, {
+            success: function( user ) {
+                $scope.$apply( function(){
+                    $scope.username = '';
+                    $scope.password = '';
+                    $scope.error    = '';
+
+                    $location.path( '/' );
+                });
+            },
+            error: function( user, error ) {
+                $scope.$apply( function(){
+                    $scope.error = error.message;
+                });
+            }
+        });
+    };
+
+    $scope.back = function () {
+        $location.path('/');
+    };
+})
+.controller( 'MainCtrl',function($scope, $ionicModal, $timeout, $location){
+  $scope.signup = function() {
+      $location.path( '/signup' );
+  };
+  $scope.logout = function() {
+      Parse.User.logOut();
+      $scope.user = Parse.User.current();
+  };
   $scope.loginData = {};
 
   // Create the login modal that we will use later
@@ -212,66 +259,66 @@ angular.module('starter.controllers', ['Myapp.services'])
         },
         {scope: 'email,publish_actions'});
   }
-    $scope.users = [
-    { 
-      name : "Nakagawa Shintaro", 
-      position : "patient",
-      diseases : "Hand-Schuller-Christain", 
-      medicine :"Grivec"},
-    ];
-    $scope.timelines = [
-    { 
-      title: "medicine", 
-      comment:"I'm not much better,and there is a little hope of recovery",
-      userphoto :"user photo"}
-    ];
-    $scope.diseases = [ 
-    { name: 'Distal Myopathy', 
-      medicines: [ 
-        { name: 'medicine1', 
-          users: [ 
-          { name: 'userA' }, 
-          { name: 'userB' }, 
-          { name: 'userC'} 
-          ] 
-        },
-        { name: 'medicine2', 
-          users: [ 
-          { name: 'userD' }, 
-          { name: 'userE' } 
-          ] 
-        },
-        { name: 'medicine3', 
-          users: [ { name: 'userF' } 
-          ] 
-        },
-        { name: 'medicine4',
-          users: [ { name: 'userG' } 
-          ] 
-        },
-        { name: 'medicine5', 
-          users: [ { name: 'userH' } 
-          ] 
-        } 
-      ] 
-    },
-
-    { name: 'Hand-Schuller-Christain disease', 
-      medicines: [ 
-      { name: 'medicine6', 
-          users: [ { name: 'userI' } ] 
-        }]  
-    },
-    { name: 'muscular dystrophy',
-      medicines:[ 
-      { name: 'medicine7', 
-       users: [ { name: 'userJ' }]
+  $scope.users = [
+  { 
+    name : "Nakagawa Shintaro", 
+    position : "patient",
+    diseases : "Hand-Schuller-Christain", 
+    medicine :"Grivec"},
+  ];
+  $scope.timelines = [
+  { 
+    title: "medicine", 
+    comment:"I'm not much better,and there is a little hope of recovery",
+    userphoto :"user photo"}
+  ];
+  $scope.diseases = [ 
+  { name: 'Distal Myopathy', 
+    medicines: [ 
+      { name: 'medicine1', 
+        users: [ 
+        { name: 'userA' }, 
+        { name: 'userB' }, 
+        { name: 'userC'} 
+        ] 
       },
-      { name: 'medicine8', 
-       users: [ { name: 'userK' }] 
-       },
-      { name: 'medicine9', 
-        users: [ { name: 'userL' }]
-      }]},
-    ]}
+      { name: 'medicine2', 
+        users: [ 
+        { name: 'userD' }, 
+        { name: 'userE' } 
+        ] 
+      },
+      { name: 'medicine3', 
+        users: [ { name: 'userF' } 
+        ] 
+      },
+      { name: 'medicine4',
+        users: [ { name: 'userG' } 
+        ] 
+      },
+      { name: 'medicine5', 
+        users: [ { name: 'userH' } 
+        ] 
+      } 
+    ] 
+  },
+
+  { name: 'Hand-Schuller-Christain disease', 
+    medicines: [ 
+    { name: 'medicine6', 
+        users: [ { name: 'userI' } ] 
+      }]  
+  },
+  { name: 'muscular dystrophy',
+    medicines:[ 
+    { name: 'medicine7', 
+     users: [ { name: 'userJ' }]
+    },
+    { name: 'medicine8', 
+     users: [ { name: 'userK' }] 
+     },
+    { name: 'medicine9', 
+      users: [ { name: 'userL' }]
+    }]},
+  ]}
   )

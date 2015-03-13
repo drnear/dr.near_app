@@ -1,19 +1,22 @@
 <ion-view title="Login">
     <ion-content padding="true" class="has-header">
-    <form>
+    <div class="alert alert-danger" ng-if="error != ''">{{ error }}</div>
+    <form ng-submit="login()">
         <div class="spacer" style="height: 40px;"></div>
         <ion-list>
             <label class="item item-input">
-            <input type="text" placeholder="Mail address">
+            <input type="text" placeholder="Mail address" ng-model="email">
             </label>
+
             <label class="item item-input">
-            <input type="password" placeholder="Password">
+            <input type="password" placeholder="Password" ng-model="password">
             </label>
-            <button class="button button-block button-light" ng-click="mailLogin()">Login with Mail</button>
+
+            <button class="button button-block button-light" type="submit" value="LogIn">Login with Mail</button>
         </ion-list>
-        <button class="button button-block button-positive" ng-click="fbLogin()">
-        Login with Facebook</button>
-        <a href="#/signup" class="button button-positive button-clear button-block">Or create an account</a>
+            <button class="button button-block button-positive" ng-click="fbLogin()">
+            Login with Facebook</button>
+            <button class="button button-positive button-clear button-block"ng-click="signup()">Or create an account</a>
     </form>
     </ion-content>
 </ion-view>
