@@ -7,7 +7,7 @@
 angular.module('starter', ['ionic', 'starter.controllers'])
 
 .run(function($ionicPlatform) {
-  Parse.initialize("zdGmHmuiyBWHOxEOsAefcEDor9qCBw851vqfRnlN", "AvMXEKGuFsDq8HjDJadcIZF0Ma0F7QfcmsjZkh2G")
+  Parse.initialize()
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -22,16 +22,9 @@ angular.module('starter', ['ionic', 'starter.controllers'])
 })
 
 .config(function($stateProvider, $urlRouterProvider) {
-  openFB.init({appId: '1408454196125854'});
-  
-  $stateProvider
+  openFB.init({appId: });
 
   $stateProvider
-  .state('intro', {
-    url: '/intro',
-    templateUrl: 'templates/intro.html',
-    controller: 'IntroCtrl'
-  })
   .state('login1', {
     url: '/login',
     templateUrl: 'templates/login.html',
