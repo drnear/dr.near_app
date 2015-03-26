@@ -1,23 +1,5 @@
 angular.module('starter.controllers', ['Myapp.services'])
 
-.controller('IntroCtrl', function($scope, $state, $ionicSlideBoxDelegate) {
-  console.log("Hello");
-  // Called to navigate to the main app
-  $scope.startApp = function() {
-    $state.go('home');
-  };
-  $scope.next = function() {
-    $ionicSlideBoxDelegate.next();
-  };
-  $scope.previous = function() {
-    $ionicSlideBoxDelegate.previous();
-  };
-
-  // Called each time the slide changes
-  $scope.slideChanged = function(index) {
-    $scope.slideIndex = index;
-  };
-})
 .controller( 'MessagesCtrl', [ '$scope', '$location', 'LoginUser', function( $scope, $location, LoginUser ) {
         $scope.loginUser;
         $scope.messages  = [];
@@ -142,7 +124,7 @@ angular.module('starter.controllers', ['Myapp.services'])
         }
     });
 })
-.controller( 'SignupCtrl', function( $scope, $location ) {
+.controller( 'SignupCtrl', function( $scope, $location, $ionicModal) {
         Parse.User.logOut();
 
         $scope.username = '';
@@ -175,9 +157,49 @@ angular.module('starter.controllers', ['Myapp.services'])
                 }
             });
         };
+        $ionicModal.fromTemplateUrl('templates/login.html', {
+          scope: $scope
+        }).then(function(modal) {
+          $scope.modal = modal;
+        });
 
+          // Triggered in the login modal to close it
+        $scope.closeLogin = function() {
+          $scope.modal.hide();
+        };
+
+        // Open the login modal
+        $scope.login = function() {
+          $scope.modal.show();
+        };
+
+        // Perform the login action when the user submits the login form
+        $scope.doLogin = function() {
+          console.log('Doing login', $scope.loginData);
+
+          // Simulate a login delay. Remove this and replace with your login
+          // code if using a login system
+          $timeout(function() {
+            $scope.closeLogin();
+          }, 1000);
+        };
+        $scope.fbLogin = function() {
+          openFB.login(
+              function(response) {
+                  if (response.status === 'connected') {
+                      console.log('Facebook login succeeded');
+                      $scope.closeLogin();
+                      $location.path('/main');
+
+                  } else {
+                      alert('Facebook login failed');
+                  }
+              },
+              {scope: 'email,publish_actions'});
+        }
         $scope.back = function () {
-            $location.path('/');
+            $location.path('/main');
+
         };
     })
 .controller( 'LoginCtrl', function( $scope, $location ) {
@@ -210,7 +232,23 @@ angular.module('starter.controllers', ['Myapp.services'])
         $location.path('/');
     };
 })
-.controller( 'MainCtrl',function($scope, $ionicModal, $timeout, $location){
+.controller( 'MainCtrl',function($scope, $state, $ionicSlideBoxDelegate, $ionicModal, $timeout, $location){
+  console.log("Hello");
+  // Called to navigate to the main app
+  $scope.startApp = function() {
+    $location.path('/signup');
+  };
+  $scope.next = function() {
+    $ionicSlideBoxDelegate.next();
+  };
+  $scope.previous = function() {
+    $ionicSlideBoxDelegate.previous();
+  };
+
+  // Called each time the slide changes
+  $scope.slideChanged = function(index) {
+    $scope.slideIndex = index;
+  };
   $scope.signup = function() {
       $location.path( '/signup' );
   };
