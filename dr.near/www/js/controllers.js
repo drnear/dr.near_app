@@ -126,7 +126,6 @@ angular.module('starter.controllers', ['Myapp.services'])
 })
 .controller( 'SignupCtrl', function( $scope, $location, $ionicModal) {
         Parse.User.logOut();
-
         $scope.username = '';
         $scope.password = '';
         $scope.email    = '';
