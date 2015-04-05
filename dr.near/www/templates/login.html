@@ -1,15 +1,15 @@
 <ion-view title="Login">
     <ion-content padding="true" class="has-header">
     <div class="alert alert-danger" ng-if="error != ''">{{ error }}</div>
-    <form ng-submit="login()">
+    <form ng-submit="login(credentials)">
         <div class="spacer" style="height: 40px;"></div>
         <ion-list>
             <label class="item item-input">
-            <input type="text" placeholder="Mail address" ng-model="email">
+            <input type="text" placeholder="Mail address" ng-model="credentials.email">
             </label>
 
             <label class="item item-input">
-            <input type="password" placeholder="Password" ng-model="password">
+            <input type="password" placeholder="Password" ng-model="credentials.password">
             </label>
 
             <button class="button button-block button-light" type="submit" value="LogIn">Login with Mail</button>

@@ -201,7 +201,7 @@ angular.module('starter.controllers', ['Myapp.services'])
 
         };
     })
-.controller( 'LoginCtrl', function( $scope, $location ) {
+.controller( 'LoginCtrl', function( $scope, $location) {
     Parse.User.logOut();
 
     $scope.username = '';
@@ -226,18 +226,18 @@ angular.module('starter.controllers', ['Myapp.services'])
             }
         });
     };
+    $scope.signup = function () {
+        $location.path('/signup');
 
+    };
     $scope.back = function () {
         $location.path('/');
     };
 })
 .controller( 'MainCtrl',function($scope, $state, $ionicSlideBoxDelegate, 
-                $ionicModal, $timeout, $location, Session, AUTH_EVENTS){
+                $ionicModal, $timeout, $location, Session){
   // Called to navigate to the main app
-  $scope.callSession = function (Session){
-    notify(sessions);
-  }
-  console.log(angular.element('*[ng-app]').injector().get('Session'))
+  console.log(Session)
   $scope.startApp = function() {
     $location.path('/signup');
   };
