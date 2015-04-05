@@ -138,24 +138,28 @@ angular.module('starter.controllers', ['Myapp.services'])
             if ( $scope.email ) {
                 user.set( 'email', $scope.email );
             };
-            user.signUp( null, {
-                success: function( user ) {
-                    $scope.$apply( function(){
-                        $scope.username = '';
-                        $scope.password = '';
-                        $scope.email    = '';
-                        $scope.error    = '';
+            console.log(user);
+            user.signUp(null, {
+              success: function(user) {
+                                $scope.$apply( function(){
+                                    $scope.username = '';
+                                    $scope.password = '';
+                                    $scope.email    = '';
+                                    $scope.error    = '';
 
-                        $location.path( '/' );
-                    });
-                },
-                error  : function( user, error ) {
-                    $scope.$apply( function(){
-                        $scope.error = error.message;
-                    });
-                }
+                                    $location.path( '/main' );
+                                });
+              },
+              error: function(user, error) {
+                // Show the error message somewhere and let the user try again.
+                                    $scope.$timeout( function(){
+                                    $scope.error = error.message;
+                                }, 100);
+                alert("Error: " + error.code + " " + error.message);
+              }
             });
         };
+
         $ionicModal.fromTemplateUrl('templates/login.html', {
           scope: $scope
         }).then(function(modal) {
