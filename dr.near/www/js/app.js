@@ -9,20 +9,6 @@ if ( typeof( APP_CONFIG ) == 'undefined' ) {
 }
 
 angular.module('starter', ['ionic', 'starter.controllers'])
-.run(function($ionicPlatform) {
-  Parse.initialize( APP_CONFIG.PARSE_APP_KEY, APP_CONFIG.PARSE_APP_SECRET )
-  $ionicPlatform.ready(function() {
-    // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-    // for form inputs)
-    if (window.cordova && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-    }
-    if (window.StatusBar) {
-      // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
-    }
-  });
-})
 
 .config(function($stateProvider, $urlRouterProvider) {
   openFB.init({appId: APP_CONFIG.FACEBOOK_APP_ID});

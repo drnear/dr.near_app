@@ -9,6 +9,32 @@ angular.module('Myapp.services',['ngResource'])
 	    return query.first().then( function( result ) 
 	      { return result.fetch();  } );
 	})
-	.factory('Session', function ($resource) {
+	.factory('Sessions', function ($resource) {
     return $resource('http://localhost:5000/sessions/:sessionId');
-	});
+	})
+  .service('Session', function () {
+     this.create = function (sessionId, userId, userRole) {
+       this.id = sessionId;
+       this.userId = userId;
+       this.userRole = userRole;
+     };
+     this.destroy = function () {
+       this.id = null;
+       this.userId = null;
+       this.userRole = null;
+     };
+  })
+  .constant('AUTH_EVENTS', {
+     loginSuccess: 'auth-login-success',
+     loginFailed: 'auth-login-failed',
+     logoutSuccess: 'auth-logout-success',
+     sessionTimeout: 'auth-session-timeout',
+     notAuthenticated: 'auth-not-authenticated',
+     notAuthorized: 'auth-not-authorized'
+   })
+  .constant('USER_ROLES', {
+     all: '*',
+     admin: 'admin',
+     editor: 'editor',
+     guest: 'guest'
+   })

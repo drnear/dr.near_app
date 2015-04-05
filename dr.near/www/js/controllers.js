@@ -231,9 +231,13 @@ angular.module('starter.controllers', ['Myapp.services'])
         $location.path('/');
     };
 })
-.controller( 'MainCtrl',function($scope, $state, $ionicSlideBoxDelegate, $ionicModal, $timeout, $location){
-  console.log("Hello");
+.controller( 'MainCtrl',function($scope, $state, $ionicSlideBoxDelegate, 
+                $ionicModal, $timeout, $location, Session, AUTH_EVENTS){
   // Called to navigate to the main app
+  $scope.callSession = function (Session){
+    notify(sessions);
+  }
+  console.log(angular.element('*[ng-app]').injector().get('Session'))
   $scope.startApp = function() {
     $location.path('/signup');
   };
