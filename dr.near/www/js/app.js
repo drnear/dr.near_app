@@ -32,7 +32,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     templateUrl: 'templates/login.html',
     controller: 'LoginCtrl'
   })
-  .state('signup1', {
+  .state('signup', {
     url: '/signup',
     templateUrl: 'templates/signup.html',
     controller: 'SignupCtrl'

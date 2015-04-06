@@ -124,7 +124,7 @@ angular.module('starter.controllers', ['Myapp.services'])
         }
     });
 })
-.controller( 'SignupCtrl', function( $scope, $location, $ionicModal) {
+.controller( 'SignupCtrl', function( $scope, $location, $ionicModal ,$timeout) {
         Parse.User.logOut();
         $scope.username = '';
         $scope.password = '';
@@ -138,7 +138,6 @@ angular.module('starter.controllers', ['Myapp.services'])
             if ( $scope.email ) {
                 user.set( 'email', $scope.email );
             };
-            console.log(user);
             user.signUp(null, {
               success: function(user) {
                                 $scope.$apply( function(){
@@ -146,13 +145,13 @@ angular.module('starter.controllers', ['Myapp.services'])
                                     $scope.password = '';
                                     $scope.email    = '';
                                     $scope.error    = '';
-
+                                         console.log(user);
                                     $location.path( '/main' );
                                 });
               },
               error: function(user, error) {
                 // Show the error message somewhere and let the user try again.
-                                    $scope.$timeout( function(){
+                                    $scope.$setTimeout( function(){
                                     $scope.error = error.message;
                                 }, 100);
                 alert("Error: " + error.code + " " + error.message);
