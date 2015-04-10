@@ -106,7 +106,7 @@ angular.module('starter.controllers', ['Myapp.services'])
         function($scope){
             $scope.medicines = [
             { 
-              company : "Novartis Pharma", 
+              company : "Novartis Pharl", 
               medicine : "Glivec", },
             ];
 }])
@@ -124,20 +124,16 @@ angular.module('starter.controllers', ['Myapp.services'])
         }
     });
 })
-.controller( 'SignupCtrl', function( $scope, $location, $ionicModal ,$timeout) {
+.controller( 'SignupCtrl', function( $scope, $state, $ionicSlideBoxDelegate, 
+               $ionicModal, $timeout, $location, Session ) {
         Parse.User.logOut();
-        $scope.username = '';
-        $scope.password = '';
-        $scope.email    = '';
-        $scope.error    = '';
+        $scope.user = { name: '', password: '', email: '' };
 
         $scope.signup = function() {
             var user = new Parse.User();
-            user.set( 'username', $scope.username );
-            user.set( 'password', $scope.password );
-            if ( $scope.email ) {
-                user.set( 'email', $scope.email );
-            };
+            user.set( 'username', $scope.user.name );
+            user.set( 'email', $scope.user.email );
+            user.set( 'password', $scope.user.password );
             user.signUp(null, {
               success: function(user) {
                                 $scope.$apply( function(){
@@ -151,7 +147,7 @@ angular.module('starter.controllers', ['Myapp.services'])
               },
               error: function(user, error) {
                 // Show the error message somewhere and let the user try again.
-                                    $scope.$setTimeout( function(){
+                                    $timeout( function(){
                                     $scope.error = error.message;
                                 }, 100);
                 alert("Error: " + error.code + " " + error.message);
@@ -172,7 +168,7 @@ angular.module('starter.controllers', ['Myapp.services'])
 
         // Open the login modal
         $scope.login = function() {
-          $scope.modal.show();
+          $location.path('/login');
         };
 
         // Perform the login action when the user submits the login form
@@ -200,23 +196,21 @@ angular.module('starter.controllers', ['Myapp.services'])
               {scope: 'email,publish_actions'});
         }
         $scope.back = function () {
-            $location.path('/main');
+            $location.path('/');
 
         };
     })
 .controller( 'LoginCtrl', function( $scope, $location) {
     Parse.User.logOut();
-
-    $scope.username = '';
-    $scope.password = '';
-    $scope.error    = '';
+    $scope.user = {  username: '', password: ''};
 
     $scope.login = function() {
-        Parse.User.logIn( $scope.username, $scope.password, {
+      console.log($scope.user);
+        Parse.User.logIn( $scope.user.username, $scope.user.password, {
             success: function( user ) {
                 $scope.$apply( function(){
-                    $scope.username = '';
-                    $scope.password = '';
+                    $scope.user.username = '';
+                    $scope.user.password = '';
                     $scope.error    = '';
 
                     $location.path( '/' );
@@ -278,7 +272,7 @@ angular.module('starter.controllers', ['Myapp.services'])
 
   // Open the login modal
   $scope.login = function() {
-    $scope.modal.show();
+    $location.path('/login')
   };
 
   // Perform the login action when the user submits the login form
