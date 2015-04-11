@@ -38,3 +38,29 @@ angular.module('Myapp.services',['ngResource'])
      editor: 'editor',
      guest: 'guest'
    })
+
+  .factory('AuthService', function ($http, Session) {
+    var authService = {};
+     
+    authService.login = function( credentials ) {
+           Parse.User.logIn( credentials.username, credentials.password, {
+               success: function( user ) {
+                   Session.create( user );
+                   return user;
+               }
+           });
+       };
+    authService.isAuthenticated = function () {
+      return !!Session.userId;
+    };
+   
+    authService.isAuthorized = function (authorizedRoles) {
+      if (!angular.isArray(authorizedRoles)) {
+        authorizedRoles = [authorizedRoles];
+      }
+      return (authService.isAuthenticated() &&
+        authorizedRoles.indexOf(Session.userRole) !== -1);
+    };
+   
+    return authService;
+  })

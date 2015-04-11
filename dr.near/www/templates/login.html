@@ -3,16 +3,16 @@
     </ion-nav-bar>
     <ion-content padding="true" scroll="false" class="has-header">
         <div class="alert alert-danger" ng-if="error != ''">{{ error }}</div>
-        <form ng-submit="login()">
+        <form ng-submit="login(credentials)">
             <div class="spacer" style="height: 0px;"></div>
             <ion-list>
                 <label class="item item-input">
                     <span class="input-label">Username</span>
-                    <input type="text" placeholder="" ng-model="user.username" >
+                    <input type="text" placeholder="" ng-model="credentials.username" >
                 </label>
                 <label class="item item-input">
                     <span class="input-label">Password</span>
-                    <input type="text" placeholder="" ng-model="user.password" >
+                    <input type="text" placeholder="" ng-model="credentials.password" >
                 </label>
                 <button class="button button-block button-light" type="submit" value="LogIn">Login with Email</button>
             </ion-list>

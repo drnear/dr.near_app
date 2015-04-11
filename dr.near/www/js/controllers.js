@@ -200,28 +200,16 @@ angular.module('starter.controllers', ['Myapp.services'])
 
         };
     })
-.controller( 'LoginCtrl', function( $scope, $location) {
+.controller( 'LoginCtrl', function( $scope, $location, AUTH_EVENTS, AuthService) {
     Parse.User.logOut();
-    $scope.user = {  username: '', password: ''};
-
-    $scope.login = function() {
-      console.log($scope.user);
-        Parse.User.logIn( $scope.user.username, $scope.user.password, {
-            success: function( user ) {
-                $scope.$apply( function(){
-                    $scope.user.username = '';
-                    $scope.user.password = '';
-                    $scope.error    = '';
-
-                    $location.path( '/' );
-                });
-            },
-            error: function( user, error ) {
-                $scope.$apply( function(){
-                    $scope.error = error.message;
-                });
-            }
-        });
+    $scope.credentials = {  username: '', password: ''};
+    $scope.login = function (credentials) {
+      AuthService.login(credentials).then(function (user) {
+        $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+        $scope.setCurrentUser(user);
+      }, function () {
+        $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+      });
     };
     $scope.signup = function () {
         $location.path('/signup');
@@ -234,7 +222,6 @@ angular.module('starter.controllers', ['Myapp.services'])
 .controller( 'MainCtrl',function($scope, $state, $ionicSlideBoxDelegate, 
                 $ionicModal, $timeout, $location, Session){
   // Called to navigate to the main app
-  console.log(Session)
   $scope.startApp = function() {
     $location.path('/signup');
   };
