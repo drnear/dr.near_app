@@ -39,10 +39,10 @@ angular.module('Myapp.services',['ngResource'])
      guest: 'guest'
    })
 
-  .factory('AuthService', function ($http, Session) {
+  .factory('AuthService', function ($http, Session ) {
     var authService = {};
-     
     authService.login = function( credentials ) {
+           return Parse.User.logIn( credentials.username, credentials.password );
            Parse.User.logIn( credentials.username, credentials.password, {
                success: function( user ) {
                    Session.create( user );

@@ -200,7 +200,7 @@ angular.module('starter.controllers', ['Myapp.services'])
 
         };
     })
-.controller( 'LoginCtrl', function( $scope, $location, AUTH_EVENTS, AuthService) {
+.controller( 'LoginCtrl', function( $scope, $location, AUTH_EVENTS, AuthService ,$rootScope) {
     Parse.User.logOut();
     $scope.credentials = {  username: '', password: ''};
     $scope.login = function (credentials) {
@@ -347,3 +347,14 @@ angular.module('starter.controllers', ['Myapp.services'])
     }]},
   ]}
   )
+.controller('ApplicationCtrl', function ($scope,
+                                               USER_ROLES,
+                                               AuthService) {
+  $scope.currentUser = null;
+  $scope.userRoles = USER_ROLES;
+  $scope.isAuthorized = AuthService.isAuthorized;
+ 
+  $scope.setCurrentUser = function (user) {
+    $scope.currentUser = user;
+  };
+})
