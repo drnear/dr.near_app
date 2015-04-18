@@ -211,6 +211,10 @@ angular.module('starter.controllers', ['Myapp.services'])
         $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
       });
     };
+    $rootScope.$on( AUTH_EVENTS.loginSuccess, function(ev) {
+      console.log( 'AUTH_EVENTS.loginSuccess', ev );
+      $location.path('/main');
+    });
     $scope.signup = function () {
         $location.path('/signup');
 
@@ -242,9 +246,9 @@ angular.module('starter.controllers', ['Myapp.services'])
   $scope.logout = function() {
       Parse.User.logOut();
       $scope.user = Parse.User.current();
+      $location.path ('/login');
   };
   $scope.loginData = {};
-
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
     scope: $scope
