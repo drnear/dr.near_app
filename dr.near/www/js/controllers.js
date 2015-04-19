@@ -211,10 +211,10 @@ angular.module('starter.controllers', ['Myapp.services'])
         $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
       });
     };
-    $rootScope.$on( AUTH_EVENTS.loginSuccess, function(callback) {
-      console.log( 'AUTH_EVENTS.loginSuccess', callback);
-      $location.path('/main');
-      return $timeout(callback, 100);
+    $rootScope.$on( AUTH_EVENTS.loginSuccess, function(){
+          $timeout(function() {
+            $location.path('/main');
+          },100);
     });
     $ionicModal.fromTemplateUrl('templates/login.html', {
       scope: $scope
