@@ -200,7 +200,7 @@ angular.module('starter.controllers', ['Myapp.services'])
 
         };
     })
-.controller( 'LoginCtrl', function( $scope, $location, AUTH_EVENTS, AuthService ,$rootScope) {
+.controller( 'LoginCtrl', function( $scope, $location, $ionicModal, AUTH_EVENTS, AuthService ,$rootScope, $timeout) {
     Parse.User.logOut();
     $scope.credentials = {  username: '', password: ''};
     $scope.login = function (credentials) {
@@ -211,10 +211,44 @@ angular.module('starter.controllers', ['Myapp.services'])
         $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
       });
     };
-    $rootScope.$on( AUTH_EVENTS.loginSuccess, function(ev) {
-      console.log( 'AUTH_EVENTS.loginSuccess', ev );
+    $rootScope.$on( AUTH_EVENTS.loginSuccess, function(callback) {
+      console.log( 'AUTH_EVENTS.loginSuccess', callback);
       $location.path('/main');
+      return $timeout(callback, 100);
     });
+    $ionicModal.fromTemplateUrl('templates/login.html', {
+      scope: $scope
+    }).then(function(modal) {
+      $scope.modal = modal;
+    });
+    $scope.fbLogin = function(credentials) {
+      openFB.login(
+          function(response, user) {
+              if (response.status === 'connected') {
+                  console.log('Facebook login succeeded');
+                  $scope.closeLogin();
+                  $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+                  $scope.setCurrentUser(user);
+                  $location.path('/main');
+              } else {
+                  $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+                  alert('Facebook login failed');
+              }
+          },
+          {scope: 'email,publish_actions'});
+    };
+    $scope.closeLogin = function() {
+      $scope.modal.hide();
+    };
+    $scope.doLogin = function() {
+      console.log('Doing login', $scope.loginData);
+
+      // Simulate a login delay. Remove this and replace with your login
+      // code if using a login system
+      $timeout(function() {
+        $scope.closeLogin();
+      }, 1000);
+    };
     $scope.signup = function () {
         $location.path('/signup');
 
