@@ -385,6 +385,134 @@ angular.module('starter.controllers', ['Myapp.services'])
     }]},
   ]}
   )
+.controller( 'IntroCtrl',function($scope, $state, $ionicSlideBoxDelegate, 
+                $ionicModal, $timeout, $location, Session){
+  // Called to navigate to the main app
+  $scope.startApp = function() {
+    $location.path('/signup');
+  };
+  $scope.next = function() {
+    $ionicSlideBoxDelegate.next();
+  };
+  $scope.previous = function() {
+    $ionicSlideBoxDelegate.previous();
+  };
+
+  // Called each time the slide changes
+  $scope.slideChanged = function(index) {
+    $scope.slideIndex = index;
+  };
+  $scope.signup = function() {
+      $location.path( '/signup' );
+  };
+  $scope.logout = function() {
+      Parse.User.logOut();
+      $scope.user = Parse.User.current();
+      $location.path ('/login');
+  };
+  $scope.loginData = {};
+  // Create the login modal that we will use later
+  $ionicModal.fromTemplateUrl('templates/login.html', {
+    scope: $scope
+  }).then(function(modal) {
+    $scope.modal = modal;
+  });
+
+  // Triggered in the login modal to close it
+  $scope.closeLogin = function() {
+    $scope.modal.hide();
+  };
+
+  // Open the login modal
+  $scope.login = function() {
+    $location.path('/login')
+  };
+
+  // Perform the login action when the user submits the login form
+  $scope.doLogin = function() {
+    console.log('Doing login', $scope.loginData);
+
+    // Simulate a login delay. Remove this and replace with your login
+    // code if using a login system
+    $timeout(function() {
+      $scope.closeLogin();
+    }, 1000);
+  };
+  $scope.fbLogin = function() {
+    openFB.login(
+        function(response) {
+            if (response.status === 'connected') {
+                console.log('Facebook login succeeded');
+                $scope.closeLogin();
+            } else {
+                alert('Facebook login failed');
+            }
+        },
+        {scope: 'email,publish_actions'});
+  }
+  $scope.users = [
+  { 
+    name : "Nakagawa Shintaro", 
+    position : "patient",
+    diseases : "Hand-Schuller-Christain", 
+    medicine :"Grivec"},
+  ];
+  $scope.timelines = [
+  { 
+    title: "medicine", 
+    comment:"I'm not much better,and there is a little hope of recovery",
+    userphoto :"user photo"}
+  ];
+  $scope.diseases = [ 
+  { name: 'Distal Myopathy', 
+    medicines: [ 
+      { name: 'medicine1', 
+        users: [ 
+        { name: 'userA' }, 
+        { name: 'userB' }, 
+        { name: 'userC'} 
+        ] 
+      },
+      { name: 'medicine2', 
+        users: [ 
+        { name: 'userD' }, 
+        { name: 'userE' } 
+        ] 
+      },
+      { name: 'medicine3', 
+        users: [ { name: 'userF' } 
+        ] 
+      },
+      { name: 'medicine4',
+        users: [ { name: 'userG' } 
+        ] 
+      },
+      { name: 'medicine5', 
+        users: [ { name: 'userH' } 
+        ] 
+      } 
+    ] 
+  },
+
+  { name: 'Hand-Schuller-Christain disease', 
+    medicines: [ 
+    { name: 'medicine6', 
+        users: [ { name: 'userI' } ] 
+      }]  
+  },
+  { name: 'muscular dystrophy',
+    medicines:[ 
+    { name: 'medicine7', 
+     users: [ { name: 'userJ' }]
+    },
+    { name: 'medicine8', 
+     users: [ { name: 'userK' }] 
+     },
+    { name: 'medicine9', 
+      users: [ { name: 'userL' }]
+    }]},
+  ]}
+  )
 .controller('ApplicationCtrl', function ($scope,
                                                USER_ROLES,
                                                AuthService) {

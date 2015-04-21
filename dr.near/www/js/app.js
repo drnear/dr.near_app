@@ -23,9 +23,8 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     }
   });
 })
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider,  USER_ROLES) {
   openFB.init({appId: APP_CONFIG.FACEBOOK_APP_ID});
-
   $stateProvider
   .state('login1', {
     url: '/login',
@@ -68,6 +67,13 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     templateUrl: 'templates/main.html',
     controller: 'MainCtrl'
   })
+  .state('dashboard', {
+    url: '/dashboard',
+    templateUrl: 'templates/dashboard.html',
+    data: {
+      authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor]
+    }
+  })
   .state('profile', {
     url: "/profile",
     views: {
@@ -76,6 +82,11 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         controller: 'ProfileCtrl'
       }
     }
+  })
+  .state('intro', {
+    url:"/intro",
+      templateUrl: "templates/intro.html",
+      controller:'IntroCtrl'
   })
 
         // if none of the above states are matched, use this as the fallback
