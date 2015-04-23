@@ -26,7 +26,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
 .config(function($stateProvider, $urlRouterProvider,  USER_ROLES) {
   openFB.init({appId: APP_CONFIG.FACEBOOK_APP_ID});
   $stateProvider
-  .state('login1', {
+  .state('login', {
     url: '/login',
     templateUrl: 'templates/login.html',
     controller: 'LoginCtrl'
@@ -66,13 +66,6 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     url: '/',
     templateUrl: 'templates/main.html',
     controller: 'MainCtrl'
-  })
-  .state('dashboard', {
-    url: '/dashboard',
-    templateUrl: 'templates/dashboard.html',
-    data: {
-      authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor]
-    }
   })
   .state('profile', {
     url: "/profile",
