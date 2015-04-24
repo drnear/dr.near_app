@@ -23,13 +23,66 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     }
   });
 })
-.config(function($stateProvider, $urlRouterProvider,  USER_ROLES) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, USER_ROLES) {
   openFB.init({appId: APP_CONFIG.FACEBOOK_APP_ID});
+  $ionicConfigProvider.views.maxCache(0);
   $stateProvider
-  .state('login', {
+  .state('app', {
+    url: '/app',
+    templateUrl: 'templates/menu.html',
+    controller: 'AppCtrl'
+  })
+  .state('app.activity',{
+    url: '/activity',
+    views: {
+      'menuContent':{
+        templateUrl: 'templates/activity.html',
+        controller: 'ActivityCtrl'
+      },
+      'fabContent': {
+        template:'<button id="fab-activity" class="button button-fab button-fab-bottom-right button-balanced"><i class="icon ion-plus"></i></button>',
+        controller: function ($timeout) {
+                    $timeout(function () {
+                        document.getElementById('fab-activity').classList.toggle('on');
+                    }, 200);
+                }
+      }
+    }
+  })
+  .state('app.alert', {
+      url: '/alert',
+      views: {
+          'menuContent': {
+              templateUrl: 'templates/alert.html',
+              controller: 'AlertCtrl'
+          }
+      }
+  })
+  .state('app.search', {
+      url: '/search',
+      views: {
+          'menuContent': {
+              templateUrl: 'templates/search.html',
+              controller: 'SearchCtrl'
+          }
+      }
+  })
+  .state('app.login', {
     url: '/login',
-    templateUrl: 'templates/login.html',
-    controller: 'LoginCtrl'
+    views:{
+        'menuContent': {
+            templateUrl: 'templates/login.html',
+            controller: 'LoginCtrl'
+        },
+        'fabContent': {
+          template:'<button id="fab-activity" class="button button-fab button-fab-bottom-right button-balanced"><i class="icon ion-plus"></i></button>',
+          controller: function ($timeout) {
+                      $timeout(function () {
+                          document.getElementById('fab-activity').classList.toggle('on');
+                      }, 200);
+                  }
+        }
+    }
   })
   .state('signup', {
     url: '/signup',
@@ -56,17 +109,6 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     templateUrl: 'templates/medicine.html',
     controller: 'MedicineCtrl'
   })
-  .state('sidemenu', {
-    url: "/side",
-    abstract: true,
-    templateUrl: "templates/sidemenu.html",
-    controller: 'SidemenuCtrl'
-  })
-  .state('main', {
-    url: '/',
-    templateUrl: 'templates/main.html',
-    controller: 'MainCtrl'
-  })
   .state('profile', {
     url: "/profile",
     views: {
@@ -83,5 +125,5 @@ angular.module('starter', ['ionic', 'starter.controllers'])
   })
 
         // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/');
+  $urlRouterProvider.otherwise('/app/activity');
 })

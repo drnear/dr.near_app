@@ -1,5 +1,89 @@
 angular.module('starter.controllers', ['Myapp.services'])
 
+.controller('ActivityCtrl', function($scope, $stateParams, $timeout) {
+    $scope.$parent.showHeader();
+    $scope.$parent.clearFabs();
+    $scope.isExpanded = true;
+    $scope.$parent.setExpanded(true);
+    $scope.$parent.setHeaderFab('right');
+
+    $timeout(function() {
+        ionic.material.motion.fadeSlideIn({
+            selector: '.animate-fade-slide-in .item'
+        });
+    }, 200);
+
+        // Delay expansion
+    $timeout(function() {
+        $scope.isExpanded = true;
+        $scope.$parent.setExpanded(true);
+    }, 300);
+
+    // Set Motion
+    ionic.material.motion.fadeSlideInRight();
+
+
+    // Activate ink for controller
+    ionic.material.ink.displayEffect();
+})
+.controller('AlertCtrl', function($scope, $stateParams, $timeout) {
+    // Set Header
+    $scope.$parent.showHeader();
+    $scope.$parent.clearFabs();
+
+    // Delay expansion
+    $timeout(function() {
+        $scope.isExpanded = true;
+        $scope.$parent.setExpanded(true);
+    }, 300);
+
+    // Set Motion
+    ionic.material.motion.fadeSlideInRight();
+
+    // Set Ink
+    ionic.material.ink.displayEffect();
+})
+.controller( 'SearchCtrl', function($scope,$stateParams, $timeout){
+  $scope.$parent.showHeader();
+  $scope.$parent.clearFabs();
+
+  $timeout(function() {
+      $scope.isExpanded = true;
+      $scope.$parent.setExpanded(true);
+  }, 300);
+     // Set Motion
+    ionic.material.motion.fadeSlideInRight();
+
+    // Set Ink
+    ionic.material.ink.displayEffect();
+
+  $scope.data = {};
+    
+  $scope.items = [
+    { price: '$4.99', text: 'Pizza' },
+    { price: '$2.99', text: 'Burger' },
+    { price: '$3.99', text: 'Pasta' },
+        { price: '$2.99', text: 'Burger' },
+    { price: '$3.99', text: 'Pasta' },
+        { price: '$2.99', text: 'Burger' },
+    { price: '$3.99', text: 'Pasta' },
+        { price: '$2.99', text: 'Burger' },
+    { price: '$3.99', text: 'Pasta' },
+        { price: '$2.99', text: 'Burger' },
+    { price: '$3.99', text: 'Pasta' },
+        { price: '$2.99', text: 'Burger' },
+    { price: '$3.99', text: 'Pasta' },
+        { price: '$2.99', text: 'Burger' },
+    { price: '$3.99', text: 'Pasta' },
+        { price: '$2.99', text: 'Burger' },
+    { price: '$3.99', text: 'Pasta' },
+        { price: '$2.99', text: 'Burger' },
+    { price: '$3.99', text: 'Pasta' },
+  ];
+  $scope.clearSearch = function() {
+  $scope.data.searchQuery = '';
+  };
+})
 .controller( 'MessagesCtrl', [ '$scope', '$location', 'LoginUser', function( $scope, $location, LoginUser ) {
         $scope.loginUser;
         $scope.messages  = [];
@@ -200,8 +284,14 @@ angular.module('starter.controllers', ['Myapp.services'])
 
         };
     })
-.controller( 'LoginCtrl', function( $scope, $location, $ionicModal, AUTH_EVENTS, AuthService ,$rootScope, $timeout) {
+.controller( 'LoginCtrl', function( $scope, $location, $ionicModal, $rootScope, $timeout, $stateParams, AUTH_EVENTS, AuthService) {
     Parse.User.logOut();
+    $scope.$parent.showHeader();
+    $scope.$parent.clearFabs();
+    $scope.isExpanded = true;
+    $scope.$parent.setExpanded(true);
+ 
+
     $scope.credentials = {  username: '', password: ''};
     $scope.login = function (credentials) {
       AuthService.login(credentials).then(function (user) {
@@ -257,71 +347,93 @@ angular.module('starter.controllers', ['Myapp.services'])
         $location.path('/');
     };
 })
-.controller( 'MainCtrl',function($scope, $state, $ionicSlideBoxDelegate, 
-                $ionicModal, $timeout, $location, Session){
-  // Called to navigate to the main app
-  $scope.startApp = function() {
-    $location.path('/signup');
-  };
-  $scope.next = function() {
-    $ionicSlideBoxDelegate.next();
-  };
-  $scope.previous = function() {
-    $ionicSlideBoxDelegate.previous();
-  };
+.controller( 'AppCtrl',function($scope, $state, $ionicSlideBoxDelegate, 
+                $ionicModal, $ionicPopover, $timeout, $location, Session){
 
-  // Called each time the slide changes
-  $scope.slideChanged = function(index) {
-    $scope.slideIndex = index;
-  };
-  $scope.signup = function() {
-      $location.path( '/signup' );
-  };
-  $scope.logout = function() {
-      Parse.User.logOut();
-      $scope.user = Parse.User.current();
-      $location.path ('/login');
-  };
   $scope.loginData = {};
+  $scope.isExpanded = false;
+  $scope.hasHeaderFabLeft = false;
+  $scope.hasHeaderFabRight = false;
   // Create the login modal that we will use later
-  $ionicModal.fromTemplateUrl('templates/login.html', {
-    scope: $scope
-  }).then(function(modal) {
-    $scope.modal = modal;
-  });
 
-  // Triggered in the login modal to close it
-  $scope.closeLogin = function() {
-    $scope.modal.hide();
-  };
+  var navIcons = document.getElementsByClassName('ion-navicon');
+  for (var i = 0; i < navIcons.length; i++) {
+      navIcons.addEventListener('click', function() {
+          this.classList.toggle('active');
+      });
+  }
+
 
   // Open the login modal
   $scope.login = function() {
     $location.path('/login')
   };
 
-  // Perform the login action when the user submits the login form
-  $scope.doLogin = function() {
-    console.log('Doing login', $scope.loginData);
-
-    // Simulate a login delay. Remove this and replace with your login
-    // code if using a login system
-    $timeout(function() {
-      $scope.closeLogin();
-    }, 1000);
+  $scope.hideNavBar = function() {
+      document.getElementsByTagName('ion-nav-bar')[0].style.display = 'none';
   };
-  $scope.fbLogin = function() {
-    openFB.login(
-        function(response) {
-            if (response.status === 'connected') {
-                console.log('Facebook login succeeded');
-                $scope.closeLogin();
-            } else {
-                alert('Facebook login failed');
-            }
-        },
-        {scope: 'email,publish_actions'});
-  }
+
+  $scope.showNavBar = function() {
+      document.getElementsByTagName('ion-nav-bar')[0].style.display = 'block';
+  };
+
+  $scope.noHeader = function() {
+      var content = document.getElementsByTagName('ion-content');
+      for (var i = 0; i < content.length; i++) {
+          if (content[i].classList.contains('has-header')) {
+              content[i].classList.toggle('has-header');
+          }
+      }
+  };
+
+  $scope.setExpanded = function(bool) {
+      $scope.isExpanded = bool;
+  };
+
+  $scope.setHeaderFab = function(location) {
+      var hasHeaderFabLeft = false;
+      var hasHeaderFabRight = false;
+
+      switch (location) {
+          case 'left':
+              hasHeaderFabLeft = true;
+              break;
+          case 'right':
+              hasHeaderFabRight = true;
+              break;
+      }
+
+      $scope.hasHeaderFabLeft = hasHeaderFabLeft;
+      $scope.hasHeaderFabRight = hasHeaderFabRight;
+  };
+
+  $scope.hasHeader = function() {
+      var content = document.getElementsByTagName('ion-content');
+      for (var i = 0; i < content.length; i++) {
+          if (!content[i].classList.contains('has-header')) {
+              content[i].classList.toggle('has-header');
+          }
+      }
+
+  };
+
+  $scope.hideHeader = function() {
+      $scope.hideNavBar();
+      $scope.noHeader();
+  };
+
+  $scope.showHeader = function() {
+      $scope.showNavBar();
+      $scope.hasHeader();
+  };
+
+  $scope.clearFabs = function() {
+      var fabs = document.getElementsByClassName('button-fab');
+      if (fabs.length && fabs.length > 1) {
+          fabs[0].remove();
+      }
+  };
+
   $scope.users = [
   { 
     name : "Nakagawa Shintaro", 
