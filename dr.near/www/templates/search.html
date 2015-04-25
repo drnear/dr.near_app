@@ -1,22 +1,16 @@
 <ion-view title="Search">
 <ion-content start-y="55"
-             padding="true"
-             has-tabs="true"
-             has-header="true" ng-class="{expanded:isExpanded}" class="animate-fade-slide-in">
-      <div id="search-box" class="bar bar-header item-input-inset">
-        <div class="item-input-wrapper">
-          <i class="icon ion-ios7-search placeholder-icon"></i>
-          <input type="search" placeholder="Search" ng-model="data.searchQuery">
-          <i class="clear-search icon ion-ios7-close-empty" ng-click="clearSearch()"></i>
-        </div>
-        <button class="button button-flat button-calm-100">
-          Cancel
-        </button>
-      </div>
-
-      <ul class="list">
-        <li class="list-item" ng-repeat="item in items">{{item.text}}</li>
-      </ul>
-
+padding="true"
+has-tabs="true"
+has-header="true" ng-class="{expanded:isExpanded}" class="animate-fade-slide-in">
+<div class="bar bar-header item-input-inset">
+  <label class="item-input-wrapper">
+    <i class="icon ion-search placeholder-icon"></i>
+    <input type="search" placeholder="Search">
+  </label>
+</div>
+<div class="list animate-fade-slide-in-right">
+  <li class="list-item" ng-repeat="item in items">{{item.text}}</li>
+</div>
 </ion-content>
 </ion-view>

@@ -1,26 +1,27 @@
-<ion-view title="Intro">
-    <ion-nav-bar class="bar-stable">
+<ion-view title="WELCOME #fam">
+    <ion-nav-bar class="bar-positive">
         <ion-nav-buttons side="left">
-          <button class="button button-positive button-clear no-animation"ng-click="startApp()" ng-show="!slideIndex">
-          Skip Intro
+          <button class="button button-clear button-positive"ng-click="startApp()" ng-show="!slideIndex">
+          Skip
           </button>
           <button class="button button-positive button-clear no-animation"
           ng-click="previous()" ng-show="slideIndex > 0">
-          Previous Slide
+          ←
           </button>
         </ion-nav-buttons>
 
         <ion-nav-buttons side="right"> 
           <button class="button button-positive button-clear no-animation"
-          ng-click="next()" ng-show="slideIndex != 2">
-          Next
+          ng-click="next()" ng-show="slideIndex != 2" >
+          →
           </button>
           <button class="button button-positive button-clear no-animation"
           ng-click="startApp()" ng-show="slideIndex == 2">
-          Start using MyApp
+          Join
           </button>
         </ion-nav-buttons>
     </ion-nav-bar>
+    <ion-content ng-class="{expanded:isExpanded}">
     <ion-slide-box on-slide-changed="slideChanged(index)">
         <ion-slide>
           <h3>Thank you for choosing the Awesome App!</h3>
@@ -53,4 +54,5 @@
           </p>
         </ion-slide>
     </ion-slide-box>
+    </ion-content>
 </ion-view>

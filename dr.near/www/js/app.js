@@ -84,6 +84,15 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         }
     }
   })
+  .state('app.intro', {
+    url:'/intro',
+    views: {
+      'menuContent':{
+      templateUrl: "templates/intro.html",
+      controller:'IntroCtrl'
+      }
+  }
+  })
   .state('signup', {
     url: '/signup',
     templateUrl: 'templates/signup.html',
@@ -118,12 +127,6 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     }
   })
-  .state('intro', {
-    url:"/intro",
-      templateUrl: "templates/intro.html",
-      controller:'IntroCtrl'
-  })
-
         // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/activity');
 })

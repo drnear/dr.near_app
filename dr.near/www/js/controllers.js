@@ -497,8 +497,45 @@ angular.module('starter.controllers', ['Myapp.services'])
     }]},
   ]}
   )
-.controller( 'IntroCtrl',function($scope, $state, $ionicSlideBoxDelegate, 
+.controller( 'IntroCtrl',function($scope, $state, $stateParams, $ionicSlideBoxDelegate, 
                 $ionicModal, $timeout, $location, Session){
+    $scope.$parent.clearFabs();
+    $scope.isExpanded = false;
+    $scope.$parent.setExpanded(true);
+
+
+    $timeout(function() {
+        ionic.material.motion.fadeSlideIn({
+            selector: '.animate-fade-slide-in .item'
+        });
+    }, 200);
+
+        // Delay expansion
+    $timeout(function() {
+        $scope.isExpanded = true;
+        $scope.$parent.setExpanded(true);
+    }, 300);
+
+    // Set Motion
+    ionic.material.motion.fadeSlideInRight();
+
+
+    // Activate ink for controller
+    ionic.material.ink.displayEffect();
+
+    // Delay expansion
+    $timeout(function() {
+        $scope.isExpanded = true;
+        $scope.$parent.setExpanded(true);
+    }, 300);
+
+    // Set Motion
+    ionic.material.motion.fadeSlideInRight();
+
+    // Set Ink
+    ionic.material.ink.displayEffect();
+
+
   // Called to navigate to the main app
   $scope.startApp = function() {
     $location.path('/signup');
