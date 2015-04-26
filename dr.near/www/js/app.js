@@ -67,6 +67,37 @@ angular.module('starter', ['ionic', 'starter.controllers'])
           }
       }
   })
+  .state('signup', {
+    url: '/signup',
+    templateUrl: 'templates/signup.html',
+    controller: 'SignupCtrl'
+  })
+  .state('app.intro', {
+    url:'/intro',
+    views: {
+      'menuContent':{
+      templateUrl: "templates/intro.html",
+      controller:'IntroCtrl'
+      }
+  }
+  })
+    .state('app.setting',{
+    url: '/setting',
+    views: {
+      'menuContent':{
+        templateUrl: 'templates/setting.html',
+        controller: 'SettingCtrl'
+      },
+      'fabContent': {
+        template:'<button id="fab-setting" class="button button-fab button-fab-bottom-right button-balanced"><i class="icon ion-plus"></i></button>',
+        controller: function ($timeout) {
+                    $timeout(function () {
+                        document.getElementById('fab-setting').classList.toggle('on');
+                    }, 200);
+                }
+      }
+    }
+  })
   .state('app.login', {
     url: '/login',
     views:{
@@ -84,24 +115,39 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         }
     }
   })
-  .state('app.intro', {
-    url:'/intro',
+  .state('app.profile', {
+    url: "/profile",
     views: {
-      'menuContent':{
-      templateUrl: "templates/intro.html",
-      controller:'IntroCtrl'
+      'menuContent': {
+        templateUrl: "templates/profile.html",
+        controller: 'ProfileCtrl'
+      },
+      'fabContent': {
+        template:'<button id="fab-activity" class="button button-fab button-fab-bottom-right button-balanced"><i class="icon ion-plus"></i></button>',
+        controller: function ($timeout) {
+                    $timeout(function () {
+                        document.getElementById('fab-activity').classList.toggle('on');
+                    }, 200);
+                }
       }
-  }
-  })
-  .state('signup', {
-    url: '/signup',
-    templateUrl: 'templates/signup.html',
-    controller: 'SignupCtrl'
-  })
-  .state('messages1', {
+    }
+})
+  .state('app.messages', {
     url: '/messages',
-    templateUrl: 'templates/messages.html',
-    controller: 'MessagesCtrl'
+    views: {
+      'menuContent': {
+        templateUrl: "templates/messages.html",
+        controller: 'MessagesCtrl'
+      },
+      'fabContent': {
+        template:'<button id="fab-activity" class="button button-fab button-fab-bottom-right button-balanced"><i class="icon ion-plus"></i></button>',
+        controller: function ($timeout) {
+                    $timeout(function () {
+                        document.getElementById('fab-activity').classList.toggle('on');
+                    }, 200);
+                }
+      }
+    }
   })
   .state('amessage1', {
     url: '/amessage/:uid',
@@ -117,15 +163,6 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     url: '/medicine',
     templateUrl: 'templates/medicine.html',
     controller: 'MedicineCtrl'
-  })
-  .state('profile', {
-    url: "/profile",
-    views: {
-      'mainContent': {
-        templateUrl: "templates/profile.html",
-        controller: 'ProfileCtrl'
-      }
-    }
   })
         // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/activity');

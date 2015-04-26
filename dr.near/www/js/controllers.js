@@ -43,6 +43,23 @@ angular.module('starter.controllers', ['Myapp.services'])
     // Set Ink
     ionic.material.ink.displayEffect();
 })
+.controller('SettingCtrl', function($scope, $stateParams, $timeout) {
+    // Set Header
+    $scope.$parent.showHeader();
+    $scope.$parent.clearFabs();
+
+    // Delay expansion
+    $timeout(function() {
+        $scope.isExpanded = true;
+        $scope.$parent.setExpanded(true);
+    }, 300);
+
+    // Set Motion
+    ionic.material.motion.fadeSlideInRight();
+
+    // Set Ink
+    ionic.material.ink.displayEffect();
+})
 .controller( 'SearchCtrl', function($scope,$stateParams, $timeout){
   $scope.$parent.showHeader();
   $scope.$parent.clearFabs();
@@ -87,6 +104,7 @@ angular.module('starter.controllers', ['Myapp.services'])
 .controller( 'MessagesCtrl', [ '$scope', '$location', 'LoginUser', function( $scope, $location, LoginUser ) {
         $scope.loginUser;
         $scope.messages  = [];
+
         LoginUser.then( function( user ) {
             $scope.loginUser = user;
 
@@ -97,7 +115,7 @@ angular.module('starter.controllers', ['Myapp.services'])
             var queryTo = new Parse.Query( MessageObject );
             queryTo.equalTo( 'to', $scope.loginUser );
 
-            var query = Parse.Query.or( queryFrom, queryTo );
+            var query = Parse.Query.or( queryFrom, queryTo ); // from が自分か、 to が自分のものを検索
             query.limit( 50 );
             query.descending( 'createdAt' );
             query.include( 'from' ); // from を一緒に取り出す
@@ -122,11 +140,27 @@ angular.module('starter.controllers', ['Myapp.services'])
                 });
             });
         });
+        var UserObject = Parse.Object.extend('User2')
+        var user0 = new UserObject();
+        user0.set( 'name', 'user0' );
+        user0.save();
+
+        var user1 = new UserObject();
+        user1.set( 'name', 'user1' );
+        user1.save();
+
+        var MessageObject = Parse.Object.extend( 'Message2' );
+        var message0 = new MessageObject();
+        message0.save({
+        'from': user0,
+        'to': user1,
+        'content':"I'm gonna be there."
+        })
         $scope.detail = function( msg ) {
             var user = (msg.type == 'sent') ? msg.object.get('to') : msg.object.get('from');
-            $location.path( '/amessage/' + user.id );
+            $location.path( '/message/' + user.id );
         };
-    }])           
+    }])
 .controller('AmessageCtrl', [ '$scope', '$location', '$stateParams', 'LoginUser', function( $scope, $location, $stateParams, LoginUser ) {
         console.log("hello");
         $scope.loginUser;
@@ -194,8 +228,29 @@ angular.module('starter.controllers', ['Myapp.services'])
               medicine : "Glivec", },
             ];
 }])
-.controller('ProfileCtrl', function($scope) {
-    openFB.api({
+.controller('ProfileCtrl', function($scope, $stateParams, $timeout) {
+    $scope.$parent.showHeader();
+    $scope.$parent.clearFabs();
+    $scope.isExpanded = false;
+    $scope.$parent.setExpanded(false);
+    $scope.$parent.setHeaderFab(false);
+
+    // Set Motion
+    $timeout(function() {
+        ionic.material.motion.slideUp({
+            selector: '.slide-up'
+        });
+    }, 300);
+
+    $timeout(function() {
+        ionic.material.motion.fadeSlideInRight({
+            startVelocity: 2000
+        });
+    }, 800);
+    // Set Ink
+    ionic.material.ink.displayEffect();
+/*  
+openFB.api({
         path: '/me',
         params: {fields: 'id,name'},
         success: function(user) {
@@ -207,6 +262,7 @@ angular.module('starter.controllers', ['Myapp.services'])
             alert('Facebook error: ' + error.error_description);
         }
     });
+*/
 })
 .controller( 'SignupCtrl', function( $scope, $state, $ionicSlideBoxDelegate, 
                $ionicModal, $timeout, $location, Session ) {
@@ -433,7 +489,6 @@ angular.module('starter.controllers', ['Myapp.services'])
           fabs[0].remove();
       }
   };
-
   $scope.users = [
   { 
     name : "Nakagawa Shintaro", 
