@@ -30,7 +30,10 @@ angular.module('starter', ['ionic', 'starter.controllers'])
   .state('app', {
     url: '/app',
     templateUrl: 'templates/menu.html',
-    controller: 'AppCtrl'
+    controller: 'AppCtrl',
+    data: {
+      authorizedRoles: [USER_ROLES.all]
+    }
   })
   .state('app.activity',{
     url: '/activity',
@@ -40,10 +43,35 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         controller: 'ActivityCtrl'
       },
       'fabContent': {
-        template:'<button id="fab-activity" class="button button-fab button-fab-bottom-right button-balanced"><i class="icon ion-plus"></i></button>',
+        template:'<button id="fab-activity" class="button button-fab button-fab-bottom-right button-balanced" ui-sref="app.post" ><i class="icon ion-plus"></i></button>',
+        controller: function ($scope,$timeout,$ionicPopup) {
+              $scope.showPopup = function() {
+              var alertPopup = $ionicPopup.alert({
+                  title: 'Dont eat that!',
+                  template: 'It might taste good'
+              }); 
+              $timeout(function () {
+                  document.getElementById('fab-activity').classList.toggle('on');
+              },200);
+                }}
+      }
+    },
+    data: {
+      authorizedRoles: [USER_ROLES.all]
+    }
+  })
+  .state('app.post',{
+    url: '/post',
+    views: {
+      'menuContent':{
+        templateUrl: 'templates/post.html',
+        controller: 'PostCtrl'
+      },
+      'fabContent': {
+        template:'<button id="fab-post" class="button button-fab button-fab-bottom-right button-balanced" ><i class="icon ion-plus"></i></button>',
         controller: function ($timeout) {
                     $timeout(function () {
-                        document.getElementById('fab-activity').classList.toggle('on');
+                        document.getElementById('fab-post').classList.toggle('on');
                     }, 200);
                 }
       }
@@ -81,7 +109,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
   }
   })
-    .state('app.setting',{
+  .state('app.setting',{
     url: '/setting',
     views: {
       'menuContent':{
@@ -131,7 +159,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
                 }
       }
     }
-})
+  })
   .state('app.messages', {
     url: '/messages',
     views: {

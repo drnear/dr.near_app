@@ -1,3 +1,5 @@
+<div ng-switch on="currentUser.role">
+<div ng-switch-when="userRoles.all">
 <ion-side-menus enable-menu-with-back-views="true">
   <ion-side-menu-content>
     <ion-nav-bar class="bar-positive" ng-class="{expanded: isExpanded, 'has-header-fab-left': hasHeaderFabLeft, 'has-header-fab-right': hasHeaderFabRight}" align-title="left">
@@ -42,7 +44,8 @@
     </ion-content>
   </ion-side-menu>
 </ion-side-menus>
-
+</div>
+</div>
 <!--
 <ion-view title="Dr.near">
   <ion-side-menus enable-menu-with-back-views="false">

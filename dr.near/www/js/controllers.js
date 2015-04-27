@@ -1,12 +1,50 @@
 angular.module('starter.controllers', ['Myapp.services'])
 
-.controller('ActivityCtrl', function($scope, $stateParams, $timeout) {
+.controller('ActivityCtrl', function($scope, $stateParams, $ionicPopup, $timeout) {
     $scope.$parent.showHeader();
     $scope.$parent.clearFabs();
     $scope.isExpanded = true;
     $scope.$parent.setExpanded(true);
     $scope.$parent.setHeaderFab('right');
 
+    $scope.showPopup = function() {
+      var alertPopup = $ionicPopup.alert({
+      title: 'Dont eat that!',
+      template: 'It might taste good'
+    });
+    }
+    $timeout(function() {
+        ionic.material.motion.fadeSlideIn({
+            selector: '.animate-fade-slide-in .item'
+        });
+    }, 200);
+
+        // Delay expansion
+    $timeout(function() {
+        $scope.isExpanded = true;
+        $scope.$parent.setExpanded(true);
+    }, 300);
+
+    // Set Motion
+    ionic.material.motion.fadeSlideInRight();
+
+
+    // Activate ink for controller
+    ionic.material.ink.displayEffect();
+})
+.controller('PostCtrl', function($scope, $stateParams, $ionicPopup, $timeout) {
+    $scope.$parent.showHeader();
+    $scope.$parent.clearFabs();
+    $scope.isExpanded = true;
+    $scope.$parent.setExpanded(true);
+    $scope.$parent.setHeaderFab('right');
+
+    $scope.showPopup = function() {
+      var alertPopup = $ionicPopup.alert({
+      title: 'Dont eat that!',
+      template: 'It might taste good'
+    });
+    }
     $timeout(function() {
         ionic.material.motion.fadeSlideIn({
             selector: '.animate-fade-slide-in .item'
