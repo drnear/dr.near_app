@@ -30,10 +30,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
   .state('app', {
     url: '/app',
     templateUrl: 'templates/menu.html',
-    controller: 'AppCtrl',
-    data: {
-      authorizedRoles: [USER_ROLES.all]
-    }
+    controller: 'AppCtrl'
   })
   .state('app.activity',{
     url: '/activity',
@@ -55,11 +52,8 @@ angular.module('starter', ['ionic', 'starter.controllers'])
               },200);
                 }}
       }
-    },
-    data: {
-      authorizedRoles: [USER_ROLES.all]
     }
-  })
+      })
   .state('app.post',{
     url: '/post',
     views: {
