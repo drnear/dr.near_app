@@ -4,7 +4,7 @@
 <div class="messageslist">
 	<div class="list">
 		<a ng-repeat="msg in messages"
-		ui-sref="detail( msg )"
+		ng-click="detail( msg )"
 		class="item item-thumbnail-left">
 		<img ng-src="{{ item.image }}">
 		<h2> {{ msg.type == 'sent' ? msg.object.get('to').get('name') : msg.object.get('from').get('name') }}</h2>

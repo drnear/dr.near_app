@@ -365,7 +365,7 @@ openFB.api({
                   if (response.status === 'connected') {
                       console.log('Facebook login succeeded');
                       $scope.closeLogin();
-                      $location.path('/main');
+                      $location.path('/activity');
 
                   } else {
                       alert('Facebook login failed');

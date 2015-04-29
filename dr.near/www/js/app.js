@@ -171,7 +171,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     }
   })
-  .state('amessage1', {
+  .state('amessage', {
     url: '/amessage/:uid',
     templateUrl: 'templates/amessage.html',
     controller: 'AmessageCtrl'
