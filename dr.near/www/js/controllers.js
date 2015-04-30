@@ -1,145 +1,150 @@
 angular.module('starter.controllers', ['Myapp.services'])
+    .controller('ActivityCtrl', function($scope, $stateParams, $ionicPopup, $timeout) {
+        console.log( 'ActivityCtrl' );
+        $scope.$parent.showHeader();
+        $scope.$parent.clearFabs();
+        $scope.isExpanded = true;
+        $scope.$parent.setExpanded(true);
+        $scope.$parent.setHeaderFab('right');
 
-.controller('ActivityCtrl', function($scope, $stateParams, $ionicPopup, $timeout) {
-    $scope.$parent.showHeader();
-    $scope.$parent.clearFabs();
-    $scope.isExpanded = true;
-    $scope.$parent.setExpanded(true);
-    $scope.$parent.setHeaderFab('right');
-
-    $scope.showPopup = function() {
-      var alertPopup = $ionicPopup.alert({
-      title: 'Dont eat that!',
-      template: 'It might taste good'
-    });
-    }
-    $timeout(function() {
-        ionic.material.motion.fadeSlideIn({
-            selector: '.animate-fade-slide-in .item'
-        });
-    }, 200);
+        $scope.showPopup = function() {
+            var alertPopup = $ionicPopup.alert({
+                title: 'Dont eat that!',
+                template: 'It might taste good'
+            });
+        }
+        $timeout(function() {
+            ionic.material.motion.fadeSlideIn({
+                selector: '.animate-fade-slide-in .item'
+            });
+        }, 200);
 
         // Delay expansion
-    $timeout(function() {
+        $timeout(function() {
+            $scope.isExpanded = true;
+            $scope.$parent.setExpanded(true);
+        }, 300);
+
+        // Set Motion
+        ionic.material.motion.fadeSlideInRight();
+
+
+        // Activate ink for controller
+        ionic.material.ink.displayEffect();
+    })
+    .controller('PostCtrl', function($scope, $stateParams, $ionicPopup, $timeout) {
+        console.log( 'PostCtrl' );
+        $scope.$parent.showHeader();
+        $scope.$parent.clearFabs();
         $scope.isExpanded = true;
         $scope.$parent.setExpanded(true);
-    }, 300);
+        $scope.$parent.setHeaderFab('right');
 
-    // Set Motion
-    ionic.material.motion.fadeSlideInRight();
-
-
-    // Activate ink for controller
-    ionic.material.ink.displayEffect();
-})
-.controller('PostCtrl', function($scope, $stateParams, $ionicPopup, $timeout) {
-    $scope.$parent.showHeader();
-    $scope.$parent.clearFabs();
-    $scope.isExpanded = true;
-    $scope.$parent.setExpanded(true);
-    $scope.$parent.setHeaderFab('right');
-
-    $scope.showPopup = function() {
-      var alertPopup = $ionicPopup.alert({
-      title: 'Dont eat that!',
-      template: 'It might taste good'
-    });
-    }
-    $timeout(function() {
-        ionic.material.motion.fadeSlideIn({
-            selector: '.animate-fade-slide-in .item'
-        });
-    }, 200);
+        $scope.showPopup = function() {
+            var alertPopup = $ionicPopup.alert({
+                title: 'Dont eat that!',
+                template: 'It might taste good'
+            });
+        }
+        $timeout(function() {
+            ionic.material.motion.fadeSlideIn({
+                selector: '.animate-fade-slide-in .item'
+            });
+        }, 200);
 
         // Delay expansion
-    $timeout(function() {
-        $scope.isExpanded = true;
-        $scope.$parent.setExpanded(true);
-    }, 300);
+        $timeout(function() {
+            $scope.isExpanded = true;
+            $scope.$parent.setExpanded(true);
+        }, 300);
 
-    // Set Motion
-    ionic.material.motion.fadeSlideInRight();
+        // Set Motion
+        ionic.material.motion.fadeSlideInRight();
 
 
-    // Activate ink for controller
-    ionic.material.ink.displayEffect();
-})
-.controller('AlertCtrl', function($scope, $stateParams, $timeout) {
-    // Set Header
-    $scope.$parent.showHeader();
-    $scope.$parent.clearFabs();
+        // Activate ink for controller
+        ionic.material.ink.displayEffect();
+    })
+    .controller('AlertCtrl', function($scope, $stateParams, $timeout) {
+        console.log( 'AlertCtrl' );
+        // Set Header
+        $scope.$parent.showHeader();
+        $scope.$parent.clearFabs();
 
-    // Delay expansion
-    $timeout(function() {
-        $scope.isExpanded = true;
-        $scope.$parent.setExpanded(true);
-    }, 300);
+        // Delay expansion
+        $timeout(function() {
+            $scope.isExpanded = true;
+            $scope.$parent.setExpanded(true);
+        }, 300);
 
-    // Set Motion
-    ionic.material.motion.fadeSlideInRight();
+        // Set Motion
+        ionic.material.motion.fadeSlideInRight();
 
-    // Set Ink
-    ionic.material.ink.displayEffect();
-})
-.controller('SettingCtrl', function($scope, $stateParams, $timeout) {
-    // Set Header
-    $scope.$parent.showHeader();
-    $scope.$parent.clearFabs();
+        // Set Ink
+        ionic.material.ink.displayEffect();
+    })
+    .controller('SettingCtrl', function($scope, $stateParams, $timeout) {
+        console.log( 'SettingCtrl' );
+        // Set Header
+        $scope.$parent.showHeader();
+        $scope.$parent.clearFabs();
 
-    // Delay expansion
-    $timeout(function() {
-        $scope.isExpanded = true;
-        $scope.$parent.setExpanded(true);
-    }, 300);
+        // Delay expansion
+        $timeout(function() {
+            $scope.isExpanded = true;
+            $scope.$parent.setExpanded(true);
+        }, 300);
 
-    // Set Motion
-    ionic.material.motion.fadeSlideInRight();
+        // Set Motion
+        ionic.material.motion.fadeSlideInRight();
 
-    // Set Ink
-    ionic.material.ink.displayEffect();
-})
-.controller( 'SearchCtrl', function($scope,$stateParams, $timeout){
-  $scope.$parent.showHeader();
-  $scope.$parent.clearFabs();
+        // Set Ink
+        ionic.material.ink.displayEffect();
+    })
+    .controller( 'SearchCtrl', function($scope,$stateParams, $timeout){
+        console.log( 'SearchCtrl' );
+        $scope.$parent.showHeader();
+        $scope.$parent.clearFabs();
 
-  $timeout(function() {
-      $scope.isExpanded = true;
-      $scope.$parent.setExpanded(true);
-  }, 300);
-     // Set Motion
-    ionic.material.motion.fadeSlideInRight();
+        $timeout(function() {
+            $scope.isExpanded = true;
+            $scope.$parent.setExpanded(true);
+        }, 300);
+        // Set Motion
+        ionic.material.motion.fadeSlideInRight();
 
-    // Set Ink
-    ionic.material.ink.displayEffect();
+        // Set Ink
+        ionic.material.ink.displayEffect();
 
-  $scope.data = {};
-    
-  $scope.items = [
-    { price: '$4.99', text: 'Pizza' },
-    { price: '$2.99', text: 'Burger' },
-    { price: '$3.99', text: 'Pasta' },
-        { price: '$2.99', text: 'Burger' },
-    { price: '$3.99', text: 'Pasta' },
-        { price: '$2.99', text: 'Burger' },
-    { price: '$3.99', text: 'Pasta' },
-        { price: '$2.99', text: 'Burger' },
-    { price: '$3.99', text: 'Pasta' },
-        { price: '$2.99', text: 'Burger' },
-    { price: '$3.99', text: 'Pasta' },
-        { price: '$2.99', text: 'Burger' },
-    { price: '$3.99', text: 'Pasta' },
-        { price: '$2.99', text: 'Burger' },
-    { price: '$3.99', text: 'Pasta' },
-        { price: '$2.99', text: 'Burger' },
-    { price: '$3.99', text: 'Pasta' },
-        { price: '$2.99', text: 'Burger' },
-    { price: '$3.99', text: 'Pasta' },
-  ];
-  $scope.clearSearch = function() {
-  $scope.data.searchQuery = '';
-  };
-})
-.controller( 'MessagesCtrl', [ '$scope', '$location', 'LoginUser', function( $scope, $location, LoginUser ) {
+        $scope.data = {};
+        
+        $scope.items = [
+            { price: '$4.99', text: 'Pizza' },
+            { price: '$2.99', text: 'Burger' },
+            { price: '$3.99', text: 'Pasta' },
+            { price: '$2.99', text: 'Burger' },
+            { price: '$3.99', text: 'Pasta' },
+            { price: '$2.99', text: 'Burger' },
+            { price: '$3.99', text: 'Pasta' },
+            { price: '$2.99', text: 'Burger' },
+            { price: '$3.99', text: 'Pasta' },
+            { price: '$2.99', text: 'Burger' },
+            { price: '$3.99', text: 'Pasta' },
+            { price: '$2.99', text: 'Burger' },
+            { price: '$3.99', text: 'Pasta' },
+            { price: '$2.99', text: 'Burger' },
+            { price: '$3.99', text: 'Pasta' },
+            { price: '$2.99', text: 'Burger' },
+            { price: '$3.99', text: 'Pasta' },
+            { price: '$2.99', text: 'Burger' },
+            { price: '$3.99', text: 'Pasta' },
+        ];
+        $scope.clearSearch = function() {
+            $scope.data.searchQuery = '';
+        };
+    })
+    .controller( 'MessagesCtrl', [ '$scope', '$location', 'LoginUser', function( $scope, $location, LoginUser ) {
+        console.log( 'MessageCtrl' );
         $scope.loginUser;
         $scope.messages  = [];
 
@@ -190,17 +195,17 @@ angular.module('starter.controllers', ['Myapp.services'])
         var MessageObject = Parse.Object.extend( 'Message2' );
         var message0 = new MessageObject();
         message0.save({
-        'from': user0,
-        'to': user1,
-        'content':"I'm gonna be there."
+            'from': user0,
+            'to': user1,
+            'content':"I'm gonna be there."
         })
         $scope.detail = function( msg ) {
             var user = (msg.type == 'sent') ? msg.object.get('to') : msg.object.get('from');
             $location.path( '/message/' + user.id );
         };
     }])
-.controller('AmessageCtrl', [ '$scope', '$location', '$stateParams', 'LoginUser', function( $scope, $location, $stateParams, LoginUser ) {
-        console.log("hello");
+    .controller('AmessageCtrl', [ '$scope', '$location', '$stateParams', 'LoginUser', function( $scope, $location, $stateParams, LoginUser ) {
+        console.log( 'AmessageCtrl' );
         $scope.loginUser;
         $scope.messages = [];
 
@@ -249,61 +254,63 @@ angular.module('starter.controllers', ['Myapp.services'])
             $location.path( '/' );
         };
     }])
-.controller( 'DiseaseCtrl', ['$scope',
-        function($scope){
-            $scope.diseases = [
+    .controller( 'DiseaseCtrl', ['$scope', function($scope){
+        console.log( 'DiseaseCtrl' );
+        $scope.diseases = [
             { 
-              name : "Distal Myopathy", 
-              medicine : "MIDAZOLAM,",
-              photo : "Userphoto", },
-            ];
-        } ] )
-.controller( 'MedicineCtrl', ['$scope',
-        function($scope){
-            $scope.medicines = [
+                name : "Distal Myopathy", 
+                medicine : "MIDAZOLAM,",
+                photo : "Userphoto", },
+        ];
+    } ] )
+    .controller( 'MedicineCtrl', ['$scope', function($scope){
+        console.log( 'MedicineCtrl' );
+        $scope.medicines = [
             { 
-              company : "Novartis Pharl", 
-              medicine : "Glivec", },
-            ];
-}])
-.controller('ProfileCtrl', function($scope, $stateParams, $timeout) {
-    $scope.$parent.showHeader();
-    $scope.$parent.clearFabs();
-    $scope.isExpanded = false;
-    $scope.$parent.setExpanded(false);
-    $scope.$parent.setHeaderFab(false);
+                company : "Novartis Pharl", 
+                medicine : "Glivec", },
+        ];
+    }])
+    .controller('ProfileCtrl', function($scope, $stateParams, $timeout) {
+        console.log( 'ProfileCtrl' );
+        $scope.$parent.showHeader();
+        $scope.$parent.clearFabs();
+        $scope.isExpanded = false;
+        $scope.$parent.setExpanded(false);
+        $scope.$parent.setHeaderFab(false);
 
-    // Set Motion
-    $timeout(function() {
-        ionic.material.motion.slideUp({
-            selector: '.slide-up'
-        });
-    }, 300);
-
-    $timeout(function() {
-        ionic.material.motion.fadeSlideInRight({
-            startVelocity: 2000
-        });
-    }, 800);
-    // Set Ink
-    ionic.material.ink.displayEffect();
-/*  
-openFB.api({
-        path: '/me',
-        params: {fields: 'id,name'},
-        success: function(user) {
-            $scope.$apply(function() {
-                $scope.user = user;
+        // Set Motion
+        $timeout(function() {
+            ionic.material.motion.slideUp({
+                selector: '.slide-up'
             });
-        },
-        error: function(error) {
+        }, 300);
+
+        $timeout(function() {
+            ionic.material.motion.fadeSlideInRight({
+                startVelocity: 2000
+            });
+        }, 800);
+        // Set Ink
+        ionic.material.ink.displayEffect();
+        /*  
+            openFB.api({
+            path: '/me',
+            params: {fields: 'id,name'},
+            success: function(user) {
+            $scope.$apply(function() {
+            $scope.user = user;
+            });
+            },
+            error: function(error) {
             alert('Facebook error: ' + error.error_description);
-        }
-    });
-*/
-})
-.controller( 'SignupCtrl', function( $scope, $state, $ionicSlideBoxDelegate, 
-               $ionicModal, $timeout, $location, Session ) {
+            }
+            });
+        */
+    })
+    .controller( 'SignupCtrl', function( $scope, $state, $ionicSlideBoxDelegate, 
+                                         $ionicModal, $timeout, $location, Session ) {
+        console.log( 'SignupCtrl' );
         Parse.User.logOut();
         $scope.user = { name: '', password: '', email: '' };
 
@@ -313,456 +320,331 @@ openFB.api({
             user.set( 'email', $scope.user.email );
             user.set( 'password', $scope.user.password );
             user.signUp(null, {
-              success: function(user) {
-                                $scope.$apply( function(){
-                                    $scope.username = '';
-                                    $scope.password = '';
-                                    $scope.email    = '';
-                                    $scope.error    = '';
-                                         console.log(user);
-                                    $location.path( '/main' );
-                                });
-              },
-              error: function(user, error) {
-                // Show the error message somewhere and let the user try again.
-                                    $timeout( function(){
-                                    $scope.error = error.message;
-                                }, 100);
-                alert("Error: " + error.code + " " + error.message);
-              }
+                success: function(user) {
+                    $scope.$apply( function(){
+                        $scope.username = '';
+                        $scope.password = '';
+                        $scope.email    = '';
+                        $scope.error    = '';
+                        console.log(user);
+                        $location.path( '/main' );
+                    });
+                },
+                error: function(user, error) {
+                    // Show the error message somewhere and let the user try again.
+                    $timeout( function(){
+                        $scope.error = error.message;
+                    }, 100);
+                    alert("Error: " + error.code + " " + error.message);
+                }
             });
         };
 
         $ionicModal.fromTemplateUrl('templates/login.html', {
-          scope: $scope
+            scope: $scope
         }).then(function(modal) {
-          $scope.modal = modal;
+            $scope.modal = modal;
         });
 
-          // Triggered in the login modal to close it
+        // Triggered in the login modal to close it
         $scope.closeLogin = function() {
-          $scope.modal.hide();
+            $scope.modal.hide();
         };
 
         // Open the login modal
         $scope.login = function() {
-          $location.path('/login');
+            $location.path('/login');
         };
 
         // Perform the login action when the user submits the login form
         $scope.doLogin = function() {
-          console.log('Doing login', $scope.loginData);
+            console.log('Doing login', $scope.loginData);
 
-          // Simulate a login delay. Remove this and replace with your login
-          // code if using a login system
-          $timeout(function() {
-            $scope.closeLogin();
-          }, 1000);
+            // Simulate a login delay. Remove this and replace with your login
+            // code if using a login system
+            $timeout(function() {
+                $scope.closeLogin();
+            }, 1000);
         };
         $scope.fbLogin = function() {
-          openFB.login(
-              function(response) {
-                  if (response.status === 'connected') {
-                      console.log('Facebook login succeeded');
-                      $scope.closeLogin();
-                      $location.path('/activity');
+            openFB.login(
+                function(response) {
+                    if (response.status === 'connected') {
+                        console.log('Facebook login succeeded');
+                        $scope.closeLogin();
+                        $location.path('/activity');
 
-                  } else {
-                      alert('Facebook login failed');
-                  }
-              },
-              {scope: 'email,publish_actions'});
+                    } else {
+                        alert('Facebook login failed');
+                    }
+                },
+                {scope: 'email,publish_actions'});
         }
         $scope.back = function () {
             $location.path('/');
 
         };
     })
-.controller( 'LoginCtrl', function( $scope, $location, $ionicModal, $rootScope, $timeout, $stateParams, AUTH_EVENTS, AuthService) {
-    Parse.User.logOut();
-    $scope.$parent.showHeader();
-    $scope.$parent.clearFabs();
-    $scope.isExpanded = true;
-    $scope.$parent.setExpanded(true);
- 
+    .controller( 'LoginCtrl', function( $scope, $location, $ionicModal, $rootScope, $timeout, $stateParams, AUTH_EVENTS, AuthService) {
+        console.log( 'LoginCtrl' );
+        Parse.User.logOut();
+        $scope.$parent.showHeader();
+        $scope.$parent.clearFabs();
+        $scope.isExpanded = true;
+        $scope.$parent.setExpanded(true);
+        
 
-    $scope.credentials = {  username: '', password: ''};
-    $scope.login = function (credentials) {
-      AuthService.login(credentials).then(function (user) {
-        $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
-        $scope.setCurrentUser(user);
-      }, function () {
-        $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
-      });
-    };
-    $rootScope.$on( AUTH_EVENTS.loginSuccess, function(){
-          $timeout(function() {
-            $location.path('/main');
-          },100);
-    });
-    $ionicModal.fromTemplateUrl('templates/login.html', {
-      scope: $scope
-    }).then(function(modal) {
-      $scope.modal = modal;
-    });
-    $scope.fbLogin = function(credentials) {
-      openFB.login(
-          function(response, user) {
-              if (response.status === 'connected') {
-                  console.log('Facebook login succeeded');
-                  $scope.closeLogin();
-                  $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
-                  $scope.setCurrentUser(user);
-                  $location.path('/main');
-              } else {
-                  $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
-                  alert('Facebook login failed');
-              }
-          },
-          {scope: 'email,publish_actions'});
-    };
-    $scope.closeLogin = function() {
-      $scope.modal.hide();
-    };
-    $scope.doLogin = function() {
-      console.log('Doing login', $scope.loginData);
-
-      // Simulate a login delay. Remove this and replace with your login
-      // code if using a login system
-      $timeout(function() {
-        $scope.closeLogin();
-      }, 1000);
-    };
-    $scope.signup = function () {
-        $location.path('/signup');
-
-    };
-    $scope.back = function () {
-        $location.path('/');
-    };
-})
-.controller( 'AppCtrl',function($scope, $state, $ionicSlideBoxDelegate, 
-                $ionicModal, $ionicPopover, $timeout, $location, Session){
-
-  $scope.loginData = {};
-  $scope.isExpanded = false;
-  $scope.hasHeaderFabLeft = false;
-  $scope.hasHeaderFabRight = false;
-  // Create the login modal that we will use later
-
-  var navIcons = document.getElementsByClassName('ion-navicon');
-  for (var i = 0; i < navIcons.length; i++) {
-      navIcons.addEventListener('click', function() {
-          this.classList.toggle('active');
-      });
-  }
-
-
-  // Open the login modal
-  $scope.login = function() {
-    $location.path('/login')
-  };
-
-  $scope.hideNavBar = function() {
-      document.getElementsByTagName('ion-nav-bar')[0].style.display = 'none';
-  };
-
-  $scope.showNavBar = function() {
-      document.getElementsByTagName('ion-nav-bar')[0].style.display = 'block';
-  };
-
-  $scope.noHeader = function() {
-      var content = document.getElementsByTagName('ion-content');
-      for (var i = 0; i < content.length; i++) {
-          if (content[i].classList.contains('has-header')) {
-              content[i].classList.toggle('has-header');
-          }
-      }
-  };
-
-  $scope.setExpanded = function(bool) {
-      $scope.isExpanded = bool;
-  };
-
-  $scope.setHeaderFab = function(location) {
-      var hasHeaderFabLeft = false;
-      var hasHeaderFabRight = false;
-
-      switch (location) {
-          case 'left':
-              hasHeaderFabLeft = true;
-              break;
-          case 'right':
-              hasHeaderFabRight = true;
-              break;
-      }
-
-      $scope.hasHeaderFabLeft = hasHeaderFabLeft;
-      $scope.hasHeaderFabRight = hasHeaderFabRight;
-  };
-
-  $scope.hasHeader = function() {
-      var content = document.getElementsByTagName('ion-content');
-      for (var i = 0; i < content.length; i++) {
-          if (!content[i].classList.contains('has-header')) {
-              content[i].classList.toggle('has-header');
-          }
-      }
-
-  };
-
-  $scope.hideHeader = function() {
-      $scope.hideNavBar();
-      $scope.noHeader();
-  };
-
-  $scope.showHeader = function() {
-      $scope.showNavBar();
-      $scope.hasHeader();
-  };
-
-  $scope.clearFabs = function() {
-      var fabs = document.getElementsByClassName('button-fab');
-      if (fabs.length && fabs.length > 1) {
-          fabs[0].remove();
-      }
-  };
-  $scope.users = [
-  { 
-    name : "Nakagawa Shintaro", 
-    position : "patient",
-    diseases : "Hand-Schuller-Christain", 
-    medicine :"Grivec"},
-  ];
-  $scope.timelines = [
-  { 
-    title: "medicine", 
-    comment:"I'm not much better,and there is a little hope of recovery",
-    userphoto :"user photo"}
-  ];
-  $scope.diseases = [ 
-  { name: 'Distal Myopathy', 
-    medicines: [ 
-      { name: 'medicine1', 
-        users: [ 
-        { name: 'userA' }, 
-        { name: 'userB' }, 
-        { name: 'userC'} 
-        ] 
-      },
-      { name: 'medicine2', 
-        users: [ 
-        { name: 'userD' }, 
-        { name: 'userE' } 
-        ] 
-      },
-      { name: 'medicine3', 
-        users: [ { name: 'userF' } 
-        ] 
-      },
-      { name: 'medicine4',
-        users: [ { name: 'userG' } 
-        ] 
-      },
-      { name: 'medicine5', 
-        users: [ { name: 'userH' } 
-        ] 
-      } 
-    ] 
-  },
-
-  { name: 'Hand-Schuller-Christain disease', 
-    medicines: [ 
-    { name: 'medicine6', 
-        users: [ { name: 'userI' } ] 
-      }]  
-  },
-  { name: 'muscular dystrophy',
-    medicines:[ 
-    { name: 'medicine7', 
-     users: [ { name: 'userJ' }]
-    },
-    { name: 'medicine8', 
-     users: [ { name: 'userK' }] 
-     },
-    { name: 'medicine9', 
-      users: [ { name: 'userL' }]
-    }]},
-  ]}
-  )
-.controller( 'IntroCtrl',function($scope, $state, $stateParams, $ionicSlideBoxDelegate, 
-                $ionicModal, $timeout, $location, Session){
-    $scope.$parent.clearFabs();
-    $scope.isExpanded = false;
-    $scope.$parent.setExpanded(true);
-
-
-    $timeout(function() {
-        ionic.material.motion.fadeSlideIn({
-            selector: '.animate-fade-slide-in .item'
+        $scope.credentials = {  username: '', password: ''};
+        $scope.login = function (credentials) {
+            AuthService.login(credentials).then(function (user) {
+                $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+                $scope.setCurrentUser(user);
+            }, function () {
+                $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+            });
+        };
+        $rootScope.$on( AUTH_EVENTS.loginSuccess, function(){
+            $timeout(function() {
+                $location.path('/main');
+            },100);
         });
-    }, 200);
+        $ionicModal.fromTemplateUrl('templates/login.html', {
+            scope: $scope
+        }).then(function(modal) {
+            $scope.modal = modal;
+        });
+        $scope.fbLogin = function(credentials) {
+            openFB.login(
+                function(response, user) {
+                    if (response.status === 'connected') {
+                        console.log('Facebook login succeeded');
+                        $scope.closeLogin();
+                        $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+                        $scope.setCurrentUser(user);
+                        $location.path('/main');
+                    } else {
+                        $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+                        alert('Facebook login failed');
+                    }
+                },
+                {scope: 'email,publish_actions'});
+        };
+        $scope.closeLogin = function() {
+            $scope.modal.hide();
+        };
+        $scope.doLogin = function() {
+            console.log('Doing login', $scope.loginData);
+
+            // Simulate a login delay. Remove this and replace with your login
+            // code if using a login system
+            $timeout(function() {
+                $scope.closeLogin();
+            }, 1000);
+        };
+        $scope.signup = function () {
+            $location.path('/signup');
+
+        };
+        $scope.back = function () {
+            $location.path('/');
+        };
+    })
+    .controller( 'AppCtrl',function($scope, $state, $ionicSlideBoxDelegate, 
+                                    $ionicModal, $ionicPopover, $timeout, $location, Session){
+        console.log( 'AppCtrl' );
+        $scope.loginData = {};
+        $scope.isExpanded = false;
+        $scope.hasHeaderFabLeft = false;
+        $scope.hasHeaderFabRight = false;
+        // Create the login modal that we will use later
+        var navIcons = document.getElementsByClassName('ion-navicon');
+        for (var i = 0; i < navIcons.length; i++) {
+            navIcons.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+        }
+
+        // Open the login modal
+        $scope.login = function() {
+            $location.path('/login')
+        };
+
+        $scope.hideNavBar = function() {
+            document.getElementsByTagName('ion-nav-bar')[0].style.display = 'none';
+        };
+
+        $scope.showNavBar = function() {
+            document.getElementsByTagName('ion-nav-bar')[0].style.display = 'block';
+        };
+
+        $scope.noHeader = function() {
+            var content = document.getElementsByTagName('ion-content');
+            for (var i = 0; i < content.length; i++) {
+                if (content[i].classList.contains('has-header')) {
+                    content[i].classList.toggle('has-header');
+                }
+            }
+        };
+
+        $scope.setExpanded = function(bool) {
+            $scope.isExpanded = bool;
+        };
+
+        $scope.setHeaderFab = function(location) {
+            var hasHeaderFabLeft = false;
+            var hasHeaderFabRight = false;
+
+            switch (location) {
+            case 'left':
+                hasHeaderFabLeft = true;
+                break;
+            case 'right':
+                hasHeaderFabRight = true;
+                break;
+            }
+
+            $scope.hasHeaderFabLeft = hasHeaderFabLeft;
+            $scope.hasHeaderFabRight = hasHeaderFabRight;
+        };
+
+        $scope.hasHeader = function() {
+            var content = document.getElementsByTagName('ion-content');
+            for (var i = 0; i < content.length; i++) {
+                if (!content[i].classList.contains('has-header')) {
+                    content[i].classList.toggle('has-header');
+                }
+            }
+
+        };
+
+        $scope.hideHeader = function() {
+            $scope.hideNavBar();
+            $scope.noHeader();
+        };
+
+        $scope.showHeader = function() {
+            $scope.showNavBar();
+            $scope.hasHeader();
+        };
+
+        $scope.clearFabs = function() {
+            var fabs = document.getElementsByClassName('button-fab');
+            if (fabs.length && fabs.length > 1) {
+                fabs[0].remove();
+            }
+        };
+    })
+    .controller( 'IntroCtrl',function($scope, $state, $stateParams, $ionicSlideBoxDelegate, 
+                                      $ionicModal, $timeout, $location, Session){
+        console.log( 'IntroCtrl' );
+        $scope.$parent.clearFabs();
+        $scope.isExpanded = false;
+        $scope.$parent.setExpanded(true);
+
+
+        $timeout(function() {
+            ionic.material.motion.fadeSlideIn({
+                selector: '.animate-fade-slide-in .item'
+            });
+        }, 200);
 
         // Delay expansion
-    $timeout(function() {
-        $scope.isExpanded = true;
-        $scope.$parent.setExpanded(true);
-    }, 300);
+        $timeout(function() {
+            $scope.isExpanded = true;
+            $scope.$parent.setExpanded(true);
+        }, 300);
 
-    // Set Motion
-    ionic.material.motion.fadeSlideInRight();
-
-
-    // Activate ink for controller
-    ionic.material.ink.displayEffect();
-
-    // Delay expansion
-    $timeout(function() {
-        $scope.isExpanded = true;
-        $scope.$parent.setExpanded(true);
-    }, 300);
-
-    // Set Motion
-    ionic.material.motion.fadeSlideInRight();
-
-    // Set Ink
-    ionic.material.ink.displayEffect();
+        // Set Motion
+        ionic.material.motion.fadeSlideInRight();
 
 
-  // Called to navigate to the main app
-  $scope.startApp = function() {
-    $location.path('/signup');
-  };
-  $scope.next = function() {
-    $ionicSlideBoxDelegate.next();
-  };
-  $scope.previous = function() {
-    $ionicSlideBoxDelegate.previous();
-  };
+        // Activate ink for controller
+        ionic.material.ink.displayEffect();
 
-  // Called each time the slide changes
-  $scope.slideChanged = function(index) {
-    $scope.slideIndex = index;
-  };
-  $scope.signup = function() {
-      $location.path( '/signup' );
-  };
-  $scope.logout = function() {
-      Parse.User.logOut();
-      $scope.user = Parse.User.current();
-      $location.path ('/login');
-  };
-  $scope.loginData = {};
-  // Create the login modal that we will use later
-  $ionicModal.fromTemplateUrl('templates/login.html', {
-    scope: $scope
-  }).then(function(modal) {
-    $scope.modal = modal;
-  });
+        // Delay expansion
+        $timeout(function() {
+            $scope.isExpanded = true;
+            $scope.$parent.setExpanded(true);
+        }, 300);
 
-  // Triggered in the login modal to close it
-  $scope.closeLogin = function() {
-    $scope.modal.hide();
-  };
+        // Set Motion
+        ionic.material.motion.fadeSlideInRight();
 
-  // Open the login modal
-  $scope.login = function() {
-    $location.path('/login')
-  };
+        // Set Ink
+        ionic.material.ink.displayEffect();
 
-  // Perform the login action when the user submits the login form
-  $scope.doLogin = function() {
-    console.log('Doing login', $scope.loginData);
 
-    // Simulate a login delay. Remove this and replace with your login
-    // code if using a login system
-    $timeout(function() {
-      $scope.closeLogin();
-    }, 1000);
-  };
-  $scope.fbLogin = function() {
-    openFB.login(
-        function(response) {
-            if (response.status === 'connected') {
-                console.log('Facebook login succeeded');
+        // Called to navigate to the main app
+        $scope.startApp = function() {
+            $location.path('/signup');
+        };
+        $scope.next = function() {
+            $ionicSlideBoxDelegate.next();
+        };
+        $scope.previous = function() {
+            $ionicSlideBoxDelegate.previous();
+        };
+
+        // Called each time the slide changes
+        $scope.slideChanged = function(index) {
+            $scope.slideIndex = index;
+        };
+        $scope.signup = function() {
+            $location.path( '/signup' );
+        };
+        $scope.logout = function() {
+            Parse.User.logOut();
+            $scope.user = Parse.User.current();
+            $location.path ('/login');
+        };
+        $scope.loginData = {};
+        // Create the login modal that we will use later
+        $ionicModal.fromTemplateUrl('templates/login.html', {
+            scope: $scope
+        }).then(function(modal) {
+            $scope.modal = modal;
+        });
+
+        // Triggered in the login modal to close it
+        $scope.closeLogin = function() {
+            $scope.modal.hide();
+        };
+
+        // Open the login modal
+        $scope.login = function() {
+            $location.path('/login')
+        };
+
+        // Perform the login action when the user submits the login form
+        $scope.doLogin = function() {
+            console.log('Doing login', $scope.loginData);
+
+            // Simulate a login delay. Remove this and replace with your login
+            // code if using a login system
+            $timeout(function() {
                 $scope.closeLogin();
-            } else {
-                alert('Facebook login failed');
-            }
-        },
-        {scope: 'email,publish_actions'});
-  }
-  $scope.users = [
-  { 
-    name : "Nakagawa Shintaro", 
-    position : "patient",
-    diseases : "Hand-Schuller-Christain", 
-    medicine :"Grivec"},
-  ];
-  $scope.timelines = [
-  { 
-    title: "medicine", 
-    comment:"I'm not much better,and there is a little hope of recovery",
-    userphoto :"user photo"}
-  ];
-  $scope.diseases = [ 
-  { name: 'Distal Myopathy', 
-    medicines: [ 
-      { name: 'medicine1', 
-        users: [ 
-        { name: 'userA' }, 
-        { name: 'userB' }, 
-        { name: 'userC'} 
-        ] 
-      },
-      { name: 'medicine2', 
-        users: [ 
-        { name: 'userD' }, 
-        { name: 'userE' } 
-        ] 
-      },
-      { name: 'medicine3', 
-        users: [ { name: 'userF' } 
-        ] 
-      },
-      { name: 'medicine4',
-        users: [ { name: 'userG' } 
-        ] 
-      },
-      { name: 'medicine5', 
-        users: [ { name: 'userH' } 
-        ] 
-      } 
-    ] 
-  },
-
-  { name: 'Hand-Schuller-Christain disease', 
-    medicines: [ 
-    { name: 'medicine6', 
-        users: [ { name: 'userI' } ] 
-      }]  
-  },
-  { name: 'muscular dystrophy',
-    medicines:[ 
-    { name: 'medicine7', 
-     users: [ { name: 'userJ' }]
-    },
-    { name: 'medicine8', 
-     users: [ { name: 'userK' }] 
-     },
-    { name: 'medicine9', 
-      users: [ { name: 'userL' }]
-    }]},
-  ]}
-  )
-.controller('ApplicationCtrl', function ($scope,
-                                               USER_ROLES,
-                                               AuthService) {
-  $scope.currentUser = null;
-  $scope.userRoles = USER_ROLES;
-  $scope.isAuthorized = AuthService.isAuthorized;
- 
-  $scope.setCurrentUser = function (user) {
-    $scope.currentUser = user;
-  };
-})
+            }, 1000);
+        };
+        $scope.fbLogin = function() {
+            openFB.login(
+                function(response) {
+                    if (response.status === 'connected') {
+                        console.log('Facebook login succeeded');
+                        $scope.closeLogin();
+                    } else {
+                        alert('Facebook login failed');
+                    }
+                },
+                {scope: 'email,publish_actions'});
+        }
+    })
+    .controller('ApplicationCtrl', function ($scope, USER_ROLES, AuthService) {
+        console.log( 'ApplicationCtrl' );
+        $scope.currentUser = null;
+        $scope.userRoles = USER_ROLES;
+        $scope.isAuthorized = AuthService.isAuthorized;
+        
+        $scope.setCurrentUser = function (user) {
+            $scope.currentUser = user;
+        };
+    })
