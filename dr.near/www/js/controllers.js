@@ -1,5 +1,5 @@
 angular.module('starter.controllers', ['Myapp.services'])
-    .controller('ActivityCtrl', function($scope, $stateParams, $ionicPopup, $timeout) {
+    .controller('ActivityCtrl', function($scope, $stateParams, $timeout) {
         console.log( 'ActivityCtrl' );
         $scope.$parent.showHeader();
         $scope.$parent.clearFabs();
