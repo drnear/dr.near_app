@@ -145,12 +145,8 @@ angular.module('starter', ['ionic', 'starter.controllers'])
 				controller: 'ProfileCtrl'
 			},
 			'fabContent': {
-				template:'<button id="fab-activity" class="button button-fab button-fab-bottom-right button-balanced"><i class="icon ion-plus"></i></button>',
-				controller: function ($timeout) {
-										$timeout(function () {
-												document.getElementById('fab-activity').classList.toggle('on');
-										}, 200);
-								}
+				template:'',
+				controller: ''
 			}
 		}
 	})
