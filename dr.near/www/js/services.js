@@ -9,10 +9,6 @@ angular.module('Myapp.services',['ngResource'])
 		return query.first().then( function( result ) 
 		  { return result.fetch();  } );
 	})
-	.factory('Sessions', function ($resource) {
-		console.log('Sessions');
-		return $resource('http://localhost:5000/sessions/:sessionId');
-	})
  	.service('Session', function () {
 		console.log( 'Session' );
 		this.create = function (sessionId, userId, userRole) {
