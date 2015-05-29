@@ -1,4 +1,85 @@
 angular.module('starter.controllers', ['Myapp.services'])
+    .controller( 'AppCtrl',function($scope, $state, $ionicSlideBoxDelegate, $location, USER_ROLES, AuthService){
+        console.log( 'AppCtrl' );
+        $scope.currentUser = null;
+        $scope.userRoles = USER_ROLES;
+        $scope.isAuthorized = AuthService.isAuthorized;            
+ 
+        $scope.loginData = {};
+        $scope.isExpanded = false;
+        $scope.hasHeaderFabLeft = false;
+        $scope.hasHeaderFabRight = false;
+
+        $scope.setCurrentUser = function (user) {
+            $scope.currentUser = user;
+        }
+        // Create the login modal that we will use later
+        var navIcons = document.getElementsByClassName('ion-navicon');
+        for (var i = 0; i < navIcons.length; i++) {
+            navIcons.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+        }
+        // Open the login modal
+        $scope.login = function() {
+            $location.path('/login')
+        };
+        $scope.hideNavBar = function() {
+            document.getElementsByTagName('ion-nav-bar')[0].style.display = 'none';
+        };
+        $scope.showNavBar = function() {
+            document.getElementsByTagName('ion-nav-bar')[0].style.display = 'block';
+        };
+        $scope.noHeader = function() {
+            var content = document.getElementsByTagName('ion-content');
+            for (var i = 0; i < content.length; i++) {
+                if (content[i].classList.contains('has-header')) {
+                    content[i].classList.toggle('has-header');
+                }
+            }
+        };
+        $scope.setExpanded = function(bool) {
+            $scope.isExpanded = bool;
+        };
+        $scope.setHeaderFab = function(location) {
+            var hasHeaderFabLeft = false;
+            var hasHeaderFabRight = false;
+
+            switch (location) {
+            case 'left':
+                hasHeaderFabLeft = true;
+                break;
+            case 'right':
+                hasHeaderFabRight = true;
+                break;
+            }
+
+            $scope.hasHeaderFabLeft = hasHeaderFabLeft;
+            $scope.hasHeaderFabRight = hasHeaderFabRight;
+        };
+        $scope.hasHeader = function() {
+            var content = document.getElementsByTagName('ion-content');
+            for (var i = 0; i < content.length; i++) {
+                if (!content[i].classList.contains('has-header')) {
+                    content[i].classList.toggle('has-header');
+                }
+            }
+        };
+        $scope.hideHeader = function() {
+            $scope.hideNavBar();
+            $scope.noHeader();
+        };
+        $scope.showHeader = function() {
+            $scope.showNavBar();
+            $scope.hasHeader();
+        };
+        $scope.clearFabs = function() {
+            var fabs = document.getElementsByClassName('button-fab');
+            if (fabs.length && fabs.length > 1) {
+                fabs[0].remove();
+            }
+        };
+    })
     .controller('ActivityCtrl', function($scope, $stateParams, $timeout) {
         console.log( 'ActivityCtrl' );
         $scope.$parent.showHeader();
@@ -7,6 +88,8 @@ angular.module('starter.controllers', ['Myapp.services'])
         $scope.$parent.setExpanded(true);
         $scope.$parent.setHeaderFab('right');
 
+        var user = Parse.User.current();
+        console.log(user);
         $timeout(function() {
             ionic.material.motion.fadeSlideIn({
                 selector: '.animate-fade-slide-in .item'
@@ -351,19 +434,20 @@ angular.module('starter.controllers', ['Myapp.services'])
 
         };
     })
-    .controller( 'LoginCtrl', function( $scope, $location, $rootScope, $timeout, AUTH_EVENTS, AuthService) {
+    .controller( 'LoginCtrl', function( $scope, $state, $location, $rootScope, $timeout, AUTH_EVENTS, AuthService) {
         console.log( 'LoginCtrl' );
         Parse.User.logOut();
         $scope.$parent.showHeader();
         $scope.$parent.clearFabs();
         $scope.isExpanded = true;
-        $scope.$parent.setExpanded(true);
-        
+        $scope.$parent.setExpanded(true);    
 
         $scope.credentials = {  username: '', password: ''};
         $scope.login = function (credentials) {
             AuthService.login(credentials).then(function (user) {
+                console.log(user);
                 $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+                console.log($rootScope.$broadcast(AUTH_EVENTS.loginSuccess));
                 $scope.setCurrentUser(user);
             }, function () {
                 $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
@@ -371,7 +455,7 @@ angular.module('starter.controllers', ['Myapp.services'])
         };
         $rootScope.$on( AUTH_EVENTS.loginSuccess, function(){
             $timeout(function() {
-                $location.path('/main');
+                $state.go('app.activity');
             },100);
         });
         $scope.fbLogin = function(credentials) {
@@ -410,92 +494,14 @@ angular.module('starter.controllers', ['Myapp.services'])
             $location.path('/');
         };
     })
-    .controller( 'AppCtrl',function($scope, $state, $ionicSlideBoxDelegate, $location, USER_ROLES, AuthService){
-        console.log( 'AppCtrl' );
-        $scope.currentUser = null;
-        $scope.userRoles = USER_ROLES;
-        $scope.isAuthorized = AuthService.isAuthorized;            
-        $scope.loginData = {};
-        $scope.isExpanded = false;
-        $scope.hasHeaderFabLeft = false;
-        $scope.hasHeaderFabRight = false;
-
-        $scope.setCurrentUser = function (user) {
-            $scope.currentUser = user;
-        }
-        // Create the login modal that we will use later
-        var navIcons = document.getElementsByClassName('ion-navicon');
-        for (var i = 0; i < navIcons.length; i++) {
-            navIcons.addEventListener('click', function() {
-                this.classList.toggle('active');
-            });
-        }
-        // Open the login modal
-        $scope.login = function() {
-            $location.path('/login')
-        };
-        $scope.hideNavBar = function() {
-            document.getElementsByTagName('ion-nav-bar')[0].style.display = 'none';
-        };
-        $scope.showNavBar = function() {
-            document.getElementsByTagName('ion-nav-bar')[0].style.display = 'block';
-        };
-        $scope.noHeader = function() {
-            var content = document.getElementsByTagName('ion-content');
-            for (var i = 0; i < content.length; i++) {
-                if (content[i].classList.contains('has-header')) {
-                    content[i].classList.toggle('has-header');
-                }
-            }
-        };
-        $scope.setExpanded = function(bool) {
-            $scope.isExpanded = bool;
-        };
-        $scope.setHeaderFab = function(location) {
-            var hasHeaderFabLeft = false;
-            var hasHeaderFabRight = false;
-
-            switch (location) {
-            case 'left':
-                hasHeaderFabLeft = true;
-                break;
-            case 'right':
-                hasHeaderFabRight = true;
-                break;
-            }
-
-            $scope.hasHeaderFabLeft = hasHeaderFabLeft;
-            $scope.hasHeaderFabRight = hasHeaderFabRight;
-        };
-        $scope.hasHeader = function() {
-            var content = document.getElementsByTagName('ion-content');
-            for (var i = 0; i < content.length; i++) {
-                if (!content[i].classList.contains('has-header')) {
-                    content[i].classList.toggle('has-header');
-                }
-            }
-        };
-        $scope.hideHeader = function() {
-            $scope.hideNavBar();
-            $scope.noHeader();
-        };
-        $scope.showHeader = function() {
-            $scope.showNavBar();
-            $scope.hasHeader();
-        };
-        $scope.clearFabs = function() {
-            var fabs = document.getElementsByClassName('button-fab');
-            if (fabs.length && fabs.length > 1) {
-                fabs[0].remove();
-            }
-        };
-    })
     .controller( 'IntroCtrl',function($scope, $state, $stateParams, $ionicSlideBoxDelegate, 
-                                      $ionicModal, $timeout, $location, Session){
+                                      $ionicModal, $timeout, $location){
         console.log( 'IntroCtrl' );
         $scope.$parent.clearFabs();
         $scope.isExpanded = false;
         $scope.$parent.setExpanded(false);
+        $scope.$parent.setHeaderFab(false);
+
         $timeout(function() {
             ionic.material.motion.fadeSlideIn({
                 selector: '.animate-fade-slide-in .item'
@@ -540,4 +546,5 @@ angular.module('starter.controllers', ['Myapp.services'])
             $location.path( '/login' );
         };
     })
+    
 

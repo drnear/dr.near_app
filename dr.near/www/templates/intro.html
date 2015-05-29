@@ -1,58 +1,81 @@
-<ion-view title="WELCOME #fam">
-    <ion-nav-bar class="bar-positive">
-        <ion-nav-buttons side="left">
-          <button class="button button-clear button-positive"ng-click="startApp()" ng-show="!slideIndex">
-          Skip
-          </button>
-          <button class="button button-positive button-clear no-animation"
-          ng-click="previous()" ng-show="slideIndex > 0">
-          ←
-          </button>
+<ion-view title="WELCOME">
+<ion-nav-bar class="bar-positive">
+    <ion-nav-buttons side="left">
+        <button class="button button-clear button-positive"ng-click="startApp()" ng-show="!slideIndex">
+            Skip
+        </button>
+        <button class="button button-positive button-clear no-animation"
+        ng-click="previous()" ng-show="slideIndex > 0">
+        ←
+        </button>
         </ion-nav-buttons>
 
         <ion-nav-buttons side="right"> 
-          <button class="button button-positive button-clear no-animation"
-          ng-click="next()" ng-show="slideIndex != 2" >
-          →
-          </button>
-          <button class="button button-positive button-clear no-animation"
-          ng-click="startApp()" ng-show="slideIndex == 2">
-          Join
-          </button>
-        </ion-nav-buttons>
-    </ion-nav-bar>
-    <ion-content ng-class="{expanded:isExpanded}">
+        <button class="button button-positive button-clear no-animation"
+        ng-click="next()" ng-show="slideIndex != 2" >
+        →
+        </button>
+        <button class="button button-positive button-clear no-animation"
+        ng-click="startApp()" ng-show="slideIndex == 2">
+        Join
+        </button>
+    </ion-nav-buttons>
+</ion-nav-bar>
+<ion-content ng-class="{expanded:isExpanded}">
     <ion-slide-box on-slide-changed="slideChanged(index)">
         <ion-slide>
-          <h3>Thank you for choosing the Awesome App!</h3>
-          <div id="logo">
-          <img src="/images/logo.jpg">
-          </div>
-          <p>
-          We have worked super hard to make you happy.
-          </p>
-          <p>
-          But if you are angry, too bad.
-          </p>
+        <h3>Thank you for choosing the Awesome App!</h3>
+        <div id="logo">
+            <img src="/images/logo.jpg">
+        </div>
+        <p>
+            We have worked super hard to make you happy.
+        </p>
+        <p>
+            But if you are angry, too bad.
+        </p>
         </ion-slide>
         <ion-slide>
-          <h3>Using Awesome</h3>
+        <h3>Using Awesome</h3>
 
-          <div id="list">
-          <h5>Just three steps:</h5>
-          <ol>
-          <li>Be awesome</li>
-          <li>Stay awesome</li>
-          <li>There is no step 3</li>
-          </ol>
-          </div>
+        <div id="list">
+            <h5>Just three steps:</h5>
+            <ol>
+                <li>Be awesome</li>
+                <li>Stay awesome</li>
+                <li>There is no step 3</li>
+            </ol>
+        </div>
         </ion-slide>
         <ion-slide>
-          <h3>Any questions?</h3>
-          <p>
-          Too bad!
-          </p>
+        <div class="list">
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    Concern Disease
+                </div>
+                <select>
+                    <option>Blue</option>
+                    <option selected>Green</option>
+                    <option>Red</option>
+                </select>
+            </label>
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    Your type
+                </div>
+                <select>
+                    <option>Patient</option>
+                    <option selected>Relatives</option>
+                    <option>Doctor</option>
+                    <option>Visitor</option>
+                </select>
+            </label>
+            <label class="item item-input item-floating-label">
+                <span class="input-label"></span>
+                <input type="text" placeholder="First your post(ex.greeting)">
+            </label>
+        </div>
         </ion-slide>
     </ion-slide-box>
-    </ion-content>
+</ion-content>
 </ion-view>

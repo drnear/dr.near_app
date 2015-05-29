@@ -9,7 +9,7 @@ if ( typeof( APP_CONFIG ) == 'undefined' ) {
 }
 
 angular.module('starter', ['ionic', 'starter.controllers'])
-	.run(function($ionicPlatform) {
+.run(function($ionicPlatform) {
 		Parse.initialize( APP_CONFIG.PARSE_APP_KEY, APP_CONFIG.PARSE_APP_SECRET )
 		$ionicPlatform.ready(function() {
 			// Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -30,7 +30,10 @@ angular.module('starter', ['ionic', 'starter.controllers'])
 	.state('app', {
 		url: '/app',
 		templateUrl: 'templates/menu.html',
-		controller: 'AppCtrl'
+		controller: 'AppCtrl',
+	    data: {
+	      authorizedRoles: [USER_ROLES.all ,USER_ROLES.admin]
+	    }
 	})
 	.state('app.activity',{
 		url: '/activity',
@@ -53,7 +56,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
 								}}
 			}
 		}
-			})
+	})
 	.state('app.post',{
 		url: '/post',
 		views: {
@@ -77,6 +80,14 @@ angular.module('starter', ['ionic', 'starter.controllers'])
 					'menuContent': {
 							templateUrl: 'templates/alert.html',
 							controller: 'AlertCtrl'
+					},
+					'fabContent': {
+							template:'<button id="fab-post" class="button button-fab button-fab-bottom-right button-balanced" ><i class="icon ion-plus"></i></button>',
+							controller: function ($timeout) {
+													$timeout(function () {
+															document.getElementById('fab-post').classList.toggle('on');
+													}, 200);
+											}
 					}
 			}
 	})
@@ -182,6 +193,6 @@ angular.module('starter', ['ionic', 'starter.controllers'])
 		templateUrl: 'templates/medicine.html',
 		controller: 'MedicineCtrl'
 	})
-				// if none of the above states are matched, use this as the fallback
+	// if none of the above states are matched, use this as the fallback
 	$urlRouterProvider.otherwise('/app/activity');
 })

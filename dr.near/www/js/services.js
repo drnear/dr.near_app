@@ -1,4 +1,49 @@
 angular.module('Myapp.services',['ngResource'])	
+    .run(function ($rootScope, AUTH_EVENTS, AuthService, $location,$state) {
+       console.log( 'add event listener : $stateChangeStart' );
+       $rootScope.$on('$stateChangeStart', function (event, next) {
+           console.log( '$stateChangeStart', next );
+           var authorizedRoles = next.data.authorizedRoles;
+           if (!AuthService.isAuthorized(authorizedRoles)) {
+
+           }
+
+       });
+   })
+    .factory('AuthService', function ($http, Session ) {
+        console.log( 'AuthService' );
+        var authService = {};
+        authService.login = function( credentials ) {
+            return Parse.User.logIn( credentials.username, credentials.password );
+            Parse.User.logIn( credentials.username, credentials.password, {
+                success: function( user ) {
+                   Session.create( user );
+                   console.log(Session.create(user));
+                   return user;
+                }
+            });
+        };
+        authService.isAuthenticated = function () {
+          return !!Session.userId;
+        };     
+        authService.isAuthorized = function (authorizedRoles) {
+          if (!angular.isArray(authorizedRoles)) {
+            authorizedRoles = [authorizedRoles];
+          }
+          console.log(Session.userRole);
+
+          console.log(authService.isAuthenticated());
+          console.log(authorizedRoles.indexOf(Session.userRole) !== -1);
+
+          console.log(authService.isAuthenticated() &&
+            authorizedRoles.indexOf(Session.userRole) !== -1);
+
+          return (authService.isAuthenticated() &&
+            authorizedRoles.indexOf(Session.userRole) !== -1);
+        };
+        return authService;
+        console.log(authService);
+    })
 	.factory( 'LoginUser', function() {
 		console.log( 'LoginUser' );
 	  	// ログインユーザーは仮に「最初のユーザー」とする	  
@@ -36,47 +81,6 @@ angular.module('Myapp.services',['ngResource'])
 		editor: 'editor',
 		guest: 'guest'
   	})
-  	.factory('AuthService', function ($http, Session ) {
-		console.log( 'AuthService' );
-		var authService = {};
-		authService.login = function( credentials ) {
-		    return Parse.User.logIn( credentials.username, credentials.password );
-		   	Parse.User.logIn( credentials.username, credentials.password, {
-			   	success: function( user ) {
-				   Session.create( user );
-				   return user;
-			   	}
-		   	});
-		};
-		authService.isAuthenticated = function () {
-		  return !!Session.userId;
-		};	   
-		authService.isAuthorized = function (authorizedRoles) {
-		  if (!angular.isArray(authorizedRoles)) {
-			authorizedRoles = [authorizedRoles];
-		  }
-		  return (authService.isAuthenticated() &&
-			authorizedRoles.indexOf(Session.userRole) !== -1);
-			console.log(authService.isAuthorized());
-		};
-	   	return authService;
-  	})
-	.run(function ($rootScope, AUTH_EVENTS, AuthService) {
-		console.log( 'add event listener : $stateChangeStart' );
-		$rootScope.$on('$stateChangeStart', function (event, next) {
-		  var authorizedRoles = next.data.authorizedRoles;
-		  if (!AuthService.isAuthorized(authorizedRoles)) {
-			event.preventDefault();
-			if (AuthService.isAuthenticated()) {
-			  // user is not allowed
-			  $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
-			} else {
-			  // user is not logged in
-			  $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
-			}
-		  }
-		});
-	})
 	.directive('formAutofillFix', function ($timeout) {
 		console.log( 'formAutofillFix' ); 
 		return function (scope, element, attrs) {
