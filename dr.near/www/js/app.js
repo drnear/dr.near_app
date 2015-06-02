@@ -24,13 +24,13 @@ angular.module('DrNear', ['ionic', 'DrNear.controllers'])
 	        .state('app', {
 		        url: '/app',
 		        templateUrl: 'templates/menu.html',
-		        controller: 'AppCtrl',
-	            data: {
-	                authorizedRoles: [USER_ROLES.all ,USER_ROLES.admin]
-	            }
+		        controller: 'AppCtrl'
 	        })
 	        .state('app.activity',{
 		        url: '/activity',
+	            data: {
+	                authorizedRoles: [USER_ROLES.all]
+	            },
 		        views: {
 			        'menuContent':{
 				        templateUrl: 'templates/activity.html',

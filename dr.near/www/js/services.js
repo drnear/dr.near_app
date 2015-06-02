@@ -1,13 +1,21 @@
 angular.module('DrNear.services',['ngResource'])	
     .run(function ($rootScope, AUTH_EVENTS, AuthService, $location,$state) {
-        console.log( 'add event listener : $stateChangeStart' );
-        $rootScope.$on('$stateChangeStart', function (event, next) {
-            console.log( '$stateChangeStart', next );
-            var authorizedRoles = next.data.authorizedRoles;
-            if (!AuthService.isAuthorized(authorizedRoles)) {
-
+        $rootScope.$on( '$stateChangeStart', function( event, next ) {
+            if ( typeof(next.data) == 'object' ) {
+                if (!AuthService.isAuthorized(next.data.authorizedRoles)) {
+                    event.preventDefault();
+                    if ( AuthService.isAuthenticated() ) {
+                        $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
+                    }
+                    else {
+                        $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
+                    }
+                }
             }
+        });
 
+        $rootScope.$on( AUTH_EVENTS.notAuthenticated, function( event, next ) {
+            $state.go( 'app.login' );
         });
     })
     .factory('AuthService', function ($http, Session ) {
@@ -30,13 +38,6 @@ angular.module('DrNear.services',['ngResource'])
             if (!angular.isArray(authorizedRoles)) {
                 authorizedRoles = [authorizedRoles];
             }
-            console.log(Session.userRole);
-
-            console.log(authService.isAuthenticated());
-            console.log(authorizedRoles.indexOf(Session.userRole) !== -1);
-
-            console.log(authService.isAuthenticated() &&
-                        authorizedRoles.indexOf(Session.userRole) !== -1);
 
             return (authService.isAuthenticated() &&
                     authorizedRoles.indexOf(Session.userRole) !== -1);
@@ -68,18 +69,18 @@ angular.module('DrNear.services',['ngResource'])
 	 	};
   	})
   	.constant('AUTH_EVENTS', {
-		loginSuccess: 'auth-login-success',
-		loginFailed: 'auth-login-failed',
-		logoutSuccess: 'auth-logout-success',
-		sessionTimeout: 'auth-session-timeout',
-		notAuthenticated: 'auth-not-authenticated',
-		notAuthorized: 'auth-not-authorized'
+		loginSuccess     : 'auth-login-success',
+		loginFailed      : 'auth-login-failed',
+		logoutSuccess    : 'auth-logout-success',
+		sessionTimeout   : 'auth-session-timeout',
+		notAuthenticated : 'auth-not-authenticated',
+		notAuthorized    : 'auth-not-authorized'
    	})
   	.constant('USER_ROLES', {
-		all: '*',
-		admin: 'admin',
-		editor: 'editor',
-		guest: 'guest'
+		all    : '*',
+		admin  : 'admin',
+		editor : 'editor',
+		guest  : 'guest'
   	})
 	.directive('formAutofillFix', function ($timeout) {
 		console.log( 'formAutofillFix' ); 
