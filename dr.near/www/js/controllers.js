@@ -4,7 +4,7 @@ angular.module('DrNear.controllers', ['DrNear.services'])
         $scope.currentUser = null;
         $scope.userRoles = USER_ROLES;
         $scope.isAuthorized = AuthService.isAuthorized;            
- 
+        
         $scope.loginData = {};
         $scope.isExpanded = false;
         $scope.hasHeaderFabLeft = false;
@@ -546,5 +546,5 @@ angular.module('DrNear.controllers', ['DrNear.services'])
             $location.path( '/login' );
         };
     })
-    
+
 

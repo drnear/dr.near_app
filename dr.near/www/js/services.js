@@ -1,15 +1,15 @@
 angular.module('DrNear.services',['ngResource'])	
     .run(function ($rootScope, AUTH_EVENTS, AuthService, $location,$state) {
-       console.log( 'add event listener : $stateChangeStart' );
-       $rootScope.$on('$stateChangeStart', function (event, next) {
-           console.log( '$stateChangeStart', next );
-           var authorizedRoles = next.data.authorizedRoles;
-           if (!AuthService.isAuthorized(authorizedRoles)) {
+        console.log( 'add event listener : $stateChangeStart' );
+        $rootScope.$on('$stateChangeStart', function (event, next) {
+            console.log( '$stateChangeStart', next );
+            var authorizedRoles = next.data.authorizedRoles;
+            if (!AuthService.isAuthorized(authorizedRoles)) {
 
-           }
+            }
 
-       });
-   })
+        });
+    })
     .factory('AuthService', function ($http, Session ) {
         console.log( 'AuthService' );
         var authService = {};
@@ -17,29 +17,29 @@ angular.module('DrNear.services',['ngResource'])
             return Parse.User.logIn( credentials.username, credentials.password );
             Parse.User.logIn( credentials.username, credentials.password, {
                 success: function( user ) {
-                   Session.create( user );
-                   console.log(Session.create(user));
-                   return user;
+                    Session.create( user );
+                    console.log(Session.create(user));
+                    return user;
                 }
             });
         };
         authService.isAuthenticated = function () {
-          return !!Session.userId;
+            return !!Session.userId;
         };     
         authService.isAuthorized = function (authorizedRoles) {
-          if (!angular.isArray(authorizedRoles)) {
-            authorizedRoles = [authorizedRoles];
-          }
-          console.log(Session.userRole);
+            if (!angular.isArray(authorizedRoles)) {
+                authorizedRoles = [authorizedRoles];
+            }
+            console.log(Session.userRole);
 
-          console.log(authService.isAuthenticated());
-          console.log(authorizedRoles.indexOf(Session.userRole) !== -1);
+            console.log(authService.isAuthenticated());
+            console.log(authorizedRoles.indexOf(Session.userRole) !== -1);
 
-          console.log(authService.isAuthenticated() &&
-            authorizedRoles.indexOf(Session.userRole) !== -1);
+            console.log(authService.isAuthenticated() &&
+                        authorizedRoles.indexOf(Session.userRole) !== -1);
 
-          return (authService.isAuthenticated() &&
-            authorizedRoles.indexOf(Session.userRole) !== -1);
+            return (authService.isAuthenticated() &&
+                    authorizedRoles.indexOf(Session.userRole) !== -1);
         };
         return authService;
         console.log(authService);
@@ -52,19 +52,19 @@ angular.module('DrNear.services',['ngResource'])
 		query.limit(1);
 		query.ascending( 'createdAt' );
 		return query.first().then( function( result ) 
-		  { return result.fetch();  } );
+		                           { return result.fetch();  } );
 	})
  	.service('Session', function () {
 		console.log( 'Session' );
 		this.create = function (sessionId, userId, userRole) {
-		   this.id = sessionId;
-		   this.userId = userId;
-		   this.userRole = userRole;
+		    this.id = sessionId;
+		    this.userId = userId;
+		    this.userRole = userRole;
 		};
 	 	this.destroy = function () {
-		   this.id = null;
-		   this.userId = null;
-		   this.userRole = null;
+		    this.id = null;
+		    this.userId = null;
+		    this.userRole = null;
 	 	};
   	})
   	.constant('AUTH_EVENTS', {
@@ -84,21 +84,21 @@ angular.module('DrNear.services',['ngResource'])
 	.directive('formAutofillFix', function ($timeout) {
 		console.log( 'formAutofillFix' ); 
 		return function (scope, element, attrs) {
-		element.prop('method', 'post');
-		if (attrs.ngSubmit) {
-		  $timeout(function () {
-			element
-			  .unbind('submit')
-			  .bind('submit', function (event) {
-				event.preventDefault();
-				element
-				  .find('input, textarea, select')
-				  .trigger('input')
-				  .trigger('change')
-				  .trigger('keydown');
-				scope.$apply(attrs.ngSubmit);
-			  });
-		  });
-		}
+		    element.prop('method', 'post');
+		    if (attrs.ngSubmit) {
+		        $timeout(function () {
+			        element
+			            .unbind('submit')
+			            .bind('submit', function (event) {
+				            event.preventDefault();
+				            element
+				                .find('input, textarea, select')
+				                .trigger('input')
+				                .trigger('change')
+				                .trigger('keydown');
+				            scope.$apply(attrs.ngSubmit);
+			            });
+		        });
+		    }
 		};
 	});
