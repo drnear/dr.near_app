@@ -1,4 +1,4 @@
-angular.module('Myapp.services',['ngResource'])	
+angular.module('DrNear.services',['ngResource'])	
     .run(function ($rootScope, AUTH_EVENTS, AuthService, $location,$state) {
        console.log( 'add event listener : $stateChangeStart' );
        $rootScope.$on('$stateChangeStart', function (event, next) {

@@ -1,4 +1,4 @@
-angular.module('starter.controllers', ['Myapp.services'])
+angular.module('DrNear.controllers', ['DrNear.services'])
     .controller( 'AppCtrl',function($scope, $state, $ionicSlideBoxDelegate, $location, USER_ROLES, AuthService){
         console.log( 'AppCtrl' );
         $scope.currentUser = null;
