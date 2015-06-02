@@ -103,7 +103,7 @@ angular.module('starter.controllers', ['Myapp.services'])
         }, 300);
 
         // Set Motion
-        ionic.material.motion.fadeSlideInRight();
+        // ionic.material.motion.fadeSlideInRight(); // --- error
 
 
         // Activate ink for controller
