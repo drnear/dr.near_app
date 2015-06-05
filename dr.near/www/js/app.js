@@ -2,7 +2,7 @@ if ( typeof( APP_CONFIG ) == 'undefined' ) {
 	APP_CONFIG = {};
 }
 
-angular.module('DrNear', ['ionic', 'DrNear.controllers'])
+angular.module('DrNEAR', ['ionic', 'DrNEAR.controllers'])
     .run(function($ionicPlatform) {
 		Parse.initialize( APP_CONFIG.PARSE_APP_KEY, APP_CONFIG.PARSE_APP_SECRET )
 		$ionicPlatform.ready(function() {
