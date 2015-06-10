@@ -1,4 +1,4 @@
-angular.module('DrNear.services',['ngResource'])	
+angular.module('DrNEAR.services',['ngResource'])	
     .run(function ($rootScope, AUTH_EVENTS, AuthService, $location,$state) {
         $rootScope.$on( '$stateChangeStart', function( event, next ) {
             if ( typeof(next.data) == 'object' ) {
