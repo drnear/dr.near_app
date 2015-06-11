@@ -1,9 +1,10 @@
 angular.module('DrNEAR.services',['ngResource'])	
-    .run(function ($rootScope, AUTH_EVENTS, AuthService, $location,$state) {
-        $rootScope.$on( '$stateChangeStart', function( event, next ) {
-            if ( typeof(next.data) == 'object' ) {
-                if (!AuthService.isAuthorized(next.data.authorizedRoles)) {
+    .run(function ($rootScope, $state, AUTH_EVENTS, AuthService) {
+        $rootScope.$on( '$stateChangeStart', function( event, toState, toParam, fromState, fromParam ) {
+            if ( typeof(toState.data) == 'object' ) {
+                if (!AuthService.isAuthorized(toState.data.authorizedRoles)) {
                     event.preventDefault();
+
                     if ( AuthService.isAuthenticated() ) {
                         $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
                     }
@@ -14,12 +15,11 @@ angular.module('DrNEAR.services',['ngResource'])
             }
         });
 
-        $rootScope.$on( AUTH_EVENTS.notAuthenticated, function( event, next ) {
+        $rootScope.$on( AUTH_EVENTS.notAuthenticated, function( event, toState ) {
             $state.go( 'app.login' );
         });
     })
     .factory('AuthService', function ($http, Session ) {
-        console.log( 'AuthService' );
         var authService = {};
         authService.login = function( credentials ) {
             return Parse.User.logIn( credentials.username, credentials.password );
@@ -32,9 +32,11 @@ angular.module('DrNEAR.services',['ngResource'])
             });
         };
         authService.isAuthenticated = function () {
+            console.log('isAuthenticated');
             return !!Session.userId;
         };     
         authService.isAuthorized = function (authorizedRoles) {
+            console.log('isAuthorized');
             if (!angular.isArray(authorizedRoles)) {
                 authorizedRoles = [authorizedRoles];
             }
@@ -43,7 +45,6 @@ angular.module('DrNEAR.services',['ngResource'])
                     authorizedRoles.indexOf(Session.userRole) !== -1);
         };
         return authService;
-        console.log(authService);
     })
 	.factory( 'LoginUser', function() {
 		console.log( 'LoginUser' );

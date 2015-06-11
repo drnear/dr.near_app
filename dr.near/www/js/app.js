@@ -186,7 +186,10 @@ angular.module('DrNEAR', ['ionic', 'DrNEAR.controllers'])
 		        url: '/medicine',
 		        templateUrl: 'templates/medicine.html',
 		        controller: 'MedicineCtrl'
-	        })
-	    // if none of the above states are matched, use this as the fallback
-	    $urlRouterProvider.otherwise('/app/activity');
-    })
+	        });
+
+        $urlRouterProvider.otherwise( function( $injector ) {
+            var $state = $injector.get('$state');
+            $state.go('app.activity');
+        });
+    });
