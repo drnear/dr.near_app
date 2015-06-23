@@ -1,9 +1,9 @@
 angular.module('DrNEAR.controllers', ['DrNEAR.services'])
-    .controller( 'AppCtrl',function($scope, $state, $ionicSlideBoxDelegate, $location, USER_ROLES, AuthService){
+    .controller( 'AppCtrl',function($scope, $state, $ionicSlideBoxDelegate, $location, Session, USER_ROLES){
         console.log( 'AppCtrl' );
-        $scope.currentUser = null;
         $scope.userRoles = USER_ROLES;
-        $scope.isAuthorized = AuthService.isAuthorized;            
+
+        this.session = Session;
         
         $scope.loginData = {};
         $scope.isExpanded = false;
@@ -80,31 +80,18 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
             }
         };
     })
-    .controller('ActivityCtrl', function($scope, $stateParams, $timeout) {
+    .controller('ActivityCtrl', function($scope, $stateParams, $timeout, Session) {
         console.log( 'ActivityCtrl' );
+
         $scope.$parent.showHeader();
         $scope.$parent.clearFabs();
-        $scope.isExpanded = true;
-        $scope.$parent.setExpanded(true);
         $scope.$parent.setHeaderFab('right');
 
-        var user = Parse.User.current();
-        console.log(user);
         $timeout(function() {
             ionic.material.motion.fadeSlideIn({
                 selector: '.animate-fade-slide-in .item'
             });
         }, 200);
-
-        // Delay expansion
-        $timeout(function() {
-            $scope.isExpanded = true;
-            $scope.$parent.setExpanded(true);
-        }, 300);
-
-        // Set Motion
-        // ionic.material.motion.fadeSlideInRight(); // --- error
-
 
         // Activate ink for controller
         ionic.material.ink.displayEffect();
@@ -434,30 +421,23 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
 
         };
     })
-    .controller( 'LoginCtrl', function( $scope, $state, $location, $rootScope, $timeout, AUTH_EVENTS, AuthService) {
-        console.log( 'LoginCtrl' );
+    .controller( 'LoginCtrl', function( $scope, $state, $location, $rootScope, $timeout, Session, AUTH_EVENTS ) {
         Parse.User.logOut();
-        $scope.$parent.showHeader();
-        $scope.$parent.clearFabs();
-        $scope.isExpanded = true;
-        $scope.$parent.setExpanded(true);    
+        Session.destroy();
 
-        $scope.credentials = {  username: '', password: ''};
-        $scope.login = function (credentials) {
-            AuthService.login(credentials).then(function (user) {
-                console.log(user);
-                $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
-                console.log($rootScope.$broadcast(AUTH_EVENTS.loginSuccess));
-                $scope.setCurrentUser(user);
-            }, function () {
-                $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
-            });
+        this.credentials = { username: '', password: ''};
+
+        var context = this;
+        this.login = function () {
+            Parse.User.logIn( context.credentials.username, context.credentials.password )
+                .then( function( user ) {
+                    Session.create( user )
+                    $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+                }, function(err) {
+                    $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+                });
         };
-        $rootScope.$on( AUTH_EVENTS.loginSuccess, function(){
-            $timeout(function() {
-                $state.go('app.activity');
-            },100);
-        });
+
         $scope.fbLogin = function(credentials) {
             openFB.login(
                 function(response, user) {

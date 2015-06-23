@@ -3,8 +3,10 @@ if ( typeof( APP_CONFIG ) == 'undefined' ) {
 }
 
 angular.module('DrNEAR', ['ionic', 'DrNEAR.controllers'])
-    .run(function($ionicPlatform) {
+    .run( function( $ionicPlatform, Session ) {
         Parse.initialize( APP_CONFIG.PARSE_APP_KEY, APP_CONFIG.PARSE_APP_SECRET )
+        Session.create( Parse.User.current() );
+
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -21,10 +23,29 @@ angular.module('DrNEAR', ['ionic', 'DrNEAR.controllers'])
         openFB.init({appId: APP_CONFIG.FACEBOOK_APP_ID});
         $ionicConfigProvider.views.maxCache(0);
         $stateProvider
+            .state('login', {
+                url: '/login',
+                templateUrl: 'templates/login.html',
+                controller: 'LoginCtrl as ctrl'
+            })
+            .state('signup', {
+                url: '/signup',
+                templateUrl: 'templates/signup.html',
+                controller: 'SignupCtrl'
+            })
+            .state('intro', {
+                url:'/intro',
+                views: {
+                    'menuContent':{
+                        templateUrl: "templates/intro.html",
+                        controller:'IntroCtrl'
+                    }
+                }
+            })
             .state('app', {
                 url: '/app',
-                templateUrl: 'templates/menu.html',
-                controller: 'AppCtrl'
+                templateUrl: 'templates/app.html',
+                controller: 'AppCtrl as appctrl'
             })
             .state('app.activity',{
                 url: '/activity',
@@ -34,7 +55,7 @@ angular.module('DrNEAR', ['ionic', 'DrNEAR.controllers'])
                 views: {
                     'menuContent':{
                         templateUrl: 'templates/activity.html',
-                        controller: 'ActivityCtrl'
+                        controller: 'ActivityCtrl as ctrl'
                     },
                     'fabContent': {
                         template:'<button id="fab-activity" class="button button-fab button-fab-bottom-right button-balanced" ui-sref="app.post" ><i class="icon ion-plus"></i></button>',
@@ -94,20 +115,6 @@ angular.module('DrNEAR', ['ionic', 'DrNEAR.controllers'])
                     }
                 }
             })
-            .state('signup', {
-                url: '/signup',
-                templateUrl: 'templates/signup.html',
-                controller: 'SignupCtrl'
-            })
-            .state('app.intro', {
-                url:'/intro',
-                views: {
-                    'menuContent':{
-                        templateUrl: "templates/intro.html",
-                        controller:'IntroCtrl'
-                    }
-                }
-            })
             .state('app.setting',{
                 url: '/setting',
                 views: {
@@ -120,23 +127,6 @@ angular.module('DrNEAR', ['ionic', 'DrNEAR.controllers'])
                         controller: function ($timeout) {
                             $timeout(function () {
                                 document.getElementById('fab-setting').classList.toggle('on');
-                            }, 200);
-                        }
-                    }
-                }
-            })
-            .state('app.login', {
-                url: '/login',
-                views:{
-                    'menuContent': {
-                        templateUrl: 'templates/login.html',
-                        controller: 'LoginCtrl'
-                    },
-                    'fabContent': {
-                        template:'<button id="fab-activity" class="button button-fab button-fab-bottom-right button-balanced"><i class="icon ion-plus"></i></button>',
-                        controller: function ($timeout) {
-                            $timeout(function () {
-                                document.getElementById('fab-activity').classList.toggle('on');
                             }, 200);
                         }
                     }
@@ -191,5 +181,28 @@ angular.module('DrNEAR', ['ionic', 'DrNEAR.controllers'])
         $urlRouterProvider.otherwise( function( $injector ) {
             var $state = $injector.get('$state');
             $state.go('app.activity');
+        });
+    })
+    .run(function ($rootScope, $state, Session, AUTH_EVENTS) {
+        $rootScope.$on( '$stateChangeStart', function( event, toState, toParam, fromState, fromParam ) {
+            if ( typeof(toState.data) == 'object' ) {
+                if (!Session.isAuthorized(toState.data.authorizedRoles)) {
+                    event.preventDefault();
+                    if ( Session.isAuthenticated ) {
+                        $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
+                    }
+                    else {
+                        $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
+                    }
+                }
+            }
+        });
+
+        $rootScope.$on( AUTH_EVENTS.notAuthenticated, function( event ) {
+            $state.go( 'login' );
+        });
+
+        $rootScope.$on( AUTH_EVENTS.loginSuccess, function( event ) {
+            $state.go( 'app.activity' );
         });
     });

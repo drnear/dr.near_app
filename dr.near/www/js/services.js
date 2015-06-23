@@ -1,73 +1,36 @@
 angular.module('DrNEAR.services',['ngResource'])    
-    .run(function ($rootScope, $state, AUTH_EVENTS, AuthService) {
-        $rootScope.$on( '$stateChangeStart', function( event, toState, toParam, fromState, fromParam ) {
-            if ( typeof(toState.data) == 'object' ) {
-                if (!AuthService.isAuthorized(toState.data.authorizedRoles)) {
-                    event.preventDefault();
-
-                    if ( AuthService.isAuthenticated() ) {
-                        $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
-                    }
-                    else {
-                        $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
-                    }
-                }
-            }
-        });
-
-        $rootScope.$on( AUTH_EVENTS.notAuthenticated, function( event, toState ) {
-            $state.go( 'app.login' );
-        });
-    })
-    .factory('AuthService', function ($http, Session ) {
-        var authService = {};
-        authService.login = function( credentials ) {
-            return Parse.User.logIn( credentials.username, credentials.password );
-            Parse.User.logIn( credentials.username, credentials.password, {
-                success: function( user ) {
-                    Session.create( user );
-                    console.log(Session.create(user));
-                    return user;
-                }
-            });
+    .service('Session', function () {
+        var service = {
+            isAuthenticated : false,
+            username        : null,
+            email           : null,
+            emailVerified   : false,
+            role            : null
         };
-        authService.isAuthenticated = function () {
-            console.log('isAuthenticated');
-            return !!Session.userId;
-        };     
-        authService.isAuthorized = function (authorizedRoles) {
-            console.log('isAuthorized');
+        service.create = function ( user ) {
+            console.log( 'Session.create', user );
+            if ( !user ) { return; }
+            service.isAuthenticated = true;
+            service.username        = user.get('username');
+            service.email           = user.get('email');
+            service.emailVerified   = user.get('emailVerified');
+            service.role            = user.get('role');
+        };
+        service.destroy = function () {
+            service.isAuthenticated = false;
+            service.username        = null;
+            service.email           = null;
+            service.emailVerified   = false;
+            service.role            = null;
+        };
+        service.isAuthorized = function (authorizedRoles) {
             if (!angular.isArray(authorizedRoles)) {
                 authorizedRoles = [authorizedRoles];
             }
-
-            return (authService.isAuthenticated() &&
-                    authorizedRoles.indexOf(Session.userRole) !== -1);
+            // return service.enable && (authorizedRoles.indexOf(Session.role) !== -1);
+            return service.isAuthenticated;
         };
-        return authService;
-    })
-    .factory( 'LoginUser', function() {
-        console.log( 'LoginUser' );
-        // ログインユーザーは仮に「最初のユーザー」とする     
-        var UserObject = Parse.Object.extend( 'User2' );
-        var query = new Parse.Query( UserObject );
-        query.limit(1);
-        query.ascending( 'createdAt' );
-        return query.first().then( function( result ) 
-                                   { return result.fetch();  } );
-    })
-    .service('Session', function () {
-        console.log( 'Session' );
-        this.create = function (sessionId, userId, userRole) {
-            this.id = sessionId;
-            this.userId = userId;
-            this.userRole = userRole;
-        };
-        this.destroy = function () {
-            this.id = null;
-            this.userId = null;
-            this.userRole = null;
-        };
+        return service;
     })
     .constant('AUTH_EVENTS', {
         loginSuccess     : 'auth-login-success',
