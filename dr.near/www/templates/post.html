@@ -1,19 +1,24 @@
 <ion-view title="Post">
-<ion-content ng-class="{expanded:isExpanded}" class="animate-fade-slide-in" scroll="true">
-<form ng-submit="createTask(task)">
-<div class="margin">
-  <div class="list">
-    <label class="item item-input item-floating-label">
-      <input type="text" placeholder="Your post title" ng-model="task.title" ></textarea>
-    </label>
-    <label class="item item-input">
-      <textarea type="text" placeholder="It's ok to write anything that your side effect and progress status and so on." ng-model="task.title" ></textarea>
-    </label>
-  </div>
-</div>
-  <div class="padding">
-    <button type="submit" class="button button-block button-positive">Send</button>
-  </div>
-</form>
-</ion-content>
+  <ion-nav-bar class="bar-positive" align-title="left">
+    <ion-nav-buttons side="left">
+      <button class="button button-icon button-clear ion-ios-arrow-back" ui-sref="app.activity"></button>
+    </ion-nav-buttons>
+  </ion-nav-bar>
+  <ion-content scroll="true">
+    <form ng-submit="ctrl.post()">
+      <div class="margin">
+        <div class="list">
+          <label class="item item-input item-floating-label">
+            <input type="text" ng-model="ctrl.entry.title" placeholder="Your post title" />
+          </label>
+          <label class="item item-input">
+            <textarea rows="5" ng-model="ctrl.entry.content" placeholder="It's ok to write anything that your side effect and progress status and so on." ></textarea>
+          </label>
+        </div>
+      </div>
+      <div class="padding">
+        <button type="submit" class="button button-block button-positive">Send</button>
+      </div>
+    </form>
+  </ion-content>
 </ion-view>

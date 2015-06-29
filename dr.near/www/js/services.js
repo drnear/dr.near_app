@@ -1,6 +1,7 @@
 angular.module('DrNEAR.services',['ngResource'])    
     .service('Session', function () {
         var service = {
+            user            : null,
             isAuthenticated : false,
             username        : null,
             email           : null,
@@ -9,7 +10,8 @@ angular.module('DrNEAR.services',['ngResource'])
         };
         service.create = function ( user ) {
             console.log( 'Session.create', user );
-            if ( !user ) { return; }
+            if ( !user ) { service.destroy(); return; }
+            service.user            = user;
             service.isAuthenticated = true;
             service.username        = user.get('username');
             service.email           = user.get('email');
@@ -17,6 +19,7 @@ angular.module('DrNEAR.services',['ngResource'])
             service.role            = user.get('role');
         };
         service.destroy = function () {
+            service.user            = null;
             service.isAuthenticated = false;
             service.username        = null;
             service.email           = null;

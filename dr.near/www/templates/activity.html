@@ -1,81 +1,115 @@
-<ion-view title="Activity">
-<ion-tabs class="tabs-stable tabs-icon-top">
-<ion-tab title="Home" icon="ion-home">
-<ion-content  ng-class="{expanded:isExpanded}" class="animate-fade-slide-in">
-<div class="item card-item">
-	<div ui-sref="app.gallery" class="card stable-bg ink ink-dark">
-		<div class="item item-avatar item-text-wrap">
-			<span class="avatar" style="background-image: url('img/jon-snow.jpg');"></span>
-			<strong>Jon Snow</strong> knows nothing.
-			<div class="card-footer text-right">
-				<i class="icon ion-chatbubbles positive"></i> 6
-				<i class="icon ion-heart assertive"></i> 23
-				<div class="pull-left">
-					<i class="icon ion-clock"></i> just now
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="item card-item">
-	<div ui-sref="app.gallery" class="card stable-bg ink ink-dark">
-		<div class="item item-avatar item-text-wrap">
-			<span class="avatar" style="background-image: url('img/tyrion.jpg');"></span>
-			<strong>Tyrion Lannister</strong> says "Perhaps that is the secret. It is not what we do, so much as why we do it."
-			<div class="card-footer text-right">
-				<i class="icon ion-chatbubble positive"></i> 2
-				<i class="icon ion-heart assertive"></i> 4
-				<div class="pull-left">
-					<i class="icon ion-clock"></i> 12 mins ago
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="item card-item">
-	<div ui-sref="app.gallery" class="card stable-bg ink ink-dark">
-		<div class="item item-avatar item-text-wrap">
-			<span class="avatar" style="background-image: url('img/sansa.jpg');"></span>
-			<strong>Sansa Stark</strong> added a gallery <strong>Pretending to be Anna from Frozen</strong> ...
-			<a class="image"><img src="img/sansa-snowcastle.png">
-			</a>
-			<a class="image"><img src="img/sansa-snowcastle2.jpg">
-			</a>
-			<a class="image"><img src="img/sansa-snowcastle3.jpg">
-			</a>
-			<div class="card-footer text-right">
-				<i class="icon ion-chatbubble positive"></i> 2
-				<i class="icon ion-heart assertive"></i> 4
-				<div class="pull-left">
-					<i class="icon ion-clock"></i> 3 hrs ago
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="item card-item">
-	<div ui-sref="app.gallery" class="card stable-bg ink ink-dark">
-		<div class="item item-avatar item-text-wrap">
-			<span class="avatar" style="background-image: url('img/jon-snow.jpg');"></span>
-			<strong>Jon Snow</strong> knows nothing.
-			<div class="card-footer text-right">
-				<i class="icon ion-chatbubbles positive"></i> 6
-				<i class="icon ion-heart assertive"></i> 23
-				<div class="pull-left">
-					<i class="icon ion-clock"></i> just now
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-</ion-content>
-</ion-tab>
+<ion-view>
+  <ion-nav-bar class="bar-positive" align-title="left">
+    <ion-nav-buttons side="left">
+      <button class="button button-icon button-clear ion-android-more-vertical" menu-toggle="left"></button>
+    </ion-nav-buttons>
 
-<ion-tab title="alert" icon="ion-ios-heart" ui-sref="app.alert">
-</ion-tab>
+    <ion-nav-title>
+      <div ng-if="!ctrl.isSearchMode">Activity</div>
+      <div nf-if="ctrl.isSearchMode"
+           class="bar item-input-inset"
+           style="margin:0px; padding: 0px;">
+        <label class="item-input-wrapper">
+          <i class="icon ion-ios-search placeholder-icon"></i>
+          <input type="search" placeholder="Search"
+                 ng-model="ctrl.cond.word"
+                 ng-keyup="ctrl.search()"
+                 >
+        </label>
+      </div>
+    </ion-nav-title>
+    
+    <ion-nav-buttons side="right">
+      <button class="button button-icon button-clear ion-android-search"
+              ng-click="ctrl.isSearchMode = !ctrl.isSearchMode"></button>
+      <button class="button button-icon button-clear ion-ios-bell" ui-sref="app.alert"></button>
+    </ion-nav-buttons>
 
-<ion-tab title="Search" icon="ion-search" ui-sref="app.search">
-</ion-tab>
+    <button class="button button-fab button-fab-bottom-right button-balanced" ui-sref="app.post" ><i class="icon ion-plus"></i></button>
+  </ion-nav-bar>
 
-</ion-tabs>
+  <ion-content class="animate-fade-slide-in">
+    <div class="item card-item" ng-repeat="item in ctrl.items">
+	  <div ui-sref="app.gallery" class="card stable-bg ink ink-dark">
+		<div class="item item-avatar item-text-wrap">
+		  <span class="avatar" style="background-image: url( {{item.avatar}} );"></span>
+		  <strong>Jon Snow</strong> knows nothing.
+		  <div class="card-footer text-right">
+			<i class="icon ion-chatbubbles positive"></i> 6
+			<i class="icon ion-heart assertive"></i> 23
+			<div class="pull-left">
+			  <i class="icon ion-clock"></i> just now
+			</div>
+		  </div>
+		</div>
+	  </div>
+    </div>
+    
+    <div class="item card-item">
+	  <div ui-sref="app.gallery" class="card stable-bg ink ink-dark">
+		<div class="item item-avatar item-text-wrap">
+		  <span class="avatar" style="background-image: url('img/jon-snow.jpg');"></span>
+		  <strong>Jon Snow</strong> knows nothing.
+		  <div class="card-footer text-right">
+			<i class="icon ion-chatbubbles positive"></i> 6
+			<i class="icon ion-heart assertive"></i> 23
+			<div class="pull-left">
+			  <i class="icon ion-clock"></i> just now
+			</div>
+		  </div>
+		</div>
+	  </div>
+    </div>
+    <div class="item card-item">
+	  <div ui-sref="app.gallery" class="card stable-bg ink ink-dark">
+		<div class="item item-avatar item-text-wrap">
+		  <span class="avatar" style="background-image: url('img/tyrion.jpg');"></span>
+		  <strong>Tyrion Lannister</strong> says "Perhaps that is the secret. It is not what we do, so much as why we do it."
+		  <div class="card-footer text-right">
+			<i class="icon ion-chatbubble positive"></i> 2
+			<i class="icon ion-heart assertive"></i> 4
+			<div class="pull-left">
+			  <i class="icon ion-clock"></i> 12 mins ago
+			</div>
+		  </div>
+		</div>
+	  </div>
+    </div>
+    <div class="item card-item">
+	  <div ui-sref="app.gallery" class="card stable-bg ink ink-dark">
+		<div class="item item-avatar item-text-wrap">
+		  <span class="avatar" style="background-image: url('img/sansa.jpg');"></span>
+		  <strong>Sansa Stark</strong> added a gallery <strong>Pretending to be Anna from Frozen</strong> ...
+		  <a class="image"><img src="img/sansa-snowcastle.png">
+		  </a>
+		  <a class="image"><img src="img/sansa-snowcastle2.jpg">
+		  </a>
+		  <a class="image"><img src="img/sansa-snowcastle3.jpg">
+		  </a>
+		  <div class="card-footer text-right">
+			<i class="icon ion-chatbubble positive"></i> 2
+			<i class="icon ion-heart assertive"></i> 4
+			<div class="pull-left">
+			  <i class="icon ion-clock"></i> 3 hrs ago
+			</div>
+		  </div>
+		</div>
+	  </div>
+    </div>
+    <div class="item card-item">
+	  <div ui-sref="app.gallery" class="card stable-bg ink ink-dark">
+		<div class="item item-avatar item-text-wrap">
+		  <span class="avatar" style="background-image: url('img/jon-snow.jpg');"></span>
+		  <strong>Jon Snow</strong> knows nothing.
+		  <div class="card-footer text-right">
+			<i class="icon ion-chatbubbles positive"></i> 6
+			<i class="icon ion-heart assertive"></i> 23
+			<div class="pull-left">
+			  <i class="icon ion-clock"></i> just now
+			</div>
+		  </div>
+		</div>
+	  </div>
+    </div>
+  </ion-content>
 </ion-view>

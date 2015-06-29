@@ -1,16 +1,19 @@
 <ion-view title="Setting">
-<ion-content ng-class="{expanded:isExpanded}" class="animate-fade-slide-in">
-<div class="list">
-
-  <div class="item item-input-inset">
-    <label class="item-input-wrapper">
-      <input type="text" placeholder="Email">
-    </label>
-    <button class="button button-small">
-      Submit
-    </button>
-  </div>
-
-</div>
-</ion-content>
+  <ion-nav-bar class="bar-positive" align-title="left">
+    <ion-nav-buttons side="left">
+      <button class="button button-icon button-clear ion-android-more-vertical" menu-toggle="left"></button>
+    </ion-nav-buttons>
+  </ion-nav-bar>
+  <ion-content class="animate-fade-slide-in-right">
+    <div class="list">
+      <div class="item item-input-inset">
+        <label class="item-input-wrapper">
+          <input type="text" placeholder="Email">
+        </label>
+        <button class="button button-small">
+          Submit
+        </button>
+      </div>
+    </div>
+  </ion-content>
 </ionm>

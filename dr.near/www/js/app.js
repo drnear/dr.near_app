@@ -36,7 +36,7 @@ angular.module('DrNEAR', ['ionic', 'DrNEAR.controllers'])
             .state('intro', {
                 url:'/intro',
                 views: {
-                    'menuContent':{
+                    'appContent':{
                         templateUrl: "templates/intro.html",
                         controller:'IntroCtrl'
                     }
@@ -53,63 +53,34 @@ angular.module('DrNEAR', ['ionic', 'DrNEAR.controllers'])
                     authorizedRoles: [USER_ROLES.all]
                 },
                 views: {
-                    'menuContent':{
+                    'appContent':{
                         templateUrl: 'templates/activity.html',
                         controller: 'ActivityCtrl as ctrl'
-                    },
-                    'fabContent': {
-                        template:'<button id="fab-activity" class="button button-fab button-fab-bottom-right button-balanced" ui-sref="app.post" ><i class="icon ion-plus"></i></button>',
-                        controller: function ($scope,$timeout,$ionicPopup) {
-                            $scope.showPopup = function() {
-                                var alertPopup = $ionicPopup.alert({
-                                    title: 'Dont eat that!',
-                                    template: 'It might taste good'
-                                }); 
-                                $timeout(function () {
-                                    document.getElementById('fab-activity').classList.toggle('on');
-                                },200);
-                            }}
                     }
                 }
             })
             .state('app.post',{
                 url: '/post',
                 views: {
-                    'menuContent':{
+                    'appContent':{
                         templateUrl: 'templates/post.html',
-                        controller: 'PostCtrl'
-                    },
-                    'fabContent': {
-                        template:'<button id="fab-post" class="button button-fab button-fab-bottom-right button-balanced" ><i class="icon ion-plus"></i></button>',
-                        controller: function ($timeout) {
-                            $timeout(function () {
-                                document.getElementById('fab-post').classList.toggle('on');
-                            }, 200);
-                        }
+                        controller: 'ActivityPostCtrl as ctrl'
                     }
                 }
             })
             .state('app.alert', {
                 url: '/alert',
                 views: {
-                    'menuContent': {
+                    'appContent': {
                         templateUrl: 'templates/alert.html',
                         controller: 'AlertCtrl'
-                    },
-                    'fabContent': {
-                        template:'<button id="fab-post" class="button button-fab button-fab-bottom-right button-balanced" ><i class="icon ion-plus"></i></button>',
-                        controller: function ($timeout) {
-                            $timeout(function () {
-                                document.getElementById('fab-post').classList.toggle('on');
-                            }, 200);
-                        }
                     }
                 }
             })
             .state('app.search', {
                 url: '/search',
                 views: {
-                    'menuContent': {
+                    'appContent': {
                         templateUrl: 'templates/search.html',
                         controller: 'SearchCtrl'
                     }
@@ -118,7 +89,7 @@ angular.module('DrNEAR', ['ionic', 'DrNEAR.controllers'])
             .state('app.setting',{
                 url: '/setting',
                 views: {
-                    'menuContent':{
+                    'appContent':{
                         templateUrl: 'templates/setting.html',
                         controller: 'SettingCtrl'
                     },
@@ -135,20 +106,16 @@ angular.module('DrNEAR', ['ionic', 'DrNEAR.controllers'])
             .state('app.profile', {
                 url: "/profile",
                 views: {
-                    'menuContent': {
+                    'appContent': {
                         templateUrl: "templates/profile.html",
                         controller: 'ProfileCtrl'
-                    },
-                    'fabContent': {
-                        template:'',
-                        controller: ''
                     }
                 }
             })
             .state('app.messages', {
                 url: '/messages',
                 views: {
-                    'menuContent': {
+                    'appContent': {
                         templateUrl: "templates/messages.html",
                         controller: 'MessagesCtrl'
                     },

@@ -2,144 +2,40 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
     .controller( 'AppCtrl',function($scope, $state, $ionicSlideBoxDelegate, $location, Session, USER_ROLES){
         console.log( 'AppCtrl' );
         $scope.userRoles = USER_ROLES;
-
         this.session = Session;
-        
-        $scope.loginData = {};
-        $scope.isExpanded = false;
-        $scope.hasHeaderFabLeft = false;
-        $scope.hasHeaderFabRight = false;
-
-        $scope.setCurrentUser = function (user) {
-            $scope.currentUser = user;
-        }
-        // Create the login modal that we will use later
-        var navIcons = document.getElementsByClassName('ion-navicon');
-        for (var i = 0; i < navIcons.length; i++) {
-            navIcons.addEventListener('click', function() {
-                this.classList.toggle('active');
-            });
-        }
-        // Open the login modal
-        $scope.login = function() {
-            $location.path('/login')
-        };
-        $scope.hideNavBar = function() {
-            document.getElementsByTagName('ion-nav-bar')[0].style.display = 'none';
-        };
-        $scope.showNavBar = function() {
-            document.getElementsByTagName('ion-nav-bar')[0].style.display = 'block';
-        };
-        $scope.noHeader = function() {
-            var content = document.getElementsByTagName('ion-content');
-            for (var i = 0; i < content.length; i++) {
-                if (content[i].classList.contains('has-header')) {
-                    content[i].classList.toggle('has-header');
-                }
-            }
-        };
-        $scope.setExpanded = function(bool) {
-            $scope.isExpanded = bool;
-        };
-        $scope.setHeaderFab = function(location) {
-            var hasHeaderFabLeft = false;
-            var hasHeaderFabRight = false;
-
-            switch (location) {
-            case 'left':
-                hasHeaderFabLeft = true;
-                break;
-            case 'right':
-                hasHeaderFabRight = true;
-                break;
-            }
-
-            $scope.hasHeaderFabLeft = hasHeaderFabLeft;
-            $scope.hasHeaderFabRight = hasHeaderFabRight;
-        };
-        $scope.hasHeader = function() {
-            var content = document.getElementsByTagName('ion-content');
-            for (var i = 0; i < content.length; i++) {
-                if (!content[i].classList.contains('has-header')) {
-                    content[i].classList.toggle('has-header');
-                }
-            }
-        };
-        $scope.hideHeader = function() {
-            $scope.hideNavBar();
-            $scope.noHeader();
-        };
-        $scope.showHeader = function() {
-            $scope.showNavBar();
-            $scope.hasHeader();
-        };
-        $scope.clearFabs = function() {
-            var fabs = document.getElementsByClassName('button-fab');
-            if (fabs.length && fabs.length > 1) {
-                fabs[0].remove();
-            }
-        };
     })
     .controller('ActivityCtrl', function($scope, $stateParams, $timeout, Session) {
-        console.log( 'ActivityCtrl' );
-
-        $scope.$parent.showHeader();
-        $scope.$parent.clearFabs();
-        $scope.$parent.setHeaderFab('right');
-
         $timeout(function() {
             ionic.material.motion.fadeSlideIn({
                 selector: '.animate-fade-slide-in .item'
             });
         }, 200);
 
-        // Activate ink for controller
         ionic.material.ink.displayEffect();
     })
-    .controller('PostCtrl', function($scope, $stateParams, $ionicPopup, $timeout) {
-        console.log( 'PostCtrl' );
-        $scope.$parent.showHeader();
-        $scope.$parent.clearFabs();
-        $scope.isExpanded = true;
-        $scope.$parent.setExpanded(true);
-        $scope.$parent.setHeaderFab('right');
+    .controller('ActivityPostCtrl', function($scope, $state, $stateParams, $ionicPopup, $timeout, Session) {
+        this.entry = {
+            title   : '',
+            content : ''
+        };
 
-        $scope.showPopup = function() {
-            var alertPopup = $ionicPopup.alert({
-                title: 'Dont eat that!',
-                template: 'It might taste good'
+        var context = this;
+
+        this.post = function( entry ) {
+            var Activity = Parse.Object.extend( 'Activity' );
+            var activity = new Activity( Session.user );
+            activity.setReadable( '*' );
+            activity.set( 'title',   entry.title );
+            activity.set( 'content', entry.content );
+            activity.save().then(function(){
+                $timeout( function(){
+                    $state.go( 'app.activity' );
+                },100);
             });
-        }
-        $timeout(function() {
-            ionic.material.motion.fadeSlideIn({
-                selector: '.animate-fade-slide-in .item'
-            });
-        }, 200);
-
-        // Delay expansion
-        $timeout(function() {
-            $scope.isExpanded = true;
-            $scope.$parent.setExpanded(true);
-        }, 300);
-
-        // Set Motion
-        ionic.material.motion.fadeSlideInRight();
-
-
-        // Activate ink for controller
-        ionic.material.ink.displayEffect();
+        };
     })
     .controller('AlertCtrl', function($scope, $stateParams, $timeout) {
         console.log( 'AlertCtrl' );
-        // Set Header
-        $scope.$parent.showHeader();
-        $scope.$parent.clearFabs();
-
-        // Delay expansion
-        $timeout(function() {
-            $scope.isExpanded = true;
-            $scope.$parent.setExpanded(true);
-        }, 300);
 
         // Set Motion
         ionic.material.motion.fadeSlideInRight();
@@ -149,16 +45,6 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
     })
     .controller('SettingCtrl', function($scope, $stateParams, $timeout) {
         console.log( 'SettingCtrl' );
-        // Set Header
-        $scope.$parent.showHeader();
-        $scope.$parent.clearFabs();
-
-        // Delay expansion
-        $timeout(function() {
-            $scope.isExpanded = true;
-            $scope.$parent.setExpanded(true);
-        }, 300);
-
         // Set Motion
         ionic.material.motion.fadeSlideInRight();
 
@@ -167,8 +53,8 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
     })
     .controller( 'SearchCtrl', function($scope,$stateParams, $timeout){
         console.log( 'SearchCtrl' );
-        $scope.$parent.showHeader();
-        $scope.$parent.clearFabs();
+        // $scope.$parent.showHeader();
+        // $scope.$parent.clearFabs();
 
         $timeout(function() {
             $scope.isExpanded = true;
@@ -207,140 +93,20 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
             $scope.data.searchQuery = '';
         };
     })
-    .controller( 'MessagesCtrl', [ '$scope', '$location', 'LoginUser', function( $scope, $location, LoginUser ) {
+
+    .controller( 'MessagesCtrl', function( $scope, $location ) {
         console.log( 'MessageCtrl' );
-        $scope.loginUser;
-        $scope.messages  = [];
-
-        LoginUser.then( function( user ) {
-            $scope.loginUser = user;
-
-            var MessageObject = Parse.Object.extend( 'Message2' );
-
-            var queryFrom = new Parse.Query( MessageObject );
-            queryFrom.equalTo( 'from', $scope.loginUser );
-            var queryTo = new Parse.Query( MessageObject );
-            queryTo.equalTo( 'to', $scope.loginUser );
-
-            var query = Parse.Query.or( queryFrom, queryTo ); // from が自分か、 to が自分のものを検索
-            query.limit( 50 );
-            query.descending( 'createdAt' );
-            query.include( 'from' ); // from を一緒に取り出す
-            query.include( 'to' );   // to を一緒に取り出す
-            query.find().then( function( results ) {
-                $scope.$apply( function(){
-                    var uniqueUsers = {};
-                    for ( var i = 0; i < results.length; i++ ) {
-                        var type = (results[i].get('from').id == $scope.loginUser.id) ? 'sent' : 'received';
-                        var userMessageId = (type == 'sent') // 同じ相手との重複表示を避ける
-                            ? results[i].get('from').id + ':' + results[i].get('to').id
-                            : results[i].get('to').id + ':' + results[i].get('from').id;
-                        if ( !uniqueUsers[userMessageId] || ( uniqueUsers[userMessageId] < results[i].createdAt ) ) {
-                            uniqueUsers[userMessageId] = results[i].createdAt;
-                            $scope.messages.push({
-                                umid   : userMessageId,
-                                object : angular.copy( results[i] ),
-                                type   : type
-                            });
-                        }
-                    }
-                });
-            });
-        });
-        var UserObject = Parse.Object.extend('User2')
-        var user0 = new UserObject();
-        user0.set( 'name', 'user0' );
-        user0.save();
-
-        var user1 = new UserObject();
-        user1.set( 'name', 'user1' );
-        user1.save();
-
-        var MessageObject = Parse.Object.extend( 'Message2' );
-        var message0 = new MessageObject();
-        message0.save({
-            'from': user0,
-            'to': user1,
-            'content':"I'm gonna be there."
-        })
-        $scope.detail = function( msg ) {
-            var user = (msg.type == 'sent') ? msg.object.get('to') : msg.object.get('from');
-            $location.path( '/message/' + user.id );
-        };
-    }])
-    .controller('AmessageCtrl', [ '$scope', '$location', '$stateParams', 'LoginUser', function( $scope, $location, $stateParams, LoginUser ) {
+    })
+    .controller('AmessageCtrl', function( $scope, $location, $stateParams ) {
         console.log( 'AmessageCtrl' );
-        $scope.loginUser;
-        $scope.messages = [];
-        LoginUser.then( function( user ) {
-            $scope.loginUser  = user;
-
-            var MessageObject = Parse.Object.extend( 'Message2' );
-            var UserObject = Parse.Object.extend( 'User2' );
-
-            var targetUser = new UserObject();
-            targetUser.id = $stateParams.uid; // 特定のユーザーとのやりとりを検索
-
-            var queryFrom = new Parse.Query( MessageObject );
-            queryFrom.equalTo( 'from', $scope.loginUser );    // 自分から
-            queryFrom.equalTo( 'to', targetUser );            // 特定ユーザー
-
-            var queryTo = new Parse.Query( MessageObject );
-            queryTo.equalTo( 'from', targetUser );            // 特定ユーザーから
-            queryTo.equalTo( 'to', $scope.loginUser );
-
-            console.log(targetUser)        // 自分
-
-            var query = Parse.Query.or( queryFrom, queryTo ); // のいずれか
-            query.limit( 50 );
-            query.descending( 'createdAt' );
-            query.include( 'from' );
-            query.include( 'to' );
-            query.find().then( function( results ) {
-                $scope.$apply( function(){
-                    for ( var i = 0; i < results.length; i++ ) {
-                        var type = (results[i].get('from').id == $scope.loginUser.id) ? 'sent' : 'received';
-                        $scope.messages.push({
-                            object : angular.copy( results[i] ),
-                            type   : type,
-                            user   : user
-                        });
-                        if ( !$scope.targetUser ) {
-                            $scope.targetUser = (type == 'sent') ? results[i].get('to') : results[i].get('from');
-                        }
-                    }
-                });
-            });
-        });
-
-        $scope.back = function() {
-            $location.path( '/' );
-        };
-    }])
-    .controller( 'DiseaseCtrl', ['$scope', function($scope){
-        console.log( 'DiseaseCtrl' );
-        $scope.diseases = [
-            { 
-                name : "Distal Myopathy", 
-                medicine : "MIDAZOLAM,",
-                photo : "Userphoto", },
-        ];
-    } ] )
-    .controller( 'MedicineCtrl', ['$scope', function($scope){
-        console.log( 'MedicineCtrl' );
-        $scope.medicines = [
-            { 
-                company : "Novartis Pharl", 
-                medicine : "Glivec", },
-        ];
-    }])
+    })
     .controller('ProfileCtrl', function($scope, $stateParams, $timeout) {
         console.log( 'ProfileCtrl' );
-        $scope.$parent.showHeader();
-        $scope.$parent.clearFabs();
-        $scope.isExpanded = false;
-        $scope.$parent.setExpanded(false);
-        $scope.$parent.setHeaderFab(false);
+        // $scope.$parent.showHeader();
+        // $scope.$parent.clearFabs();
+        // $scope.isExpanded = false;
+        // $scope.$parent.setExpanded(false);
+        // $scope.$parent.setHeaderFab(false);
         // Set Motion
         $timeout(function() {
             ionic.material.motion.slideUp({
@@ -525,6 +291,4 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
         $scope.login = function() {
             $location.path( '/login' );
         };
-    })
-
-
+    });

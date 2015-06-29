@@ -1,18 +1,13 @@
 <ion-view title="Messages">
-<ion-content ng-class="{expanded:$scope.isExpanded}">
-<span>Login : {{ loginUser.get('name') }}</span>
-<div class="messageslist">
-	<div class="list">
-		<a ng-repeat="msg in messages"
-		ng-click="detail( msg )"
-		class="item item-thumbnail-left">
-		<img ng-src="{{ item.image }}">
-		<h2> {{ msg.type == 'sent' ? msg.object.get('to').get('name') : msg.object.get('from').get('name') }}</h2>
-		<h4>{{ msg.object.get('content') }}</h4>
-	</a>
-</div>
-</ion-list>
-</div>
-</div>
-</ion-content>
+  <ion-nav-bar class="bar-positive" align-title="left">
+    <ion-nav-buttons side="left">
+      <button class="button button-icon button-clear ion-android-more-vertical" menu-toggle="left"></button>
+    </ion-nav-buttons>
+    
+    <button class="button button-fab button-fab-bottom-right button-balanced" ui-sref="app.post" ><i class="icon ion-plus"></i></button>
+  </ion-nav-bar>
+  <ion-content>
+    <ion-list>
+    </ion-list>
+  </ion-content>
 </ion-view>
