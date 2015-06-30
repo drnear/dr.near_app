@@ -1,30 +1,48 @@
 angular.module('DrNEAR.controllers', ['DrNEAR.services'])
-    .controller( 'AppCtrl',function($scope, $state, $ionicSlideBoxDelegate, $location, Session, USER_ROLES){
-        console.log( 'AppCtrl' );
-        $scope.userRoles = USER_ROLES;
+    .controller( 'AppCtrl', function($scope, $state, $ionicSlideBoxDelegate, $location, Session, USER_ROLES){
         this.session = Session;
     })
-    .controller('ActivityCtrl', function($scope, $stateParams, $timeout, Session) {
-        $timeout(function() {
-            ionic.material.motion.fadeSlideIn({
-                selector: '.animate-fade-slide-in .item'
-            });
-        }, 200);
 
-        ionic.material.ink.displayEffect();
+    .controller( 'ActivityCtrl', function($scope, $stateParams, $timeout, Session) {
+        this.items = [];
+        var context = this;
+
+        var Activity = Parse.Object.extend( 'Activity' );
+        var query = new Parse.Query( Activity );
+        query.limit( 10 );
+        query.descending( 'createdAt' );
+        query.find().then(
+            function( results ) {
+                $timeout( function(){
+                    context.items.splice(0);
+                    for ( var i = 0; i < results.length; i++ ) {
+                        context.items.push( results[i] );
+                    }
+                }, 10);
+                $timeout( function(){
+                    ionic.material.motion.fadeSlideIn({
+                        selector: '.animate-fade-slide-in .item'
+                    });
+                    ionic.material.ink.displayEffect();
+                }, 20);
+            },
+            function( err ) {
+                console.log( 'err', err );
+            }
+        );
     })
-    .controller('ActivityPostCtrl', function($scope, $state, $stateParams, $ionicPopup, $timeout, Session) {
-        this.entry = {
-            title   : '',
-            content : ''
-        };
 
+    .controller('ActivityPostCtrl', function($scope, $state, $stateParams, $timeout, Session) {
         var context = this;
 
         this.post = function( entry ) {
             var Activity = Parse.Object.extend( 'Activity' );
-            var activity = new Activity( Session.user );
-            activity.setReadable( '*' );
+            var activity = new Activity();
+
+            var acl = new Parse.ACL( Parse.User.current() );
+            acl.setPublicReadAccess( true );
+            activity.setACL( acl );
+
             activity.set( 'title',   entry.title );
             activity.set( 'content', entry.content );
             activity.save().then(function(){
@@ -34,6 +52,7 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
             });
         };
     })
+
     .controller('AlertCtrl', function($scope, $stateParams, $timeout) {
         console.log( 'AlertCtrl' );
 
@@ -43,6 +62,7 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
         // Set Ink
         ionic.material.ink.displayEffect();
     })
+
     .controller('SettingCtrl', function($scope, $stateParams, $timeout) {
         console.log( 'SettingCtrl' );
         // Set Motion
@@ -51,6 +71,7 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
         // Set Ink
         ionic.material.ink.displayEffect();
     })
+
     .controller( 'SearchCtrl', function($scope,$stateParams, $timeout){
         console.log( 'SearchCtrl' );
         // $scope.$parent.showHeader();
@@ -97,9 +118,11 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
     .controller( 'MessagesCtrl', function( $scope, $location ) {
         console.log( 'MessageCtrl' );
     })
+
     .controller('AmessageCtrl', function( $scope, $location, $stateParams ) {
         console.log( 'AmessageCtrl' );
     })
+
     .controller('ProfileCtrl', function($scope, $stateParams, $timeout) {
         console.log( 'ProfileCtrl' );
         // $scope.$parent.showHeader();
@@ -122,6 +145,7 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
         // Set Ink
         ionic.material.ink.displayEffect();
     })
+
     .controller( 'SignupCtrl', function( $scope, $timeout, $location ) {
         console.log( 'SignupCtrl' );
         Parse.User.logOut();
@@ -187,6 +211,7 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
 
         };
     })
+
     .controller( 'LoginCtrl', function( $scope, $state, $location, $rootScope, $timeout, Session, AUTH_EVENTS ) {
         Parse.User.logOut();
         Session.destroy();
@@ -240,6 +265,7 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
             $location.path('/');
         };
     })
+
     .controller( 'IntroCtrl',function($scope, $state, $stateParams, $ionicSlideBoxDelegate, 
                                       $ionicModal, $timeout, $location){
         console.log( 'IntroCtrl' );
