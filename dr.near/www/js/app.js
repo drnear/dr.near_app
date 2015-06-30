@@ -2,7 +2,7 @@ if ( typeof( APP_CONFIG ) == 'undefined' ) {
     APP_CONFIG = {};
 }
 
-angular.module('DrNEAR', ['ionic', 'DrNEAR.controllers'])
+angular.module('DrNEAR', ['ionic', 'ionic-material', 'DrNEAR.controllers'])
     .run( function( $ionicPlatform, Session ) {
         Parse.initialize( APP_CONFIG.PARSE_APP_KEY, APP_CONFIG.PARSE_APP_SECRET )
         Session.create( Parse.User.current() );
@@ -20,7 +20,7 @@ angular.module('DrNEAR', ['ionic', 'DrNEAR.controllers'])
         });
     })
     .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, USER_ROLES) {
-        openFB.init({appId: APP_CONFIG.FACEBOOK_APP_ID});
+        // openFB.init({appId: APP_CONFIG.FACEBOOK_APP_ID});
         $ionicConfigProvider.views.maxCache(0);
         $stateProvider
             .state('login', {
@@ -86,29 +86,30 @@ angular.module('DrNEAR', ['ionic', 'DrNEAR.controllers'])
                     }
                 }
             })
-            .state('app.setting',{
-                url: '/setting',
-                views: {
-                    'appContent':{
-                        templateUrl: 'templates/setting.html',
-                        controller: 'SettingCtrl'
-                    },
-                    'fabContent': {
-                        template:'<button id="fab-setting" class="button button-fab button-fab-bottom-right button-balanced"><i class="icon ion-plus"></i></button>',
-                        controller: function ($timeout) {
-                            $timeout(function () {
-                                document.getElementById('fab-setting').classList.toggle('on');
-                            }, 200);
-                        }
-                    }
-                }
-            })
             .state('app.profile', {
                 url: "/profile",
                 views: {
                     'appContent': {
                         templateUrl: "templates/profile.html",
                         controller: 'ProfileCtrl'
+                    }
+                }
+            })
+            .state('app.profedit', {
+                url: "/profedit",
+                views: {
+                    'appContent': {
+                        templateUrl: "templates/profedit.html",
+                        controller: 'ProfEditCtrl'
+                    }
+                }
+            })
+            .state('app.setting',{
+                url: '/setting',
+                views: {
+                    'appContent':{
+                        templateUrl: 'templates/setting.html',
+                        controller: 'SettingCtrl'
                     }
                 }
             })

@@ -3,6 +3,9 @@
     <ion-nav-buttons side="left">
       <button class="button button-icon button-clear ion-android-more-vertical" menu-toggle="left"></button>
     </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+      <button class="button button-icon button-clear ion-edit" ui-sref="app.profedit"></button>
+    </ion-nav-buttons>
   </ion-nav-bar>
   <ion-content>
     <div class="hero slide-up" style="background-image: url('img/profile-bg.jpg');">
@@ -93,19 +96,3 @@
     </div>
   </ion-content>
 </ion-view>
-
-
-<!--
-    <ion-view title="Profile">
-      <ion-content class="has-header">
-        <div class="list card">
-          <div class="item">
-            <h2>{{user.name}}</h2>
-            <p>{{user.city}}</p>
-          </div>
-          <div class="item item-body">
-            <img src="http://graph.facebook.com/{{user.id}}/picture?width=270&height=270"/>
-          </div>
-        </div>
-      </ion-content>
-    </ion-view>

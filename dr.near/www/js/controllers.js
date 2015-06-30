@@ -1,9 +1,15 @@
-angular.module('DrNEAR.controllers', ['DrNEAR.services'])
-    .controller( 'AppCtrl', function($scope, $state, $ionicSlideBoxDelegate, $location, Session, USER_ROLES){
+angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
+    .controller( 'AppCtrl', function(
+        $scope, $state, $ionicSlideBoxDelegate, $location,
+        ionicMaterialMotion, ionicMaterialInk, Session, USER_ROLES
+    ){
         this.session = Session;
     })
 
-    .controller( 'ActivityCtrl', function($scope, $stateParams, $timeout, Session) {
+    .controller( 'ActivityCtrl', function(
+        $scope, $stateParams, $timeout,
+        ionicMaterialMotion, ionicMaterialInk, Session
+    ) {
         this.items = [];
         var context = this;
 
@@ -20,10 +26,10 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
                     }
                 }, 10);
                 $timeout( function(){
-                    ionic.material.motion.fadeSlideIn({
+                    ionicMaterialMotion.fadeSlideIn({
                         selector: '.animate-fade-slide-in .item'
                     });
-                    ionic.material.ink.displayEffect();
+                    ionicMaterialInk.displayEffect();
                 }, 20);
             },
             function( err ) {
@@ -32,7 +38,10 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
         );
     })
 
-    .controller('ActivityPostCtrl', function($scope, $state, $stateParams, $timeout, Session) {
+    .controller( 'ActivityPostCtrl', function(
+        $scope, $state, $stateParams, $timeout,
+        ionicMaterialMotion, ionicMaterialInk, Session
+    ) {
         var context = this;
 
         this.post = function( entry ) {
@@ -53,26 +62,35 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
         };
     })
 
-    .controller('AlertCtrl', function($scope, $stateParams, $timeout) {
+    .controller( 'AlertCtrl', function(
+        $scope, $stateParams, $timeout,
+        ionicMaterialMotion, ionicMaterialInk
+    ) {
         console.log( 'AlertCtrl' );
 
         // Set Motion
-        ionic.material.motion.fadeSlideInRight();
+        ionicMaterialMotion.fadeSlideInRight();
 
         // Set Ink
-        ionic.material.ink.displayEffect();
+        ionicMaterialInk.displayEffect();
     })
 
-    .controller('SettingCtrl', function($scope, $stateParams, $timeout) {
+    .controller( 'SettingCtrl', function(
+        $scope, $stateParams, $timeout,
+        ionicMaterialMotion, ionicMaterialInk
+    ) {
         console.log( 'SettingCtrl' );
         // Set Motion
-        ionic.material.motion.fadeSlideInRight();
+        ionicMaterialMotion.fadeSlideInRight();
 
         // Set Ink
-        ionic.material.ink.displayEffect();
+        ionicMaterialInk.displayEffect();
     })
 
-    .controller( 'SearchCtrl', function($scope,$stateParams, $timeout){
+    .controller( 'SearchCtrl', function(
+        $scope, $stateParams, $timeout,
+        ionicMaterialMotion, ionicMaterialInk
+    ){
         console.log( 'SearchCtrl' );
         // $scope.$parent.showHeader();
         // $scope.$parent.clearFabs();
@@ -82,10 +100,10 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
             $scope.$parent.setExpanded(true);
         }, 300);
         // Set Motion
-        ionic.material.motion.fadeSlideInRight();
+        ionicMaterialMotion.fadeSlideInRight();
 
         // Set Ink
-        ionic.material.ink.displayEffect();
+        ionicMaterialInk.displayEffect();
 
         $scope.data = {};
         
@@ -123,27 +141,49 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
         console.log( 'AmessageCtrl' );
     })
 
-    .controller('ProfileCtrl', function($scope, $stateParams, $timeout) {
+    .controller('ProfileCtrl', function(
+        $scope, $stateParams, $timeout,
+        ionicMaterialMotion, ionicMaterialInk
+    ) {
         console.log( 'ProfileCtrl' );
-        // $scope.$parent.showHeader();
-        // $scope.$parent.clearFabs();
-        // $scope.isExpanded = false;
-        // $scope.$parent.setExpanded(false);
-        // $scope.$parent.setHeaderFab(false);
-        // Set Motion
         $timeout(function() {
-            ionic.material.motion.slideUp({
+            ionicMaterialMotion.slideUp({
                 selector: '.slide-up'
             });
         }, 300);
 
         $timeout(function() {
-            ionic.material.motion.fadeSlideInRight({
+            ionicMaterialMotion.fadeSlideInRight({
                 startVelocity: 2000
             });
         }, 800);
         // Set Ink
-        ionic.material.ink.displayEffect();
+        ionicMaterialInk.displayEffect();
+    })
+
+    .controller('ProfEditCtrl', function( $cordovaCamera ) {
+        console.log( 'ProfEditCtrl' );
+        var context = this;
+
+        this.useCamera = function() {
+            var options = {
+                quality: 50,
+                destinationType: Camera.DestinationType.DATA_URL,
+                sourceType: Camera.PictureSourceType.CAMERA,
+                allowEdit: true,
+                encodingType: Camera.EncodingType.JPEG,
+                targetWidth: 100,
+                targetHeight: 100,
+                popoverOptions: CameraPopoverOptions,
+                saveToPhotoAlbum: false
+            };
+            $cordovaCamera.getPicture(options).then(function(imageData) {
+                var image = document.getElementById('avatar');
+                image.src = "data:image/jpeg;base64," + imageData;
+            }, function(err) {
+                // error
+            });
+        };
     })
 
     .controller( 'SignupCtrl', function( $scope, $timeout, $location ) {
@@ -275,7 +315,7 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
         $scope.$parent.setHeaderFab(false);
 
         $timeout(function() {
-            ionic.material.motion.fadeSlideIn({
+            ionicMaterialMotion.fadeSlideIn({
                 selector: '.animate-fade-slide-in .item'
             });
         }, 200);
@@ -285,18 +325,18 @@ angular.module('DrNEAR.controllers', ['DrNEAR.services'])
             $scope.$parent.setExpanded(true);
         }, 300);
         // Set Motion
-        ionic.material.motion.fadeSlideInRight();
+        ionicMaterialMotion.fadeSlideInRight();
         // Activate ink for controller
-        ionic.material.ink.displayEffect();
+        ionicMaterialInk.displayEffect();
         // Delay expansion
         $timeout(function() {
             $scope.isExpanded = true;
             $scope.$parent.setExpanded(true);
         }, 300);
         // Set Motion
-        ionic.material.motion.fadeSlideInRight();
+        ionicMaterialMotion.fadeSlideInRight();
         // Set Ink
-        ionic.material.ink.displayEffect();
+        ionicMaterialInk.displayEffect();
         // Called to navigate to the main app
         $scope.startApp = function() {
             $location.path('/signup');
