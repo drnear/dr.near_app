@@ -4,16 +4,21 @@ angular.module('DrNEAR.services',['ngResource'])
             user            : null,
             isAuthenticated : false,
             username        : null,
+            iconurl         : 'img/material1.jpg',
             email           : null,
             emailVerified   : false,
             role            : null
         };
         service.create = function ( user ) {
-            console.log( 'Session.create', user );
+            if ( !user ) { service.destroy(); return; }
+            service.update( user );
+        };
+        service.update = function ( user ) {
             if ( !user ) { service.destroy(); return; }
             service.user            = user;
             service.isAuthenticated = true;
             service.username        = user.get('username');
+            service.iconurl         = user.get('icon') ? user.get('icon').url() : 'img/material1.jpg';
             service.email           = user.get('email');
             service.emailVerified   = user.get('emailVerified');
             service.role            = user.get('role');
@@ -22,6 +27,7 @@ angular.module('DrNEAR.services',['ngResource'])
             service.user            = null;
             service.isAuthenticated = false;
             service.username        = null;
+            service.iconurl         = 'img/material1.jpg';
             service.email           = null;
             service.emailVerified   = false;
             service.role            = null;

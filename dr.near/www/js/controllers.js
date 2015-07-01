@@ -161,27 +161,55 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         ionicMaterialInk.displayEffect();
     })
 
-    .controller('ProfEditCtrl', function( $cordovaCamera ) {
-        console.log( 'ProfEditCtrl' );
+    .controller('ProfEditCtrl', function( $state, $cordovaCamera, Session ) {
+        console.log( 'ProfEditCtrl', Parse.User.current() );
         var context = this;
 
         this.useCamera = function() {
+            console.log('useCamera');
             var options = {
                 quality: 50,
-                destinationType: Camera.DestinationType.DATA_URL,
-                sourceType: Camera.PictureSourceType.CAMERA,
-                allowEdit: true,
-                encodingType: Camera.EncodingType.JPEG,
-                targetWidth: 100,
-                targetHeight: 100,
-                popoverOptions: CameraPopoverOptions,
-                saveToPhotoAlbum: false
+                destinationType  : 0,    // 0:DATA_URL, 1:, 2:
+                sourceType       : 0,    // 0:LIBRARY, 1:CAMERA, 2:ALBUM
+                allowEdit        : true,
+                encodingType     : 0,    // JPEG
+                targetWidth      : 100,
+                targetHeight     : 100,
+                popoverOptions   : {},
+                saveToPhotoAlbum : false
             };
             $cordovaCamera.getPicture(options).then(function(imageData) {
-                var image = document.getElementById('avatar');
-                image.src = "data:image/jpeg;base64," + imageData;
+                document.getElementById('icon-image').src = "data:image/jpeg;base64," + imageData;
             }, function(err) {
                 // error
+            });
+        };
+
+        this.selectIcon = function() {
+            document.getElementById('icon-handler').click();
+        };
+
+        this.uploadIcon = function( iconElem ) {
+            if ( iconElem.files[0] ) {
+                var reader = new FileReader();
+                reader.onload = function(ev){
+                    document.getElementById('icon-image').src = ev.target.result;
+                };
+                reader.readAsDataURL( iconElem.files[0] );
+            }
+        };
+
+        this.update = function() {
+            var user = Parse.User.current();
+            var iconHandler = document.getElementById('icon-handler').files[0];
+            var iconFile = new Parse.File( iconHandler.name, iconHandler );
+            user.set( 'username', Session.username );
+            user.set( 'icon', iconFile );
+            user.save().then( function(){
+                Session.update( user );
+                $state.go( 'app.profile' );
+            }, function(err){
+                console.log( err );
             });
         };
     })

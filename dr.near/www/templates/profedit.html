@@ -12,13 +12,15 @@
       </label>
       <label class="item item-input">
         <span class="input-label">Icon</span>
-        <a class="item item-avatar" ng-click="ctrl.useCamera()">
-          <img src="img/material1.jpg" id="avatar">
-        </a>
+        <button class="item item-avatar" ng-click="ctrl.selectIcon($event)">
+          <img id="icon-image" ng-src="{{appctrl.session.iconurl}}">
+        </button>
+        <input id="icon-handler" type="file" style="display:none"
+               onchange="angular.element(this).scope().ctrl.uploadIcon(this)"
+               />
       </label>
 
-
-
+      <!--
       <br />
       <div class="item item-checkbox">
         <label class="checkbox">
@@ -63,7 +65,13 @@
           <option>Noo-noo</option>
         </select>
       </label>
-      <button class="button button-block button-calm ink" data-ink-color="#9DEAFF" data-ink-opacity="1"> Submit </button>
+      -->
+      
+      <button class="button button-block button-calm ink"
+              data-ink-color="#9DEAFF" data-ink-opacity="1"
+              ng-click="ctrl.update()">
+        Submit
+      </button>
     </div>
   </ion-content>
 </ion-view>

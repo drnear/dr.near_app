@@ -73,7 +73,7 @@ angular.module('DrNEAR', ['ionic', 'ionic-material', 'DrNEAR.controllers'])
                 views: {
                     'appContent': {
                         templateUrl: 'templates/alert.html',
-                        controller: 'AlertCtrl'
+                        controller: 'AlertCtrl as ctrl'
                     }
                 }
             })
@@ -82,7 +82,7 @@ angular.module('DrNEAR', ['ionic', 'ionic-material', 'DrNEAR.controllers'])
                 views: {
                     'appContent': {
                         templateUrl: 'templates/search.html',
-                        controller: 'SearchCtrl'
+                        controller: 'SearchCtrl as ctrl'
                     }
                 }
             })
@@ -91,7 +91,7 @@ angular.module('DrNEAR', ['ionic', 'ionic-material', 'DrNEAR.controllers'])
                 views: {
                     'appContent': {
                         templateUrl: "templates/profile.html",
-                        controller: 'ProfileCtrl'
+                        controller: 'ProfileCtrl as ctrl'
                     }
                 }
             })
@@ -100,7 +100,7 @@ angular.module('DrNEAR', ['ionic', 'ionic-material', 'DrNEAR.controllers'])
                 views: {
                     'appContent': {
                         templateUrl: "templates/profedit.html",
-                        controller: 'ProfEditCtrl'
+                        controller: 'ProfEditCtrl as ctrl'
                     }
                 }
             })
@@ -109,7 +109,7 @@ angular.module('DrNEAR', ['ionic', 'ionic-material', 'DrNEAR.controllers'])
                 views: {
                     'appContent':{
                         templateUrl: 'templates/setting.html',
-                        controller: 'SettingCtrl'
+                        controller: 'SettingCtrl as ctrl'
                     }
                 }
             })
