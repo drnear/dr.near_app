@@ -12,66 +12,32 @@
       </label>
       <label class="item item-input">
         <span class="input-label">Icon</span>
-        <button class="item item-avatar" ng-click="ctrl.selectIcon($event)">
-          <img id="icon-image" ng-src="{{appctrl.session.iconurl}}">
+        <button class="item item-avatar" style="height:72px;" ng-click="ctrl.selectIcon($event)">
+          <img id="icon-image" ng-src="{{appctrl.session.iconurl}}" />
         </button>
         <input id="icon-handler" type="file" style="display:none"
                onchange="angular.element(this).scope().ctrl.uploadIcon(this)"
                />
       </label>
-
-      <!--
-      <br />
-      <div class="item item-checkbox">
-        <label class="checkbox">
-          <input type="checkbox" />
-        </label>
-        I read the terms & conditions
-      </div>
-      <div class="item item-checkbox">
-        <label class="checkbox">
-          <input type="checkbox" />
-        </label>
-        Haha, you liar. There are no T&C's
-      </div>
-      <br />
-      <label class="item item-radio">
-        <input type="radio" name="group" />
-        <div class="item-content"> Tap Me </div>
-        <i class="radio-icon ion-checkmark"></i>
-      </label>
-      <label class="item item-radio">
-        <input type="radio" name="group" />
-        <div class="item-content"> Or Tap Me </div>
-        <i class="radio-icon ion-checkmark"></i>
-      </label>
-      <label class="item item-radio">
-        <input type="radio" name="group" />
-        <div class="item-content"> Or Tap Me </div>
-        <i class="radio-icon ion-checkmark"></i>
-      </label>
-      <div class="item range range-positive">
-        <i class="icon ion-ios-sunny-outline"></i>
-        <input type="range" name="volume" min="0" max="100" value="33" />
-        <i class="icon ion-ios-sunny"></i>
-      </div>
-      <label class="item item-input item-select">
-        <div class="input-label"> Most Influential Teletubby </div>
-        <select>
-          <option>Laa-Laa</option>
-          <option selected>Tinky Winky</option>
-          <option>Dipsy</option>
-          <option>Po</option>
-          <option>Noo-noo</option>
-        </select>
-      </label>
-      -->
-      
-      <button class="button button-block button-calm ink"
-              data-ink-color="#9DEAFF" data-ink-opacity="1"
-              ng-click="ctrl.update()">
+    </div>
+    <button class="button button-block button-calm ink"
+        data-ink-color="#9DEAFF" data-ink-opacity="1"
+        ng-click="ctrl.update()">
         Submit
-      </button>
+    </button>
+    <div class="list">
+      <label class="item item-input">
+        <div class="input-label">Diseases</div>
+      </label>
+    </div>
+    <div class="list list-inset">
+      <div class="item item-button-right" ng-repeat="item in appctrl.session.diseases">
+        {{item.get('name')}}
+        <button class="button button-small ink" ng-click="ctrl.delete(item)"><i class="icon ion-ios-minus-outline"></i></button>
+      </div>
+      <div class="item item-button-right">
+        <button class="button button-small ink" ui-sref="app.profedit_diseases"><i class="icon ion-ios-plus-outline"></i></button>
+      </div>
     </div>
   </ion-content>
 </ion-view>
