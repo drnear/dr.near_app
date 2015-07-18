@@ -7,7 +7,8 @@ angular.module('DrNEAR.services',['ngResource'])
             iconurl         : 'img/material1.jpg',
             email           : null,
             emailVerified   : false,
-            role            : null
+            role            : null,
+            diseases        : []
         };
         service.create = function ( user ) {
             if ( !user ) { service.destroy(); return; }
@@ -22,7 +23,6 @@ angular.module('DrNEAR.services',['ngResource'])
             service.email           = user.get('email');
             service.emailVerified   = user.get('emailVerified');
             service.role            = user.get('role');
-            service.diseases        = [];
             if ( user.relation("diseases") ) {
                 user.relation("diseases").query().find().then(function(diseases){
                     $timeout(function(){
@@ -39,6 +39,7 @@ angular.module('DrNEAR.services',['ngResource'])
             service.email           = null;
             service.emailVerified   = false;
             service.role            = null;
+            service.diseases        = [];
         };
         service.isAuthorized = function (authorizedRoles) {
             if (!angular.isArray(authorizedRoles)) {

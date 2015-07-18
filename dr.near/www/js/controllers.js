@@ -118,7 +118,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         ionicMaterialInk.displayEffect();
     })
 
-    .controller('ProfEditCtrl', function( $state, $cordovaCamera, Session ) {
+    .controller('ProfEditCtrl', function( $state, $cordovaCamera, $timeout, Session ) {
         console.log( 'ProfEditCtrl', Parse.User.current() );
         var context = this;
 
@@ -162,16 +162,27 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             var iconFile = new Parse.File( iconHandler.name, iconHandler );
             user.set( 'username', Session.username );
             user.set( 'icon', iconFile );
-            user.save().then( function(){
-                Session.update( user );
+            user.save().then( function(saved){
+                Session.update( saved );
                 $state.go( 'app.profile' );
             }, function(err){
                 console.log( err );
             });
         };
+
+        this.delete_disease = function( item ) {
+            var user = Parse.User.current();
+            user.relation('diseases').remove(item);
+            user.save().then(function(saved){
+                console.log(saved);
+                $timeout(function(){
+                    Session.update(saved);
+                });
+            });
+        };
     })
 
-    .controller( "ProfEditDiseasesCtrl", function( $timeout ){
+    .controller( "ProfEditDiseasesCtrl", function( $state, $timeout, Session ){
         var Disease = Parse.Object.extend('Disease');
 
         var context = this;
@@ -202,18 +213,23 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         context.select = function( disease ){
             var user = Parse.User.current();
 
-            user.relation("diseases").add(disease);
-
-            user.save().then(function(obj){
-                disease.relation("followers").add(user);
-                disease.save().then(function(obj){
-                    console.log('saving disease succeeded',obj);
-                }, function(err){
-                    console.log('saving disease failed',err);
-                    userDiseases.remove(disease);
+            disease.relation("followers").add(user);
+            disease.save().then(function(saved){
+                console.log('saving disease succeeded',saved);
+                user.relation("diseases").add(saved);
+                user.save().then(function(saved){
+                    $timeout(function(){
+                        Session.update(saved);
+                        $state.go('app.profedit');
+                    });
+                },function(err){
+                    console.log('saving user failed',err);
                 });
-            },function(err){
-                console.log('saving user failed',err);
+
+            }, function(err){
+                console.log('saving disease failed',err);
+                disease.relation('followers').remove(user);
+                disease.save();
             });
 
         };

@@ -33,7 +33,7 @@
     <div class="list list-inset">
       <div class="item item-button-right" ng-repeat="item in appctrl.session.diseases">
         {{item.get('name')}}
-        <button class="button button-small ink" ng-click="ctrl.delete(item)"><i class="icon ion-ios-minus-outline"></i></button>
+        <button class="button button-small ink" ng-click="ctrl.delete_disease(item)"><i class="icon ion-ios-minus-outline"></i></button>
       </div>
       <div class="item item-button-right">
         <button class="button button-small ink" ui-sref="app.profedit_diseases"><i class="icon ion-ios-plus-outline"></i></button>
