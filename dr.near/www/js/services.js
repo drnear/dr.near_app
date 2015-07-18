@@ -1,5 +1,5 @@
-angular.module('DrNEAR.services',['ngResource'])    
-    .service('Session', function () {
+angular.module('DrNEAR.services',['ngResource'])
+    .service('Session', function ($timeout) {
         var service = {
             user            : null,
             isAuthenticated : false,
@@ -7,7 +7,8 @@ angular.module('DrNEAR.services',['ngResource'])
             iconurl         : 'img/material1.jpg',
             email           : null,
             emailVerified   : false,
-            role            : null
+            role            : null,
+            diseases        : []
         };
         service.create = function ( user ) {
             if ( !user ) { service.destroy(); return; }
@@ -22,6 +23,13 @@ angular.module('DrNEAR.services',['ngResource'])
             service.email           = user.get('email');
             service.emailVerified   = user.get('emailVerified');
             service.role            = user.get('role');
+            if ( user.relation("diseases") ) {
+                user.relation("diseases").query().find().then(function(diseases){
+                    $timeout(function(){
+                        service.diseases = diseases;
+                    });
+                });
+            }
         };
         service.destroy = function () {
             service.user            = null;
@@ -31,6 +39,7 @@ angular.module('DrNEAR.services',['ngResource'])
             service.email           = null;
             service.emailVerified   = false;
             service.role            = null;
+            service.diseases        = [];
         };
         service.isAuthorized = function (authorizedRoles) {
             if (!angular.isArray(authorizedRoles)) {
@@ -56,7 +65,7 @@ angular.module('DrNEAR.services',['ngResource'])
         guest  : 'guest'
     })
     .directive('formAutofillFix', function ($timeout) {
-        console.log( 'formAutofillFix' ); 
+        console.log( 'formAutofillFix' );
         return function (scope, element, attrs) {
             element.prop('method', 'post');
             if (attrs.ngSubmit) {

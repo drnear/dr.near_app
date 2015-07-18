@@ -47,13 +47,16 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         this.post = function( entry ) {
             var Activity = Parse.Object.extend( 'Activity' );
             var activity = new Activity();
+            var user     = Parse.User.current();
 
-            var acl = new Parse.ACL( Parse.User.current() );
+            var acl = new Parse.ACL( user );
             acl.setPublicReadAccess( true );
             activity.setACL( acl );
 
             activity.set( 'title',   entry.title );
             activity.set( 'content', entry.content );
+            activity.set( 'user',    user );
+
             activity.save().then(function(){
                 $timeout( function(){
                     $state.go( 'app.activity' );
@@ -87,52 +90,6 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         ionicMaterialInk.displayEffect();
     })
 
-    .controller( 'SearchCtrl', function(
-        $scope, $stateParams, $timeout,
-        ionicMaterialMotion, ionicMaterialInk
-    ){
-        console.log( 'SearchCtrl' );
-        // $scope.$parent.showHeader();
-        // $scope.$parent.clearFabs();
-
-        $timeout(function() {
-            $scope.isExpanded = true;
-            $scope.$parent.setExpanded(true);
-        }, 300);
-        // Set Motion
-        ionicMaterialMotion.fadeSlideInRight();
-
-        // Set Ink
-        ionicMaterialInk.displayEffect();
-
-        $scope.data = {};
-        
-        $scope.items = [
-            { price: '$4.99', text: 'Pizza' },
-            { price: '$2.99', text: 'Burger' },
-            { price: '$3.99', text: 'Pasta' },
-            { price: '$2.99', text: 'Burger' },
-            { price: '$3.99', text: 'Pasta' },
-            { price: '$2.99', text: 'Burger' },
-            { price: '$3.99', text: 'Pasta' },
-            { price: '$2.99', text: 'Burger' },
-            { price: '$3.99', text: 'Pasta' },
-            { price: '$2.99', text: 'Burger' },
-            { price: '$3.99', text: 'Pasta' },
-            { price: '$2.99', text: 'Burger' },
-            { price: '$3.99', text: 'Pasta' },
-            { price: '$2.99', text: 'Burger' },
-            { price: '$3.99', text: 'Pasta' },
-            { price: '$2.99', text: 'Burger' },
-            { price: '$3.99', text: 'Pasta' },
-            { price: '$2.99', text: 'Burger' },
-            { price: '$3.99', text: 'Pasta' },
-        ];
-        $scope.clearSearch = function() {
-            $scope.data.searchQuery = '';
-        };
-    })
-
     .controller( 'MessagesCtrl', function( $scope, $location ) {
         console.log( 'MessageCtrl' );
     })
@@ -161,7 +118,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         ionicMaterialInk.displayEffect();
     })
 
-    .controller('ProfEditCtrl', function( $state, $cordovaCamera, Session ) {
+    .controller('ProfEditCtrl', function( $state, $cordovaCamera, $timeout, Session ) {
         console.log( 'ProfEditCtrl', Parse.User.current() );
         var context = this;
 
@@ -205,11 +162,100 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             var iconFile = new Parse.File( iconHandler.name, iconHandler );
             user.set( 'username', Session.username );
             user.set( 'icon', iconFile );
-            user.save().then( function(){
-                Session.update( user );
+            user.save().then( function(saved){
+                Session.update( saved );
                 $state.go( 'app.profile' );
             }, function(err){
                 console.log( err );
+            });
+        };
+
+        this.delete_disease = function( item ) {
+            var user = Parse.User.current();
+            user.relation('diseases').remove(item);
+            user.save().then(function(saved){
+                console.log(saved);
+                $timeout(function(){
+                    Session.update(saved);
+                });
+            });
+        };
+    })
+
+    .controller( "ProfEditDiseasesCtrl", function( $state, $timeout, Session ){
+        var Disease = Parse.Object.extend('Disease');
+
+        var context = this;
+        context.disease    = '';
+        context.candidates = [];
+        context.searchlock = undefined;
+
+        context.search = function(){
+            if ( typeof(context.searchlock) != 'undefined' ) {
+                $timeout.cancel( context.searchlock );
+            }
+            context.searchlock = $timeout( function(){
+                context.candidates.splice(0);
+                if ( context.disease !== '' ) {
+                    var query = new Parse.Query(Disease);
+                    query.matches("name", new RegExp('.*'+context.disease+'.*'));
+                    query.find().then(function(res){
+                        $timeout(function(){
+                            for ( var i = 0; i < res.length; i++ ) {
+                                context.candidates.push( res[i] );
+                            }
+                        });
+                    },function(err){console.log('err',err);});
+                }
+            }, 500 );
+        };
+
+        context.select = function( disease ){
+            var user = Parse.User.current();
+
+            disease.relation("followers").add(user);
+            disease.save().then(function(saved){
+                console.log('saving disease succeeded',saved);
+                user.relation("diseases").add(saved);
+                user.save().then(function(saved){
+                    $timeout(function(){
+                        Session.update(saved);
+                        $state.go('app.profedit');
+                    });
+                },function(err){
+                    console.log('saving user failed',err);
+                });
+
+            }, function(err){
+                console.log('saving disease failed',err);
+                disease.relation('followers').remove(user);
+                disease.save();
+            });
+
+        };
+
+        context.create = function() {
+            var query = new Parse.Query( Disease );
+            query.equalTo("name",context.disease);
+            query.first().then(function(res){
+                if ( res ) {
+                    console.log( 'first', res );
+                    // context.select( res);
+                }
+                else {
+                    var disease = new Disease();
+                    disease.set( "name", context.disease );
+                    disease.save().then(function(obj){
+                        context.select( obj );
+                    });
+                }
+
+            }, function(err){
+                var disease = new Disease();
+                disease.set( "name", context.disease );
+                disease.save().then(function(obj){
+                    context.select( obj );
+                });
             });
         };
     })
@@ -273,7 +319,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                     }
                 },
                 {scope: 'email,publish_actions'});
-        }
+        };
         $scope.back = function () {
             $location.path('/');
 
@@ -290,7 +336,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         this.login = function () {
             Parse.User.logIn( context.credentials.username, context.credentials.password )
                 .then( function( user ) {
-                    Session.create( user )
+                    Session.create( user );
                     $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
                 }, function(err) {
                     $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
@@ -325,16 +371,15 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                 $scope.closeLogin();
             }, 1000);
         };
-        $scope.signup = function () {
-            $location.path('/signup');
-
+        this.signup = function () {
+            $state.go('signup');
         };
         $scope.back = function () {
             $location.path('/');
         };
     })
 
-    .controller( 'IntroCtrl',function($scope, $state, $stateParams, $ionicSlideBoxDelegate, 
+    .controller( 'IntroCtrl',function($scope, $state, $stateParams, $ionicSlideBoxDelegate,
                                       $ionicModal, $timeout, $location){
         console.log( 'IntroCtrl' );
         $scope.$parent.clearFabs();

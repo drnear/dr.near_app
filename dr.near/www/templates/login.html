@@ -2,7 +2,7 @@
   <ion-nav-bar class="bar-positive" ng-class="{expanded: isExpanded, 'has-header-fab-left': hasHeaderFabLeft, 'has-header-fab-right': hasHeaderFabRight}" align-title="left">
     <ion-nav-back-button class="no-text"></ion-nav-back-button>
   </ion-nav-bar>
-  <ion-content padding="true" scroll="false" class="has-header"> 
+  <ion-content padding="true" scroll="false" class="has-header">
     <div class="alert alert-danger" ng-if="error != ''">{{ error }}</div>
     <form ng-submit="login(credentials)">
       <ion-list>
@@ -18,6 +18,6 @@
       </ion-list>
     </form>
     <button class="button button-block button-positive" ng-click="ctrl.fbLogin()">Login with Facebook</button>
-    <button class="button button-positive button-clear button-block"ng-click="ctrl.signup()">Or create an account</button>
+    <button class="button button-positive button-clear button-block" ng-click="ctrl.signup()">Or create an account</button>
   </ion-content>
 </ion-view>
