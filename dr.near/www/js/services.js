@@ -4,6 +4,7 @@ angular.module('DrNEAR.services',['ngResource'])
             user            : null,
             isAuthenticated : false,
             username        : null,
+            name            : null,
             iconurl         : 'img/material1.jpg',
             email           : null,
             emailVerified   : false,
@@ -19,6 +20,7 @@ angular.module('DrNEAR.services',['ngResource'])
             service.user            = user;
             service.isAuthenticated = true;
             service.username        = user.get('username');
+            service.name            = user.get('name') || user.get('username');
             service.iconurl         = user.get('icon') ? user.get('icon').url() : 'img/material1.jpg';
             service.email           = user.get('email');
             service.emailVerified   = user.get('emailVerified');
@@ -35,6 +37,7 @@ angular.module('DrNEAR.services',['ngResource'])
             service.user            = null;
             service.isAuthenticated = false;
             service.username        = null;
+            service.name            = null;
             service.iconurl         = 'img/material1.jpg';
             service.email           = null;
             service.emailVerified   = false;

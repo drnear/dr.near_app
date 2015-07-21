@@ -1,14 +1,13 @@
 angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     .controller( 'AppCtrl', function(
         $scope, $state, $ionicSlideBoxDelegate, $location,
-        ionicMaterialMotion, ionicMaterialInk, Session, USER_ROLES
+        Session, USER_ROLES
     ){
         this.session = Session;
     })
 
     .controller( 'ActivityCtrl', function(
-        $scope, $stateParams, $timeout,
-        ionicMaterialMotion, ionicMaterialInk, Session
+        $scope, $stateParams, $timeout, Session
     ) {
         this.items = [];
         var context = this;
@@ -24,13 +23,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                     for ( var i = 0; i < results.length; i++ ) {
                         context.items.push( results[i] );
                     }
-                }, 10);
-                $timeout( function(){
-                    ionicMaterialMotion.fadeSlideIn({
-                        selector: '.animate-fade-slide-in .item'
-                    });
-                    ionicMaterialInk.displayEffect();
-                }, 20);
+                });
             },
             function( err ) {
                 console.log( 'err', err );
@@ -39,8 +32,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     })
 
     .controller( 'ActivityPostCtrl', function(
-        $scope, $state, $stateParams, $timeout,
-        ionicMaterialMotion, ionicMaterialInk, Session
+        $scope, $state, $stateParams, $timeout, Session
     ) {
         var context = this;
 
@@ -66,56 +58,78 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     })
 
     .controller( 'AlertCtrl', function(
-        $scope, $stateParams, $timeout,
-        ionicMaterialMotion, ionicMaterialInk
+        $scope, $stateParams, $timeout
     ) {
         console.log( 'AlertCtrl' );
-
-        // Set Motion
-        ionicMaterialMotion.fadeSlideInRight();
-
-        // Set Ink
-        ionicMaterialInk.displayEffect();
     })
 
-    .controller( 'SettingCtrl', function(
-        $scope, $stateParams, $timeout,
-        ionicMaterialMotion, ionicMaterialInk
-    ) {
-        console.log( 'SettingCtrl' );
-        // Set Motion
-        ionicMaterialMotion.fadeSlideInRight();
+    .controller( 'SearchCtrl', function( $timeout ){
+        var context = this;
+        context.searchWord = '';
+        context.users      = [];
+        context.diseases   = [];
+        context.timer = undefined;
 
-        // Set Ink
-        ionicMaterialInk.displayEffect();
-    })
+        context.search = function(){
+            if (context.timer !== undefined) {
+                $timeout.cancel(context.timer);
+                context.timer = undefined;
+            }
 
-    .controller( 'MessagesCtrl', function( $scope, $location ) {
-        console.log( 'MessageCtrl' );
-    })
+            context.users.splice(0);
+            context.diseases.splice(0);
 
-    .controller('AmessageCtrl', function( $scope, $location, $stateParams ) {
-        console.log( 'AmessageCtrl' );
+            if ( context.searchWord === '' ) {
+                return;
+            }
+
+            context.timer = $timeout(function(){
+                var userQuery = new Parse.Query(Parse.User);
+                userQuery.matches( "username", new RegExp(".*" + context.searchWord + ".*") );
+                userQuery.notEqualTo( "id", Parse.User.current().id );
+                userQuery.find().then(function(users){
+                    $timeout(function(){
+                        context.users = users;
+                    },100);
+                });
+
+                var diseaseQuery = new Parse.Query(Parse.Object.extend("Disease"));
+                diseaseQuery.matches( "name", new RegExp(".*" + context.searchWord + ".*") );
+                diseaseQuery.find().then(function(diseases){
+                    $timeout(function(){
+                        context.diseases = diseases;
+                    });
+                });
+            },500);
+        };
     })
 
     .controller('ProfileCtrl', function(
-        $scope, $stateParams, $timeout,
-        ionicMaterialMotion, ionicMaterialInk
+        $scope, $stateParams, $timeout
     ) {
         console.log( 'ProfileCtrl' );
-        $timeout(function() {
-            ionicMaterialMotion.slideUp({
-                selector: '.slide-up'
-            });
-        }, 300);
+        var context = this;
 
-        $timeout(function() {
-            ionicMaterialMotion.fadeSlideInRight({
-                startVelocity: 2000
-            });
-        }, 800);
-        // Set Ink
-        ionicMaterialInk.displayEffect();
+        context.myposts = [];
+
+        var Activity = Parse.Object.extend( 'Activity' );
+        var query = new Parse.Query( Activity );
+        query.limit( 10 );
+        query.descending( 'createdAt' );
+        query.equalTo( 'user', Parse.User.current() );
+        query.find().then(
+            function( results ) {
+                $timeout( function(){
+                    context.myposts.splice(0);
+                    for ( var i = 0; i < results.length; i++ ) {
+                        context.myposts.push( results[i] );
+                    }
+                });
+            },
+            function( err ) {
+                console.log( 'err', err );
+            }
+        );
     })
 
     .controller('ProfEditCtrl', function( $state, $cordovaCamera, $timeout, Session ) {
@@ -158,13 +172,19 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
 
         this.update = function() {
             var user = Parse.User.current();
+            user.set( 'name', Session.name );
+
             var iconHandler = document.getElementById('icon-handler').files[0];
-            var iconFile = new Parse.File( iconHandler.name, iconHandler );
-            user.set( 'username', Session.username );
-            user.set( 'icon', iconFile );
+            if ( iconHandler && iconHandler.name ) {
+                var iconFile = new Parse.File( iconHandler.name, iconHandler );
+                user.set( 'icon', iconFile );
+            }
+
             user.save().then( function(saved){
-                Session.update( saved );
-                $state.go( 'app.profile' );
+                $timeout(function(){
+                    Session.update( saved );
+                    $state.go( 'app.profile' );
+                });
             }, function(err){
                 console.log( err );
             });
@@ -260,13 +280,30 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         };
     })
 
+    .controller( 'SettingCtrl', function() {
+        console.log( 'SettingCtrl' );
+    })
+
+    .controller( 'SettingPasswordCtrl', function() {
+        console.log( 'SettingPasswordCtrl' );
+    })
+
+    .controller( 'MessagesCtrl', function( $scope, $location ) {
+        console.log( 'MessageCtrl' );
+    })
+
+    .controller('AmessageCtrl', function( $scope, $location, $stateParams ) {
+        console.log( 'AmessageCtrl' );
+    })
+
     .controller( 'SignupCtrl', function( $scope, $timeout, $location ) {
         console.log( 'SignupCtrl' );
         Parse.User.logOut();
         $scope.user = { name: '', password: '', email: '' };
         $scope.signup = function() {
             var user = new Parse.User();
-            user.set( 'username', $scope.user.name );
+            user.set( 'username', $scope.user.username );
+            user.set( 'name', $scope.user.name );
             user.set( 'email', $scope.user.email );
             user.set( 'password', $scope.user.password );
             user.signUp(null, {
@@ -387,29 +424,6 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         $scope.$parent.setExpanded(false);
         $scope.$parent.setHeaderFab(false);
 
-        $timeout(function() {
-            ionicMaterialMotion.fadeSlideIn({
-                selector: '.animate-fade-slide-in .item'
-            });
-        }, 200);
-        // Delay expansion
-        $timeout(function() {
-            $scope.isExpanded = true;
-            $scope.$parent.setExpanded(true);
-        }, 300);
-        // Set Motion
-        ionicMaterialMotion.fadeSlideInRight();
-        // Activate ink for controller
-        ionicMaterialInk.displayEffect();
-        // Delay expansion
-        $timeout(function() {
-            $scope.isExpanded = true;
-            $scope.$parent.setExpanded(true);
-        }, 300);
-        // Set Motion
-        ionicMaterialMotion.fadeSlideInRight();
-        // Set Ink
-        ionicMaterialInk.displayEffect();
         // Called to navigate to the main app
         $scope.startApp = function() {
             $location.path('/signup');

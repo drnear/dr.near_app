@@ -20,21 +20,25 @@
         </div>
       </div>
     </div>
-    <h4 class="content padding double-padding-x">Your Post</h4>
-    <div class="item card-item">
-      <div ui-sref="app.gallery" class="card light-bg ink ink-dark">
-        <div class="item item-avatar item-text-wrap">
-          <strong>Jon Snow</strong> knows nothing.
-          <div class="card-footer text-right">
-            <i class="icon ion-chatbubbles positive"></i> 33
-            <i class="icon ion-heart assertive"></i> 23
-            <div class="pull-left">
-              <i class="icon ion-clock"></i> just now
-            </div>
-          </div>
-        </div>
-      </div>
+
+    <h4 class="content padding double-padding-x">Post</h4>
+    <div class="item card-item" ng-repeat="item in ctrl.myposts">
+	  <div ui-sref="app.gallery" class="card stable-bg ink ink-dark">
+		<div class="item item-avatar item-text-wrap">
+		  <span class="avatar" style="background-image: url('img/jon-snow.jpg');"></span>
+		  <strong>{{ item.get('title') }}</strong>
+          {{ item.get('content') }}
+		  <div class="card-footer text-right">
+			<i class="icon ion-chatbubbles positive"></i> 6
+			<i class="icon ion-heart assertive"></i> 23
+			<div class="pull-left">
+			  <i class="icon ion-clock"></i> just now
+			</div>
+		  </div>
+		</div>
+	  </div>
     </div>
+
     <h4 class="content padding double-padding-x">Following</h4>
     <div class="list animate-fade-slide-in-right">
       <a ui-sref="app.friends" class="item item-avatar item-icon-right">

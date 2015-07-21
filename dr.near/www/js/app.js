@@ -2,7 +2,7 @@ if ( typeof( APP_CONFIG ) == "undefined" ) {
     APP_CONFIG = {};
 }
 
-angular.module("DrNEAR", ["ionic", "ionic-material", "DrNEAR.controllers"])
+angular.module("DrNEAR", ["ionic", "DrNEAR.controllers"])
     .run( function( $ionicPlatform, Session ) {
         Parse.initialize( APP_CONFIG.PARSE_APP_KEY, APP_CONFIG.PARSE_APP_SECRET );
         Session.create( Parse.User.current() );
@@ -122,6 +122,16 @@ angular.module("DrNEAR", ["ionic", "ionic-material", "DrNEAR.controllers"])
                     }
                 }
             })
+            .state("app.setting_password",{
+                url: "/setting_password",
+                views: {
+                    "appContent":{
+                        templateUrl: "templates/setting_password.html",
+                        controller: "SettingPasswordCtrl as ctrl"
+                    }
+                }
+            })
+
             .state("app.messages", {
                 url: "/messages",
                 views: {

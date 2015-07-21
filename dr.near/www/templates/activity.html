@@ -1,4 +1,4 @@
-<ion-view>
+<ion-view title="Activity">
   <ion-nav-bar class="bar-positive" align-title="left">
     <ion-nav-buttons side="left">
       <button class="button button-icon button-clear ion-android-more-vertical" menu-toggle="left"></button>
@@ -18,32 +18,44 @@
         </label>
       </div>
     </ion-nav-title>
-    
+
     <ion-nav-buttons side="right">
-      <button class="button button-icon button-clear ion-android-search"
-              ng-click="ctrl.isSearchMode = !ctrl.isSearchMode"></button>
+      <!--button class="button button-icon button-clear ion-android-search"
+              ng-click="ctrl.isSearchMode = !ctrl.isSearchMode"></button-->
       <button class="button button-icon button-clear ion-ios-bell" ui-sref="app.alert"></button>
+　    <button class="button button-fab button-fab-bottom-right button-balanced" ui-sref="app.post" ><i class="icon ion-plus"></i></button>
     </ion-nav-buttons>
 
-    <button class="button button-fab button-fab-bottom-right button-balanced" ui-sref="app.post" ><i class="icon ion-plus"></i></button>
   </ion-nav-bar>
 
-  <ion-content class="animate-fade-slide-in">
-    <div class="item card-item" ng-repeat="item in ctrl.items">
-	  <div ui-sref="app.gallery" class="card stable-bg ink ink-dark">
-		<div class="item item-avatar item-text-wrap">
-		  <span class="avatar" style="background-image: url('img/jon-snow.jpg');"></span>
-		  <strong>{{ item.get('title') }}</strong>
-          {{ item.get('content') }}
-		  <div class="card-footer text-right">
-			<i class="icon ion-chatbubbles positive"></i> 6
-			<i class="icon ion-heart assertive"></i> 23
-			<div class="pull-left">
-			  <i class="icon ion-clock"></i> just now
-			</div>
-		  </div>
-		</div>
-	  </div>
+  <ion-content>
+    <div class="list card" ng-repeat="item in ctrl.items">
+      <div class="item item-avatar">
+        <img ng-src="{{'img/jon-snow.jpg'}}" />
+        <h2>FooBar</h2>
+        <p>{{item.createdAt}} November 05, 1955</p>
+      </div>
+      <div class="item item-body">
+        <p><strong>{{item.get('title')}}</strong> {{item.get("content")}}</p>
+        <p>
+          <a href="#" class="subdued">1 Like</a>
+          <a href="#" class="subdued">5 Comments</a>
+        </p>
+      </div>
+      <div class="item tabs tabs-secondary tabs-icon-left">
+        <a class="tab-item" href="#">
+          <i class="icon ion-thumbsup"></i>
+          Like
+        </a>
+        <a class="tab-item" href="#">
+          <i class="icon ion-chatbox"></i>
+          Comment
+        </a>
+        <a class="tab-item" href="#">
+          <i class="icon ion-share"></i>
+          Share
+        </a>
+      </div>
     </div>
   </ion-content>
 </ion-view>

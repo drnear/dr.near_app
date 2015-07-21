@@ -1,16 +1,35 @@
-<ion-view title="Search">
-<ion-content start-y="55"
-padding="true"
-has-tabs="true"
-has-header="true" ng-class="{expanded:isExpanded}" class="animate-fade-slide-in">
-<div class="bar bar-header item-input-inset">
-  <label class="item-input-wrapper">
-    <i class="icon ion-search placeholder-icon"></i>
-    <input type="search" placeholder="Search">
-  </label>
-</div>
-<div class="list animate-fade-slide-in-right">
-  <li class="list-item" ng-repeat="item in items">{{item.text}}</li>
-</div>
-</ion-content>
+<ion-view>
+  <ion-nav-bar class="bar-positive" align-title="left">
+    <ion-nav-buttons side="left">
+      <button class="button button-icon button-clear ion-android-more-vertical" menu-toggle="left"></button>
+    </ion-nav-buttons>
+
+    <ion-nav-title>
+      <div class="bar item-input-inset"
+           style="margin:0px; padding: 0px;">
+        <label class="item-input-wrapper">
+          <i class="icon ion-ios-search placeholder-icon"></i>
+          <input type="search" placeholder="Search"
+                 ng-model="ctrl.searchWord"
+                 ng-keyup="ctrl.search()"
+                 >
+        </label>
+      </div>
+    </ion-nav-title>
+  </ion-nav-bar>
+
+  <ion-content class="animate-fade-slide-in">
+    <div class="list">
+      <a class="item item-avatar" ng-repeat="user in ctrl.users">
+        <img ng-src="{{ user.get('icon').url() }}">
+        <h2>{{ user.get("name") }}</h2>
+        <p>{{ user.get("username") }}</p>
+      </a>
+    </div>
+    <div class="list">
+      <a class="item" ng-repeat="disease in ctrl.diseases">
+        <h2>{{ disease.get("name") }}</h2>
+      </a>
+    </div>
+  </ion-content>
 </ion-view>
