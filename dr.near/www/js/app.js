@@ -3,9 +3,8 @@ if ( typeof( APP_CONFIG ) == "undefined" ) {
 }
 
 angular.module("DrNEAR", ["ionic", "DrNEAR.controllers"])
-    .run( function( $ionicPlatform, Session ) {
+    .run( function( $ionicPlatform ) {
         Parse.initialize( APP_CONFIG.PARSE_APP_KEY, APP_CONFIG.PARSE_APP_SECRET );
-        Session.create( Parse.User.current() );
 
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -190,6 +189,7 @@ angular.module("DrNEAR", ["ionic", "DrNEAR.controllers"])
         });
 
         $rootScope.$on( AUTH_EVENTS.loginSuccess, function( event ) {
+            console.log('success');
             $state.go( "app.activity" );
         });
     });

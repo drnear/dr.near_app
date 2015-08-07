@@ -8,16 +8,20 @@
     <div class="list">
       <label class="item item-input">
         <span class="input-label">Name</span>
-        <input type="text" placeholder="Name" ng-model="appctrl.session.name" />
+        <input type="text" placeholder="Name" ng-model="appctrl.session.user.name" />
       </label>
       <label class="item item-input">
         <span class="input-label">Icon</span>
         <button class="item item-avatar" ng-click="ctrl.selectIcon($event)">
-          <img id="icon-image" ng-src="{{appctrl.session.iconurl}}" />
+          <img id="icon-image" ng-src="{{appctrl.session.user.iconurl}}" />
         </button>
         <input id="icon-handler" type="file" style="display:none"
                onchange="angular.element(this).scope().ctrl.uploadIcon(this)"
                />
+      </label>
+      <label class="item item-input">
+        <span class="input-label">Bio</span>
+        <textarea placeholder="Bio" rows="5" ng-model="appctrl.session.user.bio"></textarea>
       </label>
     </div>
     <button class="button button-block button-calm ink"
@@ -25,19 +29,5 @@
         ng-click="ctrl.update()">
         Submit
     </button>
-    <h2>Diseases</h2>
-    <div class="list">
-      <div class="item item-button-right" ng-repeat="item in appctrl.session.diseases">
-        {{item.get('name')}}
-        <button class="button button-clear" ng-click="ctrl.delete_disease(item)">
-          <i class="icon ion-ios-minus-outline"></i></button>
-      </div>
-      <div class="item item-button-right" style="color:#999">
-        <em>Create...</em>
-        <button class="button button-clear" ui-sref="app.profedit_diseases">
-          <i class="icon ion-ios-plus-outline"></i>
-        </button>
-      </div>
-    </div>
   </ion-content>
 </ion-view>

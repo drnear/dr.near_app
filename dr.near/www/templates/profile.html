@@ -8,95 +8,91 @@
     </ion-nav-buttons>
   </ion-nav-bar>
   <ion-content>
-    <div class="hero slide-up" style="background-image: url('img/profile-bg.jpg');">
+    <div class="hero slide-up" style="background-image: /*url('img/profile-bg.jpg');*/">
       <i class="icon ion-gear-a"align="right"></i>
       <div class="content">
-        <div class="avatar" style="background-image: url( {{ appctrl.session.iconurl }} );"></div>
-        <h3><a class="light">{{ appctrl.session.username }}</a></h3>
+        <div class="avatar" style="background-image: url( {{ appctrl.session.user.iconurl }} );"></div>
+        <h3><a class="light">{{ appctrl.session.user.name }}</a></h3>
         <div id="bio">
-          <h4>Patient</h4>
+          <h4>{{ appctrl.session.user.username }}</h4>
           <h4>dragon_mommy - Grivec</h4>
-          <h5>Hello.I am diagnosed with LCH before 10months ago.</h5>
+          <h5>{{ appctrl.session.user.bio }}</h5>
         </div>
       </div>
     </div>
 
-    <h4 class="content padding double-padding-x">Post</h4>
-    <div class="item card-item" ng-repeat="item in ctrl.myposts">
-	  <div ui-sref="app.gallery" class="card stable-bg ink ink-dark">
-		<div class="item item-avatar item-text-wrap">
-		  <span class="avatar" style="background-image: url('img/jon-snow.jpg');"></span>
-		  <strong>{{ item.get('title') }}</strong>
-          {{ item.get('content') }}
-		  <div class="card-footer text-right">
-			<i class="icon ion-chatbubbles positive"></i> 6
-			<i class="icon ion-heart assertive"></i> 23
-			<div class="pull-left">
-			  <i class="icon ion-clock"></i> just now
-			</div>
-		  </div>
-		</div>
-	  </div>
+    <div class="button-bar">
+      <a class="button"
+        ng-class="{'button-positive':ctrl.view === 'activity'}"
+        ng-click="ctrl.view = 'activity'">Activity</a>
+      <a class="button"
+        ng-class="{'button-positive':ctrl.view === 'diseases'}"
+        ng-click="ctrl.view = 'diseases'">Diseases</a>
+      <a class="button"
+        ng-class="{'button-positive':ctrl.view === 'followings'}"
+        ng-click="ctrl.view = 'followings'">Followings</a>
+      <a class="button"
+        ng-class="{'button-positive':ctrl.view === 'followers'}"
+        ng-click="ctrl.view = 'followers'">Followers</a>
     </div>
 
-    <h4 class="content padding double-padding-x">Following</h4>
-    <div class="list animate-fade-slide-in-right">
-      <a ui-sref="app.friends" class="item item-avatar item-icon-right">
-        <img src="img/sansa.jpg">
-        <h2>Sansa Stark</h2>
-        <p>&amp; Joffrey <strike>sitting</strike> sat in a tree</p>
-        <i class="icon ion-chatbubble muted"></i>
-      </a>
-      <a ui-sref="app.friends" class="item item-avatar item-icon-right">
-        <img src="img/tyrion.jpg">
-        <h2>Tyrion Lannister</h2>
-        <p>B.A.M.F. imp</p>
-        <i class="icon ion-chatbubble muted"></i>
-      </a>
-      <a ui-sref="app.friends" class="item item-avatar item-icon-right">
-        <img src="img/jon-snow.jpg">
-        <h2>Jon Snow</h2>
-        <p>Da illest illegitimate</p>
-        <i class="icon ion-chatbubble muted"></i>
-      </a>
-      <a ui-sref="app.friends" class="item item-avatar item-icon-right">
-        <img src="img/jon-snow.jpg">
-        <h2>Jon Snow</h2>
-        <p>Da illest illegitimate</p>
-        <i class="icon ion-chatbubble muted"></i>
-      </a>
+    <div class="list card"
+        ng-repeat="item in ctrl.activities"
+        ng-if="ctrl.view === 'activity'">
+      <div class="item item-avatar">
+        <img ng-src="{{ item.get('user').get('icon').url() }}">
+        <h2>{{ item.get('user').get('name') }} </h2>
+        <p>{{ item.createdAt }}</p>
+      </div>
+
+      <div class="item item-body">
+        <p>
+          <strong>{{ item.get('title') }}</strong>
+          {{ item.get('content') }}
+        </p>
+        <p>
+          <a href="#" class="subdued">1 Like</a>
+          <a href="#" class="subdued">5 Comments</a>
+        </p>
+      </div>
     </div>
-    <div class="list animate-fade-slide-in-right">
-      <a ui-sref="app.friends" class="item item-avatar item-icon-right">
-        <img src="img/jon-snow.jpg">
-        <h2>Jon Snow</h2>
-        <p>Da illest illegitimate</p>
-        <i class="icon ion-chatbubble muted"></i>
-      </a>
-      <a ui-sref="app.friends" class="item item-avatar item-icon-right">
-        <img src="img/sansa.jpg">
-        <h2>Sansa Stark</h2>
-        <p>&amp; Joffrey <strike>sitting</strike> sat in a tree</p>
-        <i class="icon ion-chatbubble muted"></i>
-      </a>
-      <a ui-sref="app.friends" class="item item-avatar item-icon-right">
-        <img src="img/tyrion.jpg">
-        <h2>Tyrion Lannister</h2>
-        <p>B.A.M.F. imp</p>
-        <i class="icon ion-chatbubble muted"></i>
-      </a>
-      <a ui-sref="app.friends" class="item item-avatar item-icon-right">
-        <img src="img/jon-snow.jpg">
-        <h2>Jon Snow</h2>
-        <p>Da illest illegitimate</p>
-        <i class="icon ion-chatbubble muted"></i>
-      </a>
-      <a ui-sref="app.friends" class="item item-avatar item-icon-right">
-        <img src="img/jon-snow.jpg">
-        <h2>Jon Snow</h2>
-        <p>Da illest illegitimate</p>
-        <i class="icon ion-chatbubble muted"></i>
-      </a>
+
+    <div class="list" ng-if="ctrl.view === 'diseases'">
+      <div class="item item-button-right" ng-repeat="item in appctrl.session.user.diseases">
+        {{ item.get('to').get('name') }}
+        <button class="button"
+          ng-class="{'button-positive': !appctrl.isFollowing(item.get('to')) }"
+          ng-click="appctrl.toggleFollowing(item.get('to'))">
+          {{ appctrl.session.user.isFollowing( item.get('to') ) ? 'Unfollow' : 'Follow' }}
+        </button>
+      </div>
     </div>
+
+    <div class="list" ng-if="ctrl.view === 'followings'">
+      <div class="item item-avatar item-button-right" ng-repeat="item in appctrl.session.user.followings" >
+        <img ng-src="{{ item.get('to').get('icon').url() }}" />
+        <h2>{{ item.get('to').get('name') }}</h2
+        <p>{{ item.get('to').get('bio') }}</p>
+        <button class="button"
+          ng-class="{'button-positive': !appctrl.isFollowing(item.get('to')) }"
+          ng-click="appctrl.toggleFollowing(item.get('to'))">
+          {{ appctrl.session.user.isFollowing( item.get('to') ) ? 'Unfollow' : 'Follow' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="list" ng-if="ctrl.view === 'followers'">
+      <div class="item item-avatar item-button-right" ng-repeat="item in appctrl.session.user.followers" >
+        <img ng-src="{{ item.get('from').get('icon').url() || 'img/material1.jpg' }}" />
+        <h2>{{ item.get('from').get('name') }}</h2
+        <p>{{ item.get('from').get('bio') }}</p>
+        <button class="button"
+          ng-class="{'button-positive': !appctrl.isFollowing(item.get('from')) }"
+          ng-click="appctrl.toggleFollowing(item.get('from'))">
+          {{ appctrl.session.user.isFollowing( item.get('from') ) ? 'Unfollow' : 'Follow' }}
+        </button>
+      </div>
+    </div>
+
   </ion-content>
 </ion-view>
