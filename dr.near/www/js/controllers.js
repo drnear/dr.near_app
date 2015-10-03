@@ -204,7 +204,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         };
 
         this.update = function() {
-            Session.user.update().then(function(saved){
+            Session.user.save().then(function(saved){
                 $timeout(function(){
                     $state.go( 'app.profile' );
                 });
