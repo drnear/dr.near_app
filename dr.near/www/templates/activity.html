@@ -28,14 +28,13 @@
 
   <ion-content>
     <div ng-if="ctrl.items.length == 0">
-      <i class="icon ion-arrow-left-c"></i>
-      Let's follow disease or user using &quot;Search&quot;
+      <a class="button button-outline icon-left  ion-chevron-left button-stable">STEP1. Let's follow and create disease or user using &quot;Search&quot;</a>
     </div>
-    <div class="list card" ng-repeat="item in ctrl.items">
+    <div class="list card" ng-repeat="item in ctrl.items" ng-click="popover.show($event)">
       <div class="item item-avatar">
         <img ng-src="{{ item.get('user').get('icon').url() }}" />
         <h2>{{ item.get('user').get('name') }}</h2>
-        <p>{{item.createdAt}} November 05, 1955</p>
+        <p>{{item.createdAt}} </p>
       </div>
       <div class="item item-body">
         <p><strong>{{item.get('title')}}</strong> {{item.get("content")}}</p>
@@ -52,10 +51,6 @@
         <a class="tab-item" href="#">
           <i class="icon ion-chatbox"></i>
           Comment
-        </a>
-        <a class="tab-item" href="#">
-          <i class="icon ion-share"></i>
-          Share
         </a>
       </div>
     </div>

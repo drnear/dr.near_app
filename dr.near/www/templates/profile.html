@@ -8,13 +8,11 @@
     </ion-nav-buttons>
   </ion-nav-bar>
   <ion-content>
-    <div class="hero slide-up" style="background-image: /*url('img/profile-bg.jpg');*/">
-      <i class="icon ion-gear-a"align="right"></i>
+    <div>  
       <div class="content">
-        <div class="avatar" style="background-image: url( {{ appctrl.session.user.iconurl }} );"></div>
-        <h3><a class="light">{{ appctrl.session.user.name }}</a></h3>
+        <img id="icon-image" ng-src="{{appctrl.session.user.iconurl}}" />
+        <h3><a class="center">{{ appctrl.session.user.name }}</a></h3>
         <div id="bio">
-          <h4>{{ appctrl.session.user.username }}</h4>
           <h4>dragon_mommy - Grivec</h4>
           <h5>{{ appctrl.session.user.bio }}</h5>
         </div>

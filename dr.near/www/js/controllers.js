@@ -18,7 +18,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     })
 
     .controller( 'ActivityCtrl', function(
-        $scope, $stateParams, $timeout, Session, Activity, FollowingDisease
+        $scope, $stateParams, $timeout, $ionicPopover, Session, Activity, FollowingDisease
     ) {
         this.items = [];
         var context = this;
@@ -59,6 +59,20 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                 });
             });
         });
+        $ionicPopover.fromTemplateUrl('templates/popover.html', {
+            scope: $scope,
+            }).then(function(popover) {
+            $scope.popover = popover;
+            console.log(popover);
+        });
+
+        $scope.demo = 'ios';
+        $scope.setPlatform = function(p) {
+            document.body.classList.remove('platform-ios');
+            document.body.classList.remove('platform-android');
+            document.body.classList.add('platform-' + p);
+            $scope.demo = p;
+        }
     })
 
     .controller( 'ActivityPostCtrl', function(
@@ -204,7 +218,8 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         };
 
         this.update = function() {
-            Session.user.update().then(function(saved){
+            console.log(Session.user);
+            Session.user.save().then(function(saved){
                 $timeout(function(){
                     $state.go( 'app.profile' );
                 });
