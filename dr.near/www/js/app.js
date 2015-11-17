@@ -130,28 +130,32 @@ angular.module("DrNEAR", ["ionic", "DrNEAR.controllers"])
                     }
                 }
             })
-
-            .state("app.messages", {
-                url: "/messages",
+            .state("app.message", {
+                url: "/message",
                 views: {
                     "appContent": {
-                        templateUrl: "templates/messages.html",
-                        controller: "MessagesCtrl"
-                    },
-                    "fabContent": {
-                        template: '<button id="fab-activity" class="button button-fab button-fab-bottom-right button-balanced"><i class="icon ion-plus"></i></button>',
-                        controller: function ($timeout) {
-                            $timeout(function () {
-                                document.getElementById("fab-activity").classList.toggle("on");
-                            }, 200);
-                        }
+                        templateUrl: "templates/message_list.html",
+                        controller: "MessageListCtrl as ctrl"
                     }
                 }
             })
-            .state("amessage", {
-                url: "/amessage/:uid",
-                templateUrl: "templates/amessage.html",
-                controller: "AmessageCtrl"
+            .state("app.message_append",{
+                url:"/message/append",
+                views: {
+                    "appContent": {
+                        templateUrl: "templates/message_append.html",
+                        controller: "MessageAppendCtrl as ctrl"
+                    }
+                }
+            })
+            .state("app.message_thread", {
+                url: "/message/:uid",
+                views : {
+                    "appContent": {
+                        templateUrl: "templates/message_thread.html",
+                        controller: "MessageThreadCtrl as ctrl"
+                    }
+                }
             })
             .state("disease1", {
                 url: "/disease",

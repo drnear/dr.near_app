@@ -1,6 +1,7 @@
 angular.module('DrNEAR.services',['ngResource'])
     .constant( 'User', Parse.User )
     .constant( 'Activity', Parse.Object.extend("Activity") )
+    .constant( 'Message', Parse.Object.extend("Message") )
     .constant( 'Disease', Parse.Object.extend("Disease") )
     .constant( 'FollowingUser', Parse.Object.extend("FollowingUser") )
     .constant( 'FollowingDisease', Parse.Object.extend("FollowingDisease") )

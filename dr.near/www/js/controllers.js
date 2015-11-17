@@ -38,13 +38,6 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                         return item.get('from');
                     }).concat( Session.user.object )));
 
-                    console.log('users',followings.map(function(item){
-                        return item.get('to');
-                    }).concat( diseases.map(function(item){
-                        console.log(item);
-                        return item.get('from');
-                    }).concat( Session.user.object )));
-
                     query.include( 'user' );
                     query.find().then(
                         function( results ) {
@@ -301,12 +294,157 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         console.log( 'SettingPasswordCtrl' );
     })
 
-    .controller( 'MessagesCtrl', function( $scope, $location ) {
-        console.log( 'MessageCtrl' );
+    .controller( 'MessageListCtrl', function( Session, Message, $timeout, $state ) {
+        var ctrl = this;
+        ctrl.usersAndMessages = [];
+
+        // この方式ではなく、スレッド展開中のユーザーリストを持つ方が処理効率が良い
+
+        var messageToUser = new Parse.Query( Message );
+        messageToUser.equalTo( "from", Session.user.object );
+
+        var messageFromUser = new Parse.Query( Message );
+        messageFromUser.equalTo( "to", Session.user.object );
+
+        var query = Parse.Query.or( messageToUser, messageFromUser );
+        query.include( "from", "to" );
+        query.descending( "createdAt" );
+        query.find({
+            success: function( messages ) {
+                $timeout( function(){
+                    ctrl.usersAndMessages.splice(0);
+                    var users = {};
+                    for ( var i = 0; i < messages.length; i++ ) {
+                        var user = messages[i].get("from").id == Session.user.object.id ? messages[i].get("to") : messages[i].get("from");
+                        if ( users[user.id] ) {
+                            continue;
+                        }
+                        else {
+                            ctrl.usersAndMessages.push({
+                                "user"   : user,
+                                "message": messages[i]
+                            });
+                            users[user.id] = true;
+                        }
+                    }
+                });
+            }
+        });
+
+        ctrl.openThread = function( user ) {
+            $state.go( 'app.message_thread', { uid: user.id } );
+        };
     })
 
-    .controller('AmessageCtrl', function( $scope, $location, $stateParams ) {
-        console.log( 'AmessageCtrl' );
+    .controller( 'MessageAppendCtrl', function( Session, FollowingUser, $timeout, $state ) {
+        var ctrl = this;
+        ctrl.users = [];
+
+        if ( ! Session.user ) {
+            return;
+        }
+
+        // from か to にログインユーザーを含む FollowingUser データを探す
+        var queryFrom = new Parse.Query(FollowingUser);
+        queryFrom.equalTo( "from", Session.user.object );
+
+        var queryTo = new Parse.Query( FollowingUser );
+        queryTo.equalTo( "to", Session.user.object );
+
+        var query = Parse.Query.or(queryFrom, queryTo);
+        query.include( "from", "to" );
+        query.find({
+            success: function( users ) {
+                if ( users.length <= 0 ) {
+                    console.log( 'no users' );
+                    return;
+                }
+                $timeout(function(){
+                    ctrl.users.splice(0);
+                    var crossCheck = {};
+                    for ( var i = 0; i < users.length; i++ ) {
+                        // フォローの方向
+                        var direction = users[i].get("from").id == Session.user.object.id ? 'from' : 'to';
+                        // 相手（自分ではないほう）
+                        var user      = users[i].get("from").id == Session.user.object.id ? users[i].get("to") : users[i].get("from");
+
+                        if ( crossCheck[user.id] ) {
+                            if ( crossCheck[user.id] != direction ) { // 相互フォローを確認したら
+                                ctrl.users.push( user ); // ctrl.users にユーザーを追加
+                            }
+                        }
+                        else {
+                            crossCheck[user.id] = direction; // フォロー方向を保持
+                        }
+                    }
+                });
+            },
+            error: function( error ) {
+                cosnole.log( error );
+            }
+        });
+
+        ctrl.openThread = function( user ) {
+            $state.go( 'app.message_thread', { uid: user.id } );
+        };
+    })
+
+    .controller('MessageThreadCtrl', function( Session, User, Message, $stateParams, $timeout ) {
+        var ctrl = this;
+
+        ctrl.messages = [];
+
+        // 表示
+        var getUserQuery = new Parse.Query( User );
+        getUserQuery.get( $stateParams.uid, {
+            success: function( user ){
+                var messageFromUser = new Parse.Query( Message );
+                messageFromUser.equalTo( "from", user );
+                messageFromUser.equalTo( "to", Session.user.object );
+
+                var messageToUser = new Parse.Query( Message );
+                messageToUser.equalTo( "from", Session.user.object );
+                messageToUser.equalTo( "to", user );
+
+                var query = Parse.Query.or( messageFromUser, messageToUser );
+                query.include( "from", "to" );
+                query.limit( 50 );
+                query.descending( "createdAt" );
+                query.find({
+                    success: function( messages ) {
+                        console.log( messages );
+                        $timeout( function(){
+                            ctrl.messages.splice(0);
+                            for ( var i = 0; i < messages.length; i++ ) {
+                                ctrl.messages.push( messages[i] );
+                            }
+                        });
+                    },
+                    error: function( err ) {
+                        console.log( err );
+                    }
+                });
+            },
+            error: function( err ) {
+                console.log( err );
+            }
+        });
+
+        // 送信
+        ctrl.send = function( message ) {
+            var msg = new Message();
+            var u = new User();
+            u.id = $stateParams.uid;
+            msg.save({
+                from    : Session.user.object,
+                to      : u,
+                content : message
+            }).then(function(){
+                $timeout( function(){
+                    ctrl.messageField = '';
+                });
+            });
+        };
     })
 
     .controller( 'SignupCtrl', function( $scope, $timeout, $state ) {

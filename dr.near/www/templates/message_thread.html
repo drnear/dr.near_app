@@ -1,0 +1,22 @@
+<ion-view title="Message">
+  <ion-nav-bar class="bar-positive" align-title="left">
+    <ion-nav-buttons side="left">
+      <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+    </ion-nav-buttons>
+  </ion-nav-bar>
+  <ion-content>
+    <ion-list>
+      <ion-item ng-repeat="msg in ctrl.messages">
+        {{ msg.get("content") }}
+      </ion-item>
+    </ol>
+  </ion-content>
+  <ion-footer-bar class="bar-frosted">
+    <div class="item item-input-inset">
+      <label class="item-input-wrapper">
+        <input type="text" placeholder="Message" ng-model="ctrl.messageField">
+      </label>
+      <button class="button button-small" ng-click="ctrl.send( ctrl.messageField )">Send</button>
+    </div>
+  </ion-footer-bar>
+</ion-view>

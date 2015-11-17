@@ -1,13 +1,14 @@
-<ion-view title="Messages">
+<ion-view title="Append Message">
   <ion-nav-bar class="bar-positive" align-title="left">
     <ion-nav-buttons side="left">
       <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
     </ion-nav-buttons>
-
-    <button class="button button-fab button-fab-bottom-right button-balanced" ui-sref="app.post" ><i class="icon ion-plus"></i></button>
   </ion-nav-bar>
   <ion-content>
     <ion-list>
+      <ion-item ng-repeat="user in ctrl.users" ng-click="ctrl.openThread( user )">
+        {{ user.get("name") }}
+      </ion-item>
     </ion-list>
   </ion-content>
 </ion-view>
