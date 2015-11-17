@@ -2,14 +2,14 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     .controller( 'AppCtrl', function(
         $timeout, Session
     ){
-        var context = this;
-        context.session = Session;
+        var ctrl = this;
+        ctrl.session = Session;
 
-        context.isFollowing = function( target ) {
+        ctrl.isFollowing = function( target ) {
             return Session.user.isFollowing( target );
         };
 
-        context.toggleFollowing = function( target ) {
+        ctrl.toggleFollowing = function( target ) {
             Session.user.toggleFollowing( target ).then(function(saved){
                 console.log('toggleFollowing');
                 Session.update();
@@ -21,7 +21,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         $scope, $stateParams, $timeout, Session, Activity, FollowingDisease
     ) {
         this.items = [];
-        var context = this;
+        var ctrl = this;
 
         Session.user.fetchFollowings().then(function(followings){
             Session.user.fetchDiseases().then( function(diseases){
@@ -42,7 +42,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                     query.find().then(
                         function( results ) {
                             $timeout( function(){
-                                context.items = results;
+                                ctrl.items = results;
                             });
                         },
                         function( err ) {
@@ -57,7 +57,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     .controller( 'ActivityPostCtrl', function(
         $scope, $state, $stateParams, $timeout, Session
     ) {
-        var context = this;
+        var ctrl = this;
 
         this.post = function( entry ) {
             var Activity = Parse.Object.extend( 'Activity' );
@@ -87,44 +87,44 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     })
 
     .controller( 'SearchCtrl', function( $timeout, FollowingUser, FollowingDisease, Session ) {
-        var context = this;
-        context.searchWord = '';
-        context.users      = [];
-        context.diseases   = [];
-        context.timer = undefined;
+        var ctrl = this;
+        ctrl.searchWord = '';
+        ctrl.users      = [];
+        ctrl.diseases   = [];
+        ctrl.timer = undefined;
 
-        context.search = function(){
-            if (context.timer !== undefined) {
-                $timeout.cancel(context.timer);
-                context.timer = undefined;
+        ctrl.search = function(){
+            if (ctrl.timer !== undefined) {
+                $timeout.cancel(ctrl.timer);
+                ctrl.timer = undefined;
             }
 
-            context.users.splice(0);
-            context.diseases.splice(0);
+            ctrl.users.splice(0);
+            ctrl.diseases.splice(0);
 
-            if ( context.searchWord === '' ) {
+            if ( ctrl.searchWord === '' ) {
                 $timeout(function(){
-                    context.users.splice(0);
-                    context.diseases.splice(0);
+                    ctrl.users.splice(0);
+                    ctrl.diseases.splice(0);
                 });
                 return;
             }
 
-            context.timer = $timeout(function(){
+            ctrl.timer = $timeout(function(){
                 var userQuery = new Parse.Query(Parse.User);
-                userQuery.matches( "name", new RegExp(".*" + context.searchWord + ".*",'i') );
+                userQuery.matches( "name", new RegExp(".*" + ctrl.searchWord + ".*",'i') );
                 userQuery.notEqualTo( "objectId", Session.user.object.id );
                 userQuery.find().then(function(users){
                     $timeout(function(){
-                        context.users = users;
+                        ctrl.users = users;
                     },100);
                 });
 
                 var diseaseQuery = new Parse.Query(Parse.Object.extend("Disease"));
-                diseaseQuery.matches( "name", new RegExp(".*" + context.searchWord + ".*",'i') );
+                diseaseQuery.matches( "name", new RegExp(".*" + ctrl.searchWord + ".*",'i') );
                 diseaseQuery.find().then(function(diseases){
                     $timeout(function(){
-                        context.diseases = diseases;
+                        ctrl.diseases = diseases;
                     });
                 });
             },500);
@@ -135,9 +135,9 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         $scope, $stateParams, $timeout, Activity
     ) {
         console.log( 'ProfileCtrl' );
-        var context = this;
-        context.view = 'activity';
-        context.activities = [];
+        var ctrl = this;
+        ctrl.view = 'activity';
+        ctrl.activities = [];
 
         var query = new Parse.Query( Activity );
         query.limit( 10 );
@@ -147,9 +147,9 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         query.find().then(
             function( results ) {
                 $timeout( function(){
-                    context.activities.splice(0);
+                    ctrl.activities.splice(0);
                     for ( var i = 0; i < results.length; i++ ) {
-                        context.activities.push( results[i] );
+                        ctrl.activities.push( results[i] );
                     }
                 });
             },
@@ -160,7 +160,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     })
 
     .controller('ProfEditCtrl', function( $state, $cordovaCamera, $timeout, Session ) {
-        var context = this;
+        var ctrl = this;
 
         this.useCamera = function() {
             console.log('useCamera');
@@ -210,24 +210,24 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     .controller( "ProfEditDiseasesCtrl", function( $state, $timeout, Session ){
         var Disease = Parse.Object.extend('Disease');
 
-        var context = this;
-        context.disease    = '';
-        context.candidates = [];
-        context.searchlock = undefined;
+        var ctrl = this;
+        ctrl.disease    = '';
+        ctrl.candidates = [];
+        ctrl.searchlock = undefined;
 
-        context.search = function(){
-            if ( typeof(context.searchlock) != 'undefined' ) {
-                $timeout.cancel( context.searchlock );
+        ctrl.search = function(){
+            if ( typeof(ctrl.searchlock) != 'undefined' ) {
+                $timeout.cancel( ctrl.searchlock );
             }
-            context.searchlock = $timeout( function(){
-                context.candidates.splice(0);
-                if ( context.disease !== '' ) {
+            ctrl.searchlock = $timeout( function(){
+                ctrl.candidates.splice(0);
+                if ( ctrl.disease !== '' ) {
                     var query = new Parse.Query(Disease);
-                    query.matches("name", new RegExp('.*'+context.disease+'.*'));
+                    query.matches("name", new RegExp('.*'+ctrl.disease+'.*'));
                     query.find().then(function(res){
                         $timeout(function(){
                             for ( var i = 0; i < res.length; i++ ) {
-                                context.candidates.push( res[i] );
+                                ctrl.candidates.push( res[i] );
                             }
                         });
                     },function(err){console.log('err',err);});
@@ -235,7 +235,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             }, 500 );
         };
 
-        context.select = function( disease ){
+        ctrl.select = function( disease ){
             var user = Parse.User.current();
 
             disease.relation("followers").add(user);
@@ -260,27 +260,27 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
 
         };
 
-        context.create = function() {
+        ctrl.create = function() {
             var query = new Parse.Query( Disease );
-            query.equalTo("name",context.disease);
+            query.equalTo("name",ctrl.disease);
             query.first().then(function(res){
                 if ( res ) {
                     console.log( 'first', res );
-                    // context.select( res);
+                    // ctrl.select( res);
                 }
                 else {
                     var disease = new Disease();
-                    disease.set( "name", context.disease );
+                    disease.set( "name", ctrl.disease );
                     disease.save().then(function(obj){
-                        context.select( obj );
+                        ctrl.select( obj );
                     });
                 }
 
             }, function(err){
                 var disease = new Disease();
-                disease.set( "name", context.disease );
+                disease.set( "name", ctrl.disease );
                 disease.save().then(function(obj){
-                    context.select( obj );
+                    ctrl.select( obj );
                 });
             });
         };
@@ -510,9 +510,9 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
 
         this.credentials = { username: '', password: ''};
 
-        var context = this;
+        var ctrl = this;
         this.login = function () {
-            Parse.User.logIn( context.credentials.username, context.credentials.password )
+            Parse.User.logIn( ctrl.credentials.username, ctrl.credentials.password )
                 .then( function( user ) {
                     console.log('login');
                     Session.update();
