@@ -1,36 +1,27 @@
-
 <ion-view title="Signup">
   	<ion-nav-bar class="bar-positive">
 	</ion-nav-bar>
 	<ion-content padding="true" scroll="false" class="has-header">
 	<div class="alert alert-danger" ng-if="error != ''">{{ error }}</div>
-	<form ng-submit="signup()">
+	<form ng-submit="signup(credentials)">
 		<ion-list>
 			<label class="item item-input">
-				<span class="input-label">Name</span>
-				<input type="text" placeholder="alphanumeric username" ng-model="user.username" >
+				<span class="input-label">Username</span>
+				<input type="text" placeholder="alphanumeric username" ng-model="ctrl.credentials.username" >
 			</label>
 			<label class="item item-input">
 				<span class="input-label">Mail</span>
-				<input type="text" placeholder="email address" ng-model="user.email" >
+				<input type="text" placeholder="email address" ng-model="ctrl.credentials.email" >
 			</label>
 			<label class="item item-input">
 				<span class="input-label">Password</span>
-				<input type="password" placeholder="" ng-model="user.password" >
+				<input type="password" placeholder="" ng-model="ctrl.credentials.password" >
 			</label>
 		</ion-list>
-		<button class="button button-stable button-block" type="submit" value="SignUp"/>Sign up</button>
+		<button class="button button-stable button-block" type="submit" ng-click="ctrl.signup(credentials)">Sign up</button>
 	</form>
 	<button class="button button-block button-positive" ng-click="fbLogin()">
             Signup with Facebook</button>
-    <ion-footer-bar align-title="left" class="bar-positive">
-		<div class="buttons">
-		<button class="button button-clear button-positive" ng-click="login()">Login</button>
-		</div>
-		<h1 class="title"></h1>
-		<div class="buttons" ng-click="back()">
-			<button class="button button-clear button-positive">Back</button>
-		</div>
-	</ion-footer-bar>
+	<button class="button button-block button-block" ui-sref="login">Back to login</button>
 	</ion-content>
 </ion-view>

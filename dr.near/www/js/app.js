@@ -30,7 +30,7 @@ angular.module("DrNEAR", ["ionic", "DrNEAR.controllers"])
             .state("signup", {
                 url: "/signup",
                 templateUrl: "templates/signup.html",
-                controller: "SignupCtrl"
+                controller: "SignupCtrl as ctrl"
             })
             .state("intro", {
                 url: "/intro",

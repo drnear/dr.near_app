@@ -52,6 +52,41 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                 });
             });
         });
+        ctrl.comment = function( item ) {
+            console.log( 'comment' );
+            Session.user.fetchFollowings().then(function(followings){
+                Session.user.fetchDiseases().then(function(diseases){
+                var diseaseCommentQuery = new Parse.Query( FollowingDisease );
+                diseaseCommentQuery.containedIn( 'to', diseases.map(function(item){ return item.get('to'); }) );
+                    diseaseCommentQuery.find().then(function(communityRelations){
+                        var query = new Parse.Query( Activity );
+                        query.limit( 20 );
+                        query.descending( 'createdAt' );
+
+                        query.find({
+                            success: function( replies ) {
+                                for ( var i = 0; i < replies.length; i++ ) {
+                                    reply = {
+                                        commentContent  : replies[i].get('commentContent'),
+                                    };
+
+                                    query.find().then(
+                                        function( entries ) {
+                                            $timeout( function(){
+                                                ctrl.comments = replies;
+                                            });
+                                        }
+                                    );
+                                }
+                            },
+                            error  : function( err ) {
+                                console.log( err );
+                            }
+                        });
+                    })
+                })
+            })
+        }
     })
 
     .controller( 'ActivityPostCtrl', function(
@@ -447,24 +482,28 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         };
     })
 
-    .controller( 'SignupCtrl', function( $scope, $timeout, $state ) {
-        console.log( 'SignupCtrl' );
-        Parse.User.logOut();
-        $scope.user = { name: '', password: '', email: '' };
-        $scope.signup = function() {
+    .controller( 'SignupCtrl', function( $scope, $timeout, $state, $rootScope, AUTH_EVENTS, Session) {
+        Session.destroy();
+
+        this.credentials = {username: '', email:'', password:''};
+
+        var ctrl = this;
+        ctrl.signup = function(credentials) {
+            console.log( 'signup' );
             var user = new Parse.User();
-            user.set( 'username', $scope.user.username );
-            user.set( 'name', $scope.user.username );
-            user.set( 'bio', '' );
-            user.set( 'email', $scope.user.email );
-            user.set( 'password', $scope.user.password );
+            user.set( 'username', ctrl.credentials.username );
+            user.set( 'email', ctrl.credentials.email );
+            user.set( 'password', ctrl.credentials.password );
             user.signUp(null, {
-                success: function(user) {
-                    $state.go('app.activity');
+                success: function( user ) {
+                    console.log('signup');
+                    Session.update();
+                    console.log( 'success and update', Session);
+                    $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
                 },
                 error: function(user, error) {
                     $timeout( function(){
-                        $scope.error = error.message;
+                    $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
                     });
                 }
             });

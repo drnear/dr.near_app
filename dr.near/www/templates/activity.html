@@ -48,11 +48,30 @@
           <i class="icon ion-thumbsup"></i>
           Like
         </a>
-        <a class="tab-item" href="#">
+        <a class="tab-item" ng-click="item.showReply = !item.showReply">
           <i class="icon ion-chatbox"></i>
           Comment
         </a>
       </div>
+      <form class="form form-horizontal clearfix" ng-show="item.showReply" ng-click="ctrl.comment(item)">
+        {{item}}
+        <div class="item item-avatar">
+          <img src="mcfly.jpg">
+          <label class="item-input">
+          <input class="form-control" type="text" ng-model="item.commentContent" placeholder="Write a comment..." />
+          <button type="submit" class="button button-small button-positive" ng-click="ctrl.reply(item)">
+            Submit
+          </button>
+          </label>
+        </div>
+        <div ng-repeat="comment in ctrl.comments">
+          <div class="item item-avatar">
+            <img src="mcfly.jpg">
+            <strong>{{ comment.createdAt }}</strong>
+            <span>{{ comment.commentContent }}</span>
+          </div>
+        </div>
+      </form>    
     </div>
   </ion-content>
 </ion-view>
