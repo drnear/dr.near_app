@@ -52,40 +52,29 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                 });
             });
         });
-        ctrl.comment = function( item ) {
+        ctrl.toggleComment = function( item ) {
             console.log( 'comment' );
-            Session.user.fetchFollowings().then(function(followings){
-                Session.user.fetchDiseases().then(function(diseases){
-                var diseaseCommentQuery = new Parse.Query( FollowingDisease );
-                diseaseCommentQuery.containedIn( 'to', diseases.map(function(item){ return item.get('to'); }) );
-                    diseaseCommentQuery.find().then(function(communityRelations){
-                        var query = new Parse.Query( Activity );
-                        query.limit( 20 );
-                        query.descending( 'createdAt' );
+            console.log( item.id );
 
-                        query.find({
-                            success: function( replies ) {
-                                for ( var i = 0; i < replies.length; i++ ) {
-                                    reply = {
-                                        commentContent  : replies[i].get('commentContent'),
-                                    };
+            if(!item.showReply) {
+                var CommentObject = Parse.Object.extend("CommentObject");
+                var query = new Parse.Query( CommentObject );
 
-                                    query.find().then(
-                                        function( entries ) {
-                                            $timeout( function(){
-                                                ctrl.comments = replies;
-                                            });
-                                        }
-                                    );
-                                }
-                            },
-                            error  : function( err ) {
-                                console.log( err );
-                            }
-                        });
-                    })
-                })
-            })
+                query.equalTo("commentTo",item.id);
+                query.descending( 'createdAt' );
+                query.find({
+                    success: function( replies ) {
+                        item.comments = replies;
+                        item.showReply = !item.showReply;
+                        $scope.$apply();
+                    },
+                    error : function( err ) {
+                        console.log( err );
+                    }
+                });
+            } else {
+                item.showReply = !item.showReply;
+            }
         }
     })
 
@@ -502,6 +491,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                     $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
                 },
                 error: function(user, error) {
+                    console.log(error);
                     $timeout( function(){
                     $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
                     });
@@ -525,7 +515,31 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                 $scope.closeLogin();
             }, 1000);
         };
-        $scope.fbLogin = function() {
+        ctrl.fbLogin = function() {
+            console.log('fbLogin');
+            window.fbAsyncInit = function() {
+            // init the FB JS SDK
+                Parse.FacebookUtils.init({
+                  appId      : '694111927364944',                        // App ID from the app dashboard
+                  status     : true,                                 // Check Facebook Login status
+                  xfbml      : true                                  // Look for social plugins on the page
+                });
+
+            // Additional initialization code such as adding Event Listeners goes here
+                Parse.FacebookUtils.logIn(null, {
+                  success: function(user) {
+                    if (!user.existed()) {
+                      alert("User signed up and logged in through Facebook!");
+                    } else {
+                      alert("User logged in through Facebook!");
+                    }
+                  },
+                  error: function(user, error) {
+                    alert("User cancelled the Facebook login or did not fully authorize.");
+                  }
+                });
+            };
+ /*
             openFB.login(
                 function(response) {
                     if (response.status === 'connected') {
@@ -538,6 +552,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                     }
                 },
                 {scope: 'email,publish_actions'});
+*/        
         };
         $scope.back = function () {
             $state.go('app.intro');

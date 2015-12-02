@@ -48,13 +48,12 @@
           <i class="icon ion-thumbsup"></i>
           Like
         </a>
-        <a class="tab-item" ng-click="item.showReply = !item.showReply">
+        <a class="tab-item" ng-click="ctrl.toggleComment(item)">
           <i class="icon ion-chatbox"></i>
           Comment
         </a>
       </div>
-      <form class="form form-horizontal clearfix" ng-show="item.showReply" ng-click="ctrl.comment(item)">
-        {{item}}
+      <form class="form form-horizontal clearfix" ng-show="item.showReply">
         <div class="item item-avatar">
           <img src="mcfly.jpg">
           <label class="item-input">
