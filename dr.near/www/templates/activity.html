@@ -63,11 +63,11 @@
           </button>
           </label>
         </div>
-        <div ng-repeat="comment in ctrl.comments">
+        <div ng-repeat="comment in item.comments">
           <div class="item item-avatar">
             <img src="mcfly.jpg">
             <strong>{{ comment.createdAt }}</strong>
-            <span>{{ comment.commentContent }}</span>
+            <span>{{ comment.get('content') }}</span>
           </div>
         </div>
       </form>    
