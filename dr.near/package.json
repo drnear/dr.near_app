@@ -15,7 +15,8 @@
     "shelljs": "^0.3.0"
   },
   "cordovaPlugins": [
-    "cordova-plugin-camera"
+    "cordova-plugin-camera",
+    "phonegap-facebook-plugin"
   ],
   "cordovaPlatforms": [
     "ios",

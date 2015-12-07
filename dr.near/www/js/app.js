@@ -4,8 +4,24 @@ if ( typeof( APP_CONFIG ) == "undefined" ) {
 
 angular.module("DrNEAR", ["ionic", "DrNEAR.controllers"])
     .run( function( $ionicPlatform ) {
-        Parse.initialize( APP_CONFIG.PARSE_APP_KEY, APP_CONFIG.PARSE_APP_SECRET );
-
+        Parse.initialize( APP_CONFIG.PARSE_APP_KEY, APP_CONFIG.PARSE_APP_SECRET);
+        
+        if(!(ionic.Platform.isIOS() || ionic.Platform.isAndroid())){
+            window.fbAsyncInit = function() {
+                Parse.FacebookUtils.init({
+                    appId      : APP_CONFIG.FACEBOOK_APP_ID,
+                    version    : 'v2.5',
+                    xfbml      : true
+                });
+            };
+            (function(d, s, id){
+               var js, fjs = d.getElementsByTagName(s)[0];
+               if (d.getElementById(id)) {return;}
+               js = d.createElement(s); js.id = id;
+               js.src = "//connect.facebook.net/en_US/sdk.js";
+               fjs.parentNode.insertBefore(js, fjs);
+             }(document, 'script', 'facebook-jssdk'));
+        }
         $ionicPlatform.ready(function() {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
             // for form inputs)
@@ -19,7 +35,7 @@ angular.module("DrNEAR", ["ionic", "DrNEAR.controllers"])
         });
     })
     .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, USER_ROLES) {
-        // openFB.init({appId: APP_CONFIG.FACEBOOK_APP_ID});
+        //Parse.FacebookUtils.init({appId: APP_CONFIG.FACEBOOK_APP_ID});
         $ionicConfigProvider.views.maxCache(0);
         $stateProvider
             .state("login", {

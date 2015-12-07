@@ -471,7 +471,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         };
     })
 
-    .controller( 'SignupCtrl', function( $scope, $timeout, $state, $rootScope, AUTH_EVENTS, Session) {
+    .controller( 'SignupCtrl', function( $scope, $timeout, $state, $rootScope, $cordovaFacebook, AUTH_EVENTS, Session) {
         Session.destroy();
 
         this.credentials = {username: '', email:'', password:''};
@@ -515,44 +515,63 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                 $scope.closeLogin();
             }, 1000);
         };
-        ctrl.fbLogin = function() {
-            console.log('fbLogin');
-            window.fbAsyncInit = function() {
-            // init the FB JS SDK
-                Parse.FacebookUtils.init({
-                  appId      : '694111927364944',                        // App ID from the app dashboard
-                  status     : true,                                 // Check Facebook Login status
-                  xfbml      : true                                  // Look for social plugins on the page
-                });
-
-            // Additional initialization code such as adding Event Listeners goes here
-                Parse.FacebookUtils.logIn(null, {
-                  success: function(user) {
-                    if (!user.existed()) {
-                      alert("User signed up and logged in through Facebook!");
-                    } else {
-                      alert("User logged in through Facebook!");
-                    }
-                  },
-                  error: function(user, error) {
-                    alert("User cancelled the Facebook login or did not fully authorize.");
-                  }
-                });
-            };
- /*
-            openFB.login(
-                function(response) {
-                    if (response.status === 'connected') {
-                        console.log('Facebook login succeeded');
-                        $scope.closeLogin();
-                        $state.go('app.activity');
-
-                    } else {
-                        alert('Facebook login failed');
-                    }
+        ctrl.fbLogin = function(){
+         
+          //Browser Login
+          if(!(ionic.Platform.isIOS() || ionic.Platform.isAndroid())){         
+            Parse.FacebookUtils.logIn(null, {
+              success: function(user) {
+                console.log(user);
+                Session.update();
+                console.log( 'success and update',Session);
+                $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+              },
+              error: function(user, error) {
+                $timeout( function(){
+                    $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+                });                
+              }
+            });
+         
+          } 
+          //Native Login
+          else {
+         
+            $cordovaFacebook.login(["public_profile", "email"]).then(function(success){
+         
+              console.log(success);
+         
+              //Need to convert expiresIn format from FB to date
+              var expiration_date = new Date();
+              expiration_date.setSeconds(expiration_date.getSeconds() + success.authResponse.expiresIn);
+              expiration_date = expiration_date.toISOString();
+         
+              var facebookAuthData = {
+                "id": success.authResponse.userID,
+                "access_token": success.authResponse.accessToken,
+                "expiration_date": expiration_date
+              };
+         
+              Parse.FacebookUtils.logIn(facebookAuthData, {
+                success: function(user) {
+                  console.log(user);
+                  Session.update();
+                  console.log( 'success and update', Session);
+                  $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
                 },
-                {scope: 'email,publish_actions'});
-*/        
+                error: function(user, error) {
+                  $timeout( function(){
+                    $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+                  });
+                }
+              });
+         
+            }, function(error){
+              console.log(error);
+            });
+         
+          }
+         
         };
         $scope.back = function () {
             $state.go('app.intro');
