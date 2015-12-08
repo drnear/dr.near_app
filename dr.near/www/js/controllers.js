@@ -473,7 +473,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
 
     .controller( 'SignupCtrl', function( $scope, $timeout, $state, $rootScope, $cordovaFacebook, AUTH_EVENTS, Session) {
         Session.destroy();
-
+        console.log( Session ); 
         this.credentials = {username: '', email:'', password:''};
 
         var ctrl = this;
@@ -596,38 +596,62 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                 });
         };
 
-        $scope.fbLogin = function(credentials) {
-            openFB.login(
-                function(response, user) {
-                    if (response.status === 'connected') {
-                        console.log('Facebook login succeeded');
-                        $scope.closeLogin();
-                        $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
-                        $location.path('/main');
-                    } else {
-                        $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
-                        alert('Facebook login failed');
-                    }
+        ctrl.fbLogin = function(){        
+          //Browser Login
+          if(!(ionic.Platform.isIOS() || ionic.Platform.isAndroid())){         
+            Parse.FacebookUtils.logIn(null, {
+              success: function(user) {
+                console.log(user);
+                Session.update();
+                console.log( 'success and update',Session);
+                $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+              },
+              error: function(user, error) {
+                $timeout( function(){
+                    $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+                });                
+              }
+            });
+         
+          } 
+          //Native Login
+          else {
+         
+            $cordovaFacebook.login(["public_profile", "email"]).then(function(success){
+         
+              console.log(success);
+         
+              //Need to convert expiresIn format from FB to date
+              var expiration_date = new Date();
+              expiration_date.setSeconds(expiration_date.getSeconds() + success.authResponse.expiresIn);
+              expiration_date = expiration_date.toISOString();
+         
+              var facebookAuthData = {
+                "id": success.authResponse.userID,
+                "access_token": success.authResponse.accessToken,
+                "expiration_date": expiration_date
+              };
+         
+              Parse.FacebookUtils.logIn(facebookAuthData, {
+                success: function(user) {
+                  console.log(user);
+                  Session.update();
+                  console.log( 'success and update', Session);
+                  $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
                 },
-                {scope: 'email,publish_actions'});
-        };
-        $scope.closeLogin = function() {
-            $scope.modal.hide();
-        };
-        $scope.doLogin = function() {
-            console.log('Doing login', $scope.loginData);
-
-            // Simulate a login delay. Remove this and replace with your login
-            // code if using a login system
-            $timeout(function() {
-                $scope.closeLogin();
-            }, 1000);
-        };
-        this.signup = function () {
-            $state.go('signup');
-        };
-        $scope.back = function () {
-            $location.path('/');
+                error: function(user, error) {
+                  $timeout( function(){
+                    $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+                  });
+                }
+              });
+         
+            }, function(error){
+              console.log(error);
+            });
+         
+          }
+         
         };
     })
 
