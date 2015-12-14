@@ -3,25 +3,39 @@
 	</ion-nav-bar>
 	<ion-content padding="true" scroll="false" class="has-header">
 	<div class="alert alert-danger" ng-if="error != ''">{{ error }}</div>
-	<form ng-submit="signup(credentials)">
+	<form ng-submit="signup(credentials)" name="loginForm"  novalidate>
 		<ion-list>
 			<label class="item item-input">
 				<span class="input-label">Username</span>
-				<input type="text" placeholder="alphanumeric username" ng-model="ctrl.credentials.username" >
+				<input type="text" name="username" placeholder="" ng-model="ctrl.credentials.username" ng-required="true" ng-minlength="4" ng-pattern="/^[a-zA-Z0-9]+$/">
 			</label>
+			<span class="error" ng-show="loginForm.username.$error.minlength">4文字以上です。</span>
+			<span class="error" ng-show="loginForm.username.$error.required"><small>ユーザーネームは必須入力です。</small></span>
+            <span class="error" ng-show="loginForm.username.$error.pattern">半角英数字のみです。</span>
+			
 			<label class="item item-input">
 				<span class="input-label">Mail</span>
-				<input type="text" placeholder="email address" ng-model="ctrl.credentials.email" >
+				<input type="text" name="email" placeholder="" ng-model="ctrl.credentials.email" ng-required="true" ng-pattern="/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/">
 			</label>
+			<span class="error" ng-show="loginForm.email.$error.pattern">メールアドレスの形式が正しくありません。</span>
+			<span class="error" ng-show="loginForm.email.$error.required"><small>メールアドレスは必須入力です。</small></span>
+
 			<label class="item item-input">
 				<span class="input-label">Password</span>
-				<input type="password" placeholder="" ng-model="ctrl.credentials.password" >
+				<input type="password" name="password" placeholder="" autocomplete="off" ng-model="ctrl.credentials.password" required>
 			</label>
+
+			<label class="item item-input">
+				<span class="input-label">Re-enter Password<br/><small>Please enter again for confirmation</small></span>
+				<input type="password" name="password_cfm" ng-model="ctrl.credentials.password_cfm" autocomplete="off" match="loginForm.password" required>
+			</label>
+			 <span class="text-danger" ng-show="loginForm.password_cfm.$error.mismatch"><small>パスワードが一致していません。</small></span>
+
 		</ion-list>
-		<button class="button button-stable button-block" type="submit" ng-click="ctrl.signup(credentials)">Sign up</button>
+		<button class="button button-stable button-block" type="submit" ng-click="ctrl.signup(credentials)" ng-disabled="loginForm.$invalid">Sign up</button>
 	</form>
 	<button class="button button-block button-positive" ng-click="ctrl.fbLogin()">
             Signup with Facebook</button>
-	<button class="button button-block button-block" ui-sref="login">Back to login</button>
+	<button class="button button-block button-block" ng-click="ctrl.backTo()">Back to login</button>
 	</ion-content>
 </ion-view>

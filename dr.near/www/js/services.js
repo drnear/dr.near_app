@@ -190,4 +190,19 @@ angular.module('DrNEAR.services',['ngResource'])
                 });
             }
         };
-    });
+    })
+
+    .directive("match", ["$parse", function($parse) {
+       return {
+        require: 'ngModel',
+        link: function(scope, elem, attrs, ctrl) {
+          scope.$watch(function() {
+            var target = $parse(attrs.match)(scope);  // 比較対象となるモデルの値
+            return !ctrl.$modelValue || target.$modelValue === ctrl.$modelValue;
+          }, function(currentValue) {
+            ctrl.$setValidity('mismatch', currentValue);
+          });
+        }
+      }
+    }
+    ]);
