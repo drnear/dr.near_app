@@ -110,6 +110,15 @@ angular.module("DrNEAR", ["ionic", "DrNEAR.controllers"])
                     }
                 }
             })
+            .state("app.toProfile", {
+                url: "/toProfile",
+                views: {
+                    "appContent": {
+                        templateUrl: "templates/profile.html",
+                        controller: "toProfileCtrl as ctrl"
+                    }
+                }
+            })
             .state("app.profedit", {
                 url: "/profedit",
                 views: {

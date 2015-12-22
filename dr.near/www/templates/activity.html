@@ -31,22 +31,23 @@
       <a class="button button-outline icon-left  ion-chevron-left button-stable">STEP1. Let's follow and create disease or user using &quot;Search&quot;</a>
     </div>
     <div class="list card" ng-repeat="item in ctrl.items" ng-click="popover.show($event)">
-      <div class="item item-avatar">
+      <div class="item item-avatar" ng-click = "ctrl.toProfile(item)">
         <img ng-src="{{ item.get('user').get('icon').url() }}" />
         <h2>{{ item.get('user').get('name') }}</h2>
-        <p>{{item.createdAt}} </p>
+        <p>{{item.createdAt}}</p>
+        </a>
       </div>
       <div class="item item-body">
         <p><strong>{{item.get('title')}}</strong> {{item.get("content")}}</p>
         <p>
-          <a href="#" class="subdued">1 Like</a>
+          <a href="#" class="subdued">1 Fight</a>
           <a href="#" class="subdued">5 Comments</a>
         </p>
       </div>
       <div class="item tabs tabs-secondary tabs-icon-left">
         <a class="tab-item" href="#">
           <i class="icon ion-thumbsup"></i>
-          Like
+          Fight
         </a>
         <a class="tab-item" ng-click="ctrl.toggleComment(item)">
           <i class="icon ion-chatbox"></i>

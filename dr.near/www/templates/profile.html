@@ -10,11 +10,11 @@
   <ion-content>
     <div>  
       <div class="content">
-        <img id="icon-image" ng-src="{{appctrl.session.user.iconurl}}" />
-        <h3><a class="center">{{ appctrl.session.user.name }}</a></h3>
+        <img id="icon-image" ng-src="{{ctrl.user.iconurl}}" />
+        <h3><a class="center">{{ ctrl.user.get('name') }}</a></h3>
         <div id="bio">
-          <h4>dragon_mommy - Grivec</h4>
-          <h5>{{ appctrl.session.user.bio }}</h5>
+          <h4>{{ ctrl.user.get('diseases') }}</h4>
+          <h5>{{ ctrl.user.get('bio') }}</h5>
         </div>
       </div>
     </div>
@@ -24,14 +24,14 @@
         ng-class="{'button-positive':ctrl.view === 'activity'}"
         ng-click="ctrl.view = 'activity'">Activity</a>
       <a class="button"
-        ng-class="{'button-positive':ctrl.view === 'diseases'}"
-        ng-click="ctrl.view = 'diseases'">Diseases</a>
+        ng-class="{'button-positive':ctrl.view === 'Likes'}"
+        ng-click="ctrl.view = 'like'">Likes</a>
+      <a class="button"
+        ng-class="{'button-positive':ctrl.view === 'Comments'}"
+        ng-click="ctrl.view = 'comments'">Comments</a>
       <a class="button"
         ng-class="{'button-positive':ctrl.view === 'followings'}"
         ng-click="ctrl.view = 'followings'">Followings</a>
-      <a class="button"
-        ng-class="{'button-positive':ctrl.view === 'followers'}"
-        ng-click="ctrl.view = 'followers'">Followers</a>
     </div>
 
     <div class="list card"
@@ -55,13 +55,26 @@
       </div>
     </div>
 
-    <div class="list" ng-if="ctrl.view === 'diseases'">
-      <div class="item item-button-right" ng-repeat="item in appctrl.session.user.diseases">
+    <div class="list" ng-if="ctrl.view === 'like'">
+      <div class="item item-button-right" ng-repeat="item in ctrl.user.diseases">
         {{ item.get('to').get('name') }}
         <button class="button"
-          ng-class="{'button-positive': !appctrl.isFollowing(item.get('to')) }"
-          ng-click="appctrl.toggleFollowing(item.get('to'))">
-          {{ appctrl.session.user.isFollowing( item.get('to') ) ? 'Unfollow' : 'Follow' }}
+          ng-class="{'button-positive': !ctrl.isFollowing(item.get('to')) }"
+          ng-click="ctrl.toggleFollowing(item.get('to'))">
+          {{ ctrl.user.isFollowing( item.get('to') ) ? 'Unfollow' : 'Follow' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="list" ng-if="ctrl.view === 'comments'">
+      <div class="item item-avatar item-button-right" ng-repeat="item in appctrl.session.user.followers" >
+        <img ng-src="{{ item.get('from').get('icon').url() || 'img/material1.jpg' }}" />
+        <h2>{{ item.get('from').get('name') }}</h2
+        <p>{{ item.get('from').get('bio') }}</p>
+        <button class="button"
+          ng-class="{'button-positive': !appctrl.isFollowing(item.get('from')) }"
+          ng-click="appctrl.toggleFollowing(item.get('from'))">
+          {{ appctrl.session.user.isFollowing( item.get('from') ) ? 'Unfollow' : 'Follow' }}
         </button>
       </div>
     </div>
@@ -75,19 +88,6 @@
           ng-class="{'button-positive': !appctrl.isFollowing(item.get('to')) }"
           ng-click="appctrl.toggleFollowing(item.get('to'))">
           {{ appctrl.session.user.isFollowing( item.get('to') ) ? 'Unfollow' : 'Follow' }}
-        </button>
-      </div>
-    </div>
-
-    <div class="list" ng-if="ctrl.view === 'followers'">
-      <div class="item item-avatar item-button-right" ng-repeat="item in appctrl.session.user.followers" >
-        <img ng-src="{{ item.get('from').get('icon').url() || 'img/material1.jpg' }}" />
-        <h2>{{ item.get('from').get('name') }}</h2
-        <p>{{ item.get('from').get('bio') }}</p>
-        <button class="button"
-          ng-class="{'button-positive': !appctrl.isFollowing(item.get('from')) }"
-          ng-click="appctrl.toggleFollowing(item.get('from'))">
-          {{ appctrl.session.user.isFollowing( item.get('from') ) ? 'Unfollow' : 'Follow' }}
         </button>
       </div>
     </div>

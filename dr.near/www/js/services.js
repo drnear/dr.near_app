@@ -191,6 +191,39 @@ angular.module('DrNEAR.services',['ngResource'])
             }
         };
     })
+    .service('Profile', function(Activity, $timeout) {
+        var service = {
+            user            : undefined,
+            activities      : []
+        };
+
+        service.update = function(user) {
+            service.activities = [];
+            service.user = user;
+
+            var query = new Parse.Query( Activity );
+            query.limit( 10 );
+            query.descending( 'createdAt' );
+            query.equalTo( 'user', user );
+            query.include( 'user' );
+            query.find().then(
+                function( results ) {
+                    $timeout( function(){
+                        service.activities.splice(0);
+                        for ( var i = 0; i < results.length; i++ ) {
+                            service.activities.push( results[i] );
+                        }
+                    });
+                },
+                function( err ) {
+                    console.log( 'err', err );
+                }
+            );
+        };
+
+        return service;
+
+    })
 
     .directive("match", ["$parse", function($parse) {
        return {
