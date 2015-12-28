@@ -82,9 +82,18 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                 item.showReply = !item.showReply;
             }
         }
+        
+        ctrl.toggleLike = function(item){
+            Session.user.toggleFollowing( item ).then(function(saved){
+                console.log('toggleFollowing');
+                $scope.$apply();
+            });
+        }
+        ctrl.isLike = function( item ){
+            return Session.user.isFollowing( item );
+        };
         ctrl.reply = function( item ){
             console.log( 'comment' );
-
         }
     })
 

@@ -5,20 +5,22 @@ angular.module('DrNEAR.services',['ngResource'])
     .constant( 'Disease', Parse.Object.extend("Disease") )
     .constant( 'FollowingUser', Parse.Object.extend("FollowingUser") )
     .constant( 'FollowingDisease', Parse.Object.extend("FollowingDisease") )
+    .constant( 'FollowingActivity', Parse.Object.extend("FollowingActivity") )
 
-    .factory( 'UserFactory', function( $timeout, FollowingUser, FollowingDisease ) {
+    .factory( 'UserFactory', function( $timeout, FollowingUser, FollowingDisease, FollowingActivity ) {
         var UserObject = function( obj, opts ){
             if ( typeof(opts) !== 'object' ){
                 opts = {};
             }
 
             var context = this;
-            context.object     = obj;
-            context.followings = [];
-            context.followers  = [];
-            context.diseases   = [];
-            context.blocked    = [];
-            context.muted      = [];
+            context.object          = obj;
+            context.followings      = [];
+            context.followers       = [];
+            context.diseases        = [];
+            context.blocked         = [];
+            context.muted           = [];
+            context.likeActivities  = [];
 
             context.load();
         };
@@ -44,6 +46,13 @@ angular.module('DrNEAR.services',['ngResource'])
             return followerUserQuery.find(opts);
         };
 
+        UserObject.prototype.fetchLikeActivities = function(opts){
+            var followingActivityQuery = new Parse.Query(FollowingActivity);
+            followingActivityQuery.equalTo("from",this.object);
+            followingActivityQuery.include("to");
+            return followingActivityQuery.find(opts);
+        };
+
         UserObject.prototype.save = function(){
             this.object.set( "username", this.username );
             this.object.set( "name", this.name );
@@ -66,10 +75,13 @@ angular.module('DrNEAR.services',['ngResource'])
             context.fetchDiseases().then( function(diseases){
                 context.fetchFollowings().then(function(followings){
                     context.fetchFollowers().then(function(followers){
-                        $timeout(function(){
-                            context.diseases   = diseases;
-                            context.followings = followings;
-                            context.followers  = followers;
+                        context.fetchLikeActivities().then(function(likeActivities){
+                            $timeout(function(){
+                                context.diseases        = diseases;
+                                context.followings      = followings;
+                                context.followers       = followers;
+                                context.likeActivities  = likeActivities;
+                            });
                         });
                     });
                 });
@@ -82,8 +94,13 @@ angular.module('DrNEAR.services',['ngResource'])
                     return item.get('to').id == target.id;
                 }).length;
             }
-            else if ( target.className == '_User' ) {
+            else if ( target.className == 'User' ) {
                 return 0 < this.followings.filter( function( item ){
+                    return item.get('to').id == target.id;
+                }).length;
+            }
+            else if ( target.className == 'Activity' ) {
+                return 0 < this.likeActivities.filter( function( item ){
                     return item.get('to').id == target.id;
                 }).length;
             }
@@ -91,10 +108,11 @@ angular.module('DrNEAR.services',['ngResource'])
         };
 
         UserObject.prototype.toggleFollowing = function( target ) {
+            var context = this;
             if ( this.isFollowing( target ) ) {
                 console.log( 'unfollow' );
                 var q = new Parse.Query(
-                    target.className == 'Disease' ? FollowingDisease : FollowingUser
+                    target.className == 'Disease' ? FollowingDisease : (target.className == 'User' ? FollowingUser :FollowingActivity)
                 );
                 q.equalTo( 'from', this.object );
                 q.equalTo( 'to', target );
@@ -106,20 +124,31 @@ angular.module('DrNEAR.services',['ngResource'])
             }
             else {
                 console.log( 'follow' );
-                var d = target.className == 'Disease' ? new FollowingDisease() : new FollowingUser();
+                var d = target.className == 'Disease' ? new FollowingDisease() 
+                                                      : (target.className == 'User' ? new FollowingUser() : new FollowingActivity());
                 d.set( 'from', this.object );
                 d.set( 'to', target );
                 return d.save();
             }
-        };
+        }
 
+        UserObject.prototype.fetchFollowing = function ( target ){
+            var context = this;
+            if ( target.className == 'Activity') {
+                context.fetchLikeActivities().then( function(likeActivities){
+                   $timeout(function(){
+                       context.likeActivities = likeActivities;
+                   })
+                })
+            }
+        };
         return {
-            create : function( user, opts ) {
-                return new UserObject( user, opts );
+        create : function( user, opts ) {
+            return new UserObject( user, opts );
             }
         };
     })
-
+ 
     .service( 'Session', function( UserFactory, $timeout ){
         var service = {
             user            : undefined,
