@@ -30,7 +30,7 @@
     <div ng-if="ctrl.items.length == 0">
       <a class="button button-outline icon-left  ion-chevron-left button-stable">STEP1. Let's follow and create disease or user using &quot;Search&quot;</a>
     </div>
-    <div class="list card" ng-repeat="item in ctrl.items" ng-click="popover.show($event)">
+    <div class="list card" ng-repeat="item in ctrl.items">
       <div class="item item-avatar" ng-click = "ctrl.toProfile(item)">
         <img ng-src="{{ item.get('user').get('icon').url() }}" />
         <h2>{{ item.get('user').get('name') }}</h2>
@@ -45,7 +45,7 @@
         </p>
       </div>
       <div class="item tabs tabs-secondary tabs-icon-left">
-        <a class="tab-item" ng-click="ctrl.toggleLike(item)">
+        <a class="tab-item" ng-click="!ctrl.toggleLike(item)">
           <div ng-show="!ctrl.isLike(item)">
             <i class="icon ion-thumbsup"></i>
             Fight

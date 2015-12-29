@@ -20,7 +20,7 @@ angular.module('DrNEAR.services',['ngResource'])
             context.diseases        = [];
             context.blocked         = [];
             context.muted           = [];
-            context.likeActivities  = [];
+            context.fightActivities  = [];
 
             context.load();
         };
@@ -46,7 +46,7 @@ angular.module('DrNEAR.services',['ngResource'])
             return followerUserQuery.find(opts);
         };
 
-        UserObject.prototype.fetchLikeActivities = function(opts){
+        UserObject.prototype.fetchFightActivities = function(opts){
             var followingActivityQuery = new Parse.Query(FollowingActivity);
             followingActivityQuery.equalTo("from",this.object);
             followingActivityQuery.include("to");
@@ -75,12 +75,12 @@ angular.module('DrNEAR.services',['ngResource'])
             context.fetchDiseases().then( function(diseases){
                 context.fetchFollowings().then(function(followings){
                     context.fetchFollowers().then(function(followers){
-                        context.fetchLikeActivities().then(function(likeActivities){
+                        context.fetchFightActivities().then(function(fightActivities){
                             $timeout(function(){
                                 context.diseases        = diseases;
                                 context.followings      = followings;
                                 context.followers       = followers;
-                                context.likeActivities  = likeActivities;
+                                context.fightActivities  = fightActivities;
                             });
                         });
                     });
@@ -100,7 +100,7 @@ angular.module('DrNEAR.services',['ngResource'])
                 }).length;
             }
             else if ( target.className == 'Activity' ) {
-                return 0 < this.likeActivities.filter( function( item ){
+                return 0 < this.fightActivities.filter( function( item ){
                     return item.get('to').id == target.id;
                 }).length;
             }
@@ -135,9 +135,9 @@ angular.module('DrNEAR.services',['ngResource'])
         UserObject.prototype.fetchFollowing = function ( target ){
             var context = this;
             if ( target.className == 'Activity') {
-                context.fetchLikeActivities().then( function(likeActivities){
+                context.fetchFightActivities().then( function(fightActivities){
                    $timeout(function(){
-                       context.likeActivities = likeActivities;
+                       context.fightActivities = fightActivities;
                    })
                 })
             }

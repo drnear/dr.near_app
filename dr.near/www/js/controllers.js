@@ -83,89 +83,20 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             }
         }
         
-        ctrl.toggleLike = function(item){
+        ctrl.toggleFight = function(item){
             Session.user.toggleFollowing( item ).then(function(saved){
                 console.log('toggleFollowing');
                 $scope.$apply();
             });
         }
-        ctrl.isLike = function( item ){
+        ctrl.isFight = function( item ){
             return Session.user.isFollowing( item );
+            console.log('isLike');
         };
         ctrl.reply = function( item ){
             console.log( 'comment' );
         }
-    })
-
-    .controller( 'ActivityCtrl', function(
-        $scope, $state, $stateParams, $timeout, $location, Session, Profile, Activity, FollowingDisease
-    ) {
-        this.items = [];
-        var ctrl = this;
-
-        Session.user.fetchFollowings().then(function(followings){
-            Session.user.fetchDiseases().then( function(diseases){
-                var diseaseCommunityQuery = new Parse.Query( FollowingDisease );
-                diseaseCommunityQuery.containedIn( 'to', diseases.map(function(item){ return item.get('to'); }) );
-                diseaseCommunityQuery.find().then(function(communityRelations){
-                    var query = new Parse.Query( Activity );
-                    query.limit( 20 );
-                    query.descending( 'createdAt' );
-
-                    query.containedIn( 'user', followings.map(function(item){
-                        return item.get('to');
-                    }).concat( communityRelations.map(function(item){
-                        return item.get('from');
-                    }).concat( Session.user.object )));
-
-                    query.include( 'user' );
-                    query.find().then(
-                        function( results ) {
-                            $timeout( function(){
-                                ctrl.items = results;
-                            });
-                        },
-                        function( err ) {
-                            console.log( 'err', err );
-                        }
-                    );
-                });
-            });
-        });
-        ctrl.toProfile = function( item ) {
-            Profile.update(item.get('user'));
-            $location.path('/app/toProfile');
-        }
-        ctrl.toggleComment = function( item ) {
-            console.log( 'comment' );
-            console.log( item.id );
-
-            if(!item.showReply) {
-                var CommentObject = Parse.Object.extend("CommentObject");
-                var query = new Parse.Query( CommentObject );
-
-                query.equalTo("commentTo",item.id);
-                query.descending( 'createdAt' );
-                query.find({
-                    success: function( replies ) {
-                        item.comments = replies;
-                        item.showReply = !item.showReply;
-                        $scope.$apply();
-                    },
-                    error : function( err ) {
-                        console.log( err );
-                    }
-                });
-            } else {
-                item.showReply = !item.showReply;
-            }
-        }
-        ctrl.reply = function( item ){
-            console.log( 'comment' );
-
-        }
-    })
-
+    }) 
     .controller( 'AlertCtrl', function(
         $scope, $stateParams, $timeout
     ) {
