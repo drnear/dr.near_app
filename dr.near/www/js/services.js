@@ -118,7 +118,9 @@ angular.module('DrNEAR.services',['ngResource'])
                 q.equalTo( 'to', target );
                 return q.find().then(function(results){
                     for ( var i = 0; i < results.length; i++ ){
-                        results[i].destroy();
+                        results[i].destroy().then(function(){
+                            context.fetchFollowing( target );
+                        })
                     }
                 });
             }
@@ -128,7 +130,9 @@ angular.module('DrNEAR.services',['ngResource'])
                                                       : (target.className == 'User' ? new FollowingUser() : new FollowingActivity());
                 d.set( 'from', this.object );
                 d.set( 'to', target );
-                return d.save();
+                return d.save().then(function(){
+                        context.fetchFollowing( target );
+                });
             }
         }
 

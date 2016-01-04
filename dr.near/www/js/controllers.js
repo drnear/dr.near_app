@@ -18,7 +18,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     })
 
     .controller( 'ActivityCtrl', function(
-        $scope, $state, $stateParams, $location, $timeout, Session, Activity, FollowingDisease
+        $scope, $state, $stateParams, $rootScope, $location, $timeout, Session, Activity, FollowingDisease
     ) {
         this.items = [];
         var ctrl = this;
