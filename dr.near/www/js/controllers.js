@@ -18,7 +18,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     })
 
     .controller( 'ActivityCtrl', function(
-        $scope, $state, $stateParams, $rootScope, $location, $timeout, Session, Activity, FollowingDisease
+        $scope, $state, $stateParams, $rootScope, $location, $timeout, Profile, Session, Activity, FollowingDisease
     ) {
         this.items = [];
         var ctrl = this;
@@ -53,11 +53,10 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             });
         });
         ctrl.toProfile = function( item ) {
-            $rootScope.user = item.get('user');
-            $timeout( function(){
-                $state.go( 'app.toProfile' );
-            },100);
-        }
+            Profile.update(item.get('user')).then(function(profile) {
+                $state.go('app.toProfile');
+            });
+        };
         ctrl.toggleComment = function( item ) {
             console.log( 'comment' );
             console.log( item.id );
@@ -95,6 +94,19 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         };
         ctrl.reply = function( item ){
             console.log( 'comment' );
+            var CommentObject = Parse.Object.extend( 'CommentObject' );
+            var comment = new CommentObject();
+            var user = Session.user.object;
+
+            comment.set( 'commentTo', item.id);
+            comment.set( 'content', item.commentContent);
+            comment.set( 'user', user );
+
+            comment.save().then(function(){
+                item.commentContent = '';
+                item.comments.unshift(comment);
+                $scope.$apply();
+            });
         }
     }) 
     .controller( 'AlertCtrl', function(
@@ -156,16 +168,57 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         ctrl.view = 'activity';
         ctrl.user = Profile.user;
         ctrl.activities = Profile.activities;
-
     })
 
-    .controller( 'toProfileCtrl', function( Profile ) {
+    .controller( 'toProfileCtrl', function( $scope, Profile, Session ) {
         console.log( 'toProfileCtrl' );
         var ctrl = this;
         ctrl.view = 'activity';
         ctrl.user = Profile.user;
         ctrl.activities = Profile.activities;
 
+        ctrl.toProfile = function( item ) {
+            Profile.update(item.get('user')).then(function(profile) {
+                $state.go('app.toProfile');
+            });
+        };
+        ctrl.toggleComment = function( item ) {
+            console.log( 'comment' );
+            console.log( item.id );
+
+            if(!item.showReply) {
+                var CommentObject = Parse.Object.extend("CommentObject");
+                var query = new Parse.Query( CommentObject );
+
+                query.equalTo("commentTo",item.id);
+                query.descending( 'createdAt' );
+                query.find({
+                    success: function( replies ) {
+                        item.comments = replies;
+                        item.showReply = !item.showReply;
+                        $scope.$apply();
+                    },
+                    error : function( err ) {
+                        console.log( err );
+                    }
+                });
+            } else {
+                item.showReply = !item.showReply;
+            }
+        }      
+        ctrl.toggleFight = function(item){
+            Session.user.toggleFollowing( item ).then(function(saved){
+                console.log('toggleFollowing');
+                $scope.$apply();
+            });
+        }
+        ctrl.isFight = function( item ){
+            return Session.user.isFollowing( item );
+            console.log('isLike');
+        };
+        ctrl.reply = function( item ){
+            console.log( 'comment' );
+        }
     })
 
     .controller('ProfEditCtrl', function( $state, $cordovaCamera, $timeout, Session ) {

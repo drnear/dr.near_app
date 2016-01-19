@@ -50,6 +50,7 @@ angular.module('DrNEAR.services',['ngResource'])
             var followingActivityQuery = new Parse.Query(FollowingActivity);
             followingActivityQuery.equalTo("from",this.object);
             followingActivityQuery.include("to");
+            followingActivityQuery.include("to.user");
             return followingActivityQuery.find(opts);
         };
 
@@ -72,19 +73,18 @@ angular.module('DrNEAR.services',['ngResource'])
             this.role          = this.object.get('role');
 
             var context = this;
+
             context.fetchDiseases().then( function(diseases){
-                context.fetchFollowings().then(function(followings){
-                    context.fetchFollowers().then(function(followers){
-                        context.fetchFightActivities().then(function(fightActivities){
-                            $timeout(function(){
-                                context.diseases        = diseases;
-                                context.followings      = followings;
-                                context.followers       = followers;
-                                context.fightActivities  = fightActivities;
-                            });
-                        });
-                    });
-                });
+                context.diseases = diseases;
+                return context.fetchFollowings();
+            }).then( function(followings){
+                context.followings = followings;
+                return context.fetchFollowers();
+            }).then( function(followers){
+                context.followers = followers;
+                return context.fetchFightActivities();
+            }).then( function(fightActivities){
+                context.fightActivities = fightActivities;
             });
         };
 
@@ -101,6 +101,7 @@ angular.module('DrNEAR.services',['ngResource'])
             }
             else if ( target.className == 'Activity' ) {
                 return 0 < this.fightActivities.filter( function( item ){
+                    // test here that item is not undefined
                     return item.get('to').id == target.id;
                 }).length;
             }
@@ -118,10 +119,9 @@ angular.module('DrNEAR.services',['ngResource'])
                 q.equalTo( 'to', target );
                 return q.find().then(function(results){
                     for ( var i = 0; i < results.length; i++ ){
-                        results[i].destroy().then(function(){
-                            context.fetchFollowing( target );
-                        })
-                    }
+                        results[i].destroy();
+                        context.removeFollowing( target, results[i] );
+                        }
                 });
             }
             else {
@@ -131,21 +131,28 @@ angular.module('DrNEAR.services',['ngResource'])
                 d.set( 'from', this.object );
                 d.set( 'to', target );
                 return d.save().then(function(){
-                        context.fetchFollowing( target );
+                        context.insertFollowing( target, d );
                 });
             }
         }
 
-        UserObject.prototype.fetchFollowing = function ( target ){
-            var context = this;
-            if ( target.className == 'Activity') {
-                context.fetchFightActivities().then( function(fightActivities){
-                   $timeout(function(){
-                       context.fightActivities = fightActivities;
-                   })
-                })
+        UserObject.prototype.insertFollowing = function( target, d ) {
+            if ( target.className == 'Activity' ) {
+                this.fightActivities.push(d);
             }
         };
+
+        UserObject.prototype.removeFollowing = function( target, item ) {
+            if ( target.className == 'Activity' ) {
+                for ( var i = 0; i < this.fightActivities.length; i++ ){
+                    if(this.fightActivities[i].get('to').id == item.get("to").id
+                    && this.fightActivities[i].get('from').id == item.get("from").id) {
+                        this.fightActivities.splice(i, 1);
+                    }
+                }
+            }
+        };
+
         return {
         create : function( user, opts ) {
             return new UserObject( user, opts );
@@ -224,34 +231,32 @@ angular.module('DrNEAR.services',['ngResource'])
             }
         };
     })
-    .service('Profile', function(Activity, $timeout) {
+    .service('Profile', function(Activity, UserFactory, $timeout) {
         var service = {
             user            : undefined,
-            activities      : []
+            activities      : [],
+            diseases        : []
         };
 
         service.update = function(user) {
-            service.activities = [];
-            service.user = user;
+            return new Promise(function(resolve) {
+                service.activities = [];
+                service.user = UserFactory.create( user );
 
-            var query = new Parse.Query( Activity );
-            query.limit( 10 );
-            query.descending( 'createdAt' );
-            query.equalTo( 'user', user );
-            query.include( 'user' );
-            query.find().then(
-                function( results ) {
-                    $timeout( function(){
-                        service.activities.splice(0);
-                        for ( var i = 0; i < results.length; i++ ) {
-                            service.activities.push( results[i] );
-                        }
-                    });
-                },
-                function( err ) {
-                    console.log( 'err', err );
-                }
-            );
+                var query = new Parse.Query( Activity );
+                query.limit( 10 );
+                query.descending( 'createdAt' );
+                query.equalTo( 'user', user );
+                query.include( 'user' );
+                query.find().then(
+                    function( activities ) {
+                        $timeout( function(){
+                            service.activities = activities;
+                            resolve(service);
+                        });
+                    }
+                );
+            });
         };
 
         return service;

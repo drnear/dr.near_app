@@ -60,12 +60,12 @@
           Comment
         </a>
       </div>
-      <form class="form form-horizontal clearfix" ng-show="item.showReply">
+      <form class="form form-horizontal clearfix" name="comment" ng-show="item.showReply" ng-submit="ctrl.reply(item)">
         <div class="item item-avatar">
           <img src="mcfly.jpg">
           <label class="item-input">
-          <input class="form-control" type="text" ng-model="item.commentContent" placeholder="Write a comment..." />
-          <button type="submit" class="button button-small button-positive" ng-click="ctrl.reply(item)">
+          <input class="form-control" type="text" ng-model="item.commentContent" placeholder="Write a comment..." / required>
+          <button type="submit" class="button button-small button-positive" ng-disabled="comment.$invalid">
             Submit
           </button>
           </label>
@@ -73,7 +73,6 @@
         <div ng-repeat="comment in item.comments">
           <div class="item item-avatar">
             <img src="mcfly.jpg">
-            <strong>{{ comment.createdAt }}</strong>
             <span>{{ comment.get('content') }}</span>
           </div>
         </div>
