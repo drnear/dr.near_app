@@ -157,7 +157,7 @@ angular.module('DrNEAR.services',['ngResource'])
         create : function( user, opts ) {
             return new UserObject( user, opts );
             }
-        };
+        }; 
     })
  
     .service( 'Session', function( UserFactory, $timeout ){

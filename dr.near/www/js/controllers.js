@@ -43,6 +43,23 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                         function( results ) {
                             $timeout( function(){
                                 ctrl.items = results;
+
+                                var CommentObject = Parse.Object.extend("CommentObject");
+                                var query = new Parse.Query( CommentObject );
+
+                                query.containedIn("commentTo",ctrl.items.map(function(item) {
+                                    return item.id;
+                                }));
+                                query.descending( 'createdAt');
+                                query.find({
+                                    success: function( replies ){
+                                        ctrl.items.forEach(function(activity){
+                                            activity.comments = replies.filter(function(comment,index){
+                                                if (comment.get('commentTo') == activity.id) return true;
+                                            }); 
+                                        })
+                                    }
+                                })
                             });
                         },
                         function( err ) {
@@ -108,7 +125,26 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                 $scope.$apply();
             });
         }
-    }) 
+    })
+    .controller( 'ActivityPostCtrl', function( $state, Activity, Session ){
+        var ctrl =　this;
+
+        ctrl.post = function(entry){
+            var Activity = Parse.Object.extend( 'Activity' );
+            var activity = new Activity();
+            var user = Session.user.object;
+
+            activity.set( 'user', user );
+            activity.set( 'title', entry.title );
+            activity.set( 'content', entry.content );
+
+            activity.save().then( function(){
+                $state.go('app.activity');
+            })
+        }
+
+    })
+
     .controller( 'AlertCtrl', function(
         $scope, $stateParams, $timeout
     ) {
@@ -160,18 +196,9 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         };
     })
 
-    .controller('ProfileCtrl', function( Profile ) {
-        console.log( 'ProfileCtrl' );
-        Profile.update(Parse.User.current());
-
-        var ctrl = this;
-        ctrl.view = 'activity';
-        ctrl.user = Profile.user;
-        ctrl.activities = Profile.activities;
-    })
-
     .controller( 'toProfileCtrl', function( $scope, Profile, Session ) {
         console.log( 'toProfileCtrl' );
+
         var ctrl = this;
         ctrl.view = 'activity';
         ctrl.user = Profile.user;
