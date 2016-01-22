@@ -33,7 +33,7 @@
     <div class="list card" ng-repeat="item in ctrl.items">
       <div class="item item-avatar" ng-click = "ctrl.toProfile(item)">
         <img ng-src="{{ item.get('user').get('icon').url() }}" />
-        <h2>{{ item.get('user').get('name') }}</h2>
+        <h2>{{ item.get('user').get('username') }}</h2>
         <p>{{item.createdAt}}</p>
         </a>
       </div>
@@ -41,7 +41,7 @@
         <p><strong>{{item.get('title')}}</strong> {{item.get("content")}}</p>
         <p>
           <a href="#" class="subdued">1 Fight</a>
-          <a href="#" class="subdued">5 Comments</a>
+          <a href="#" class="subdued">{{ item.comments.length }} Comments</a>
         </p>
       </div>
       <div class="item tabs tabs-secondary tabs-icon-left">

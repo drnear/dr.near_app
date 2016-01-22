@@ -23,7 +23,7 @@
 
     <div class="button-bar">
       <a class="button"
-        ng-class="{'button-positive':ctrl.view === 'activity'}"
+        ng-class="{'button-positive':ctrl.view === 'Activity'}"
         ng-click="ctrl.view = 'activity'">Activity</a>
       <a class="button"
         ng-class="{'button-positive':ctrl.view === 'Fights'}"
@@ -39,20 +39,17 @@
     <div class="list card"
         ng-repeat="item in ctrl.activities"
         ng-if="ctrl.view === 'activity'">
-      <div class="item item-avatar">
-        <img ng-src="{{ item.get('user').get('icon').url() }}">
-        <h2>{{ item.get('user').get('name') }} </h2>
-        <p>{{ item.createdAt }}</p>
+      <div class="item item-avatar" ng-click = "ctrl.toProfile(item)">
+        <img ng-src="{{ item.get('username').get('icon').url() }}" />
+        <h2>{{ item.get('username').get('name') }}</h2>
+        <p>{{item.createdAt}}</p>
+        </a>
       </div>
-
       <div class="item item-body">
+        <p><strong>{{item.get('title')}}</strong> {{item.get("content")}}</p>
         <p>
-          <strong>{{ item.get('title') }}</strong>
-          {{ item.get('content') }}
-        </p>
-        <p>
-          <a href="#" class="subdued">1 Fights</a>
-          <a href="#" class="subdued">5 Comments</a>
+          <a href="#" class="subdued">1 Fight</a>
+          <a href="#" class="subdued">{{ item.comments.length }} Comments</a>
         </p>
       </div>
       <div class="item tabs tabs-secondary tabs-icon-left">
@@ -71,12 +68,12 @@
           Comment
         </a>
       </div>
-      <form class="form form-horizontal clearfix" ng-show="item.showReply" ng-click="ctrl.reply(item)">
+      <form class="form form-horizontal clearfix" name="comment" ng-show="item.showReply" ng-submit="ctrl.reply(item)">
         <div class="item item-avatar">
           <img src="mcfly.jpg">
           <label class="item-input">
-          <input class="form-control" type="text" ng-model="item.commentContent" placeholder="Write a comment..." />
-          <button type="submit" class="button button-small button-positive">
+          <input class="form-control" type="text" ng-model="item.commentContent" placeholder="Write a comment..." / required>
+          <button type="submit" class="button button-small button-positive" ng-disabled="comment.$invalid">
             Submit
           </button>
           </label>
@@ -84,19 +81,18 @@
         <div ng-repeat="comment in item.comments">
           <div class="item item-avatar">
             <img src="mcfly.jpg">
-            <strong>{{ comment.createdAt }}</strong>
             <span>{{ comment.get('content') }}</span>
           </div>
         </div>
-      </form>    
+      </form> 
     </div>
 
-    <div class="list" ng-if="ctrl.view === 'fight'">
+    <div class="list card" ng-if="ctrl.view === 'fight'">
       <div class="item item-button-right" ng-repeat="item in ctrl.user.fightActivities">
         <div class="item item-avatar" ng-click = "ctrl.toProfile(item)">
-          <a img ng-src="{{ item.get('user').get('icon').url() }}" />
-          <h2>{{ ctrl.user.fightActivities.get('name') }}</h2>
-          <h2>{{ item.get('to').get('user').get('username') }}</h2>
+          <a img ng-src="{{ item.get('username').get('icon').url() }}" />
+          <h2>{{ ctrl.username.fightActivities.get('name') }}</h2>
+          <h2>{{ item.get('to').get('username') }}</h2>
           </a>
         </div>
         <div class="item item-body">
