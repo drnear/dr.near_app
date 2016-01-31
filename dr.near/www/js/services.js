@@ -163,6 +163,7 @@ angular.module('DrNEAR.services',['ngResource'])
     .service( 'Session', function( UserFactory, $timeout ){
         var service = {
             user            : undefined,
+            activities      : [],
             isAuthenticated : false
          };
 
@@ -243,6 +244,7 @@ angular.module('DrNEAR.services',['ngResource'])
                 service.activities = [];
                 service.user = UserFactory.create( user );
 
+
                 var query = new Parse.Query( Activity );
                 query.limit( 10 );
                 query.descending( 'createdAt' );
@@ -252,6 +254,23 @@ angular.module('DrNEAR.services',['ngResource'])
                     function( activities ) {
                         $timeout( function(){
                             service.activities = activities;
+
+                            var CommentObject = Parse.Object.extend("CommentObject");
+                            var query = new Parse.Query( CommentObject );
+
+                            query.containedIn("commentTo",activities.map(function(item) {
+                                return item.id;
+                            }));
+                            query.descending( 'createdAt');
+                            query.find({
+                                success: function( replies ){
+                                    activities.forEach(function(activity){
+                                        activity.comments = replies.filter(function(comment,index){
+                                            if (comment.get('commentTo') == activity.id) return true;
+                                        });
+                                    })                                  
+                                }
+                            })
                             resolve(service);
                         });
                     }
