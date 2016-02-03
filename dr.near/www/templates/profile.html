@@ -8,32 +8,33 @@
     </ion-nav-buttons>
   </ion-nav-bar>
   <ion-content>
-    <div>  
-      <div class="content">
-        <img id="icon-image" ng-src="{{ctrl.user.iconurl}}">
+    <div class="list card">
+      <ion-item class="profile-item">
+        <div class="profile-picture profile-picture">
+          <img ng-src="{{ctrl.user.iconurl}}">
+        </div>
         <a class="center" ng-repeat= "item in ctrl.user.diseases">
           <div id="bio">
-            <h4>{{ ctrl.user.username }}</h5>
-            <h4>{{ item.get('to').get('name')}}</h4>
-            <h5>{{ ctrl.user.bio }}</h5>
+            <h2 class="profile-name dark">{{ ctrl.user.username }}</h2>
+            <div class="profile-info">{{ item.get('to').get('name')}}</div>
+            <div class="profile-bio">{{ ctrl.user.bio }}</div>
           </div>
         </a>
-      </div>
+      </ion-item>
     </div>
-
     <div class="button-bar">
-      <a class="button"
+        <a class="button"
         ng-class="{'button-positive':ctrl.view === 'Activity'}"
-        ng-click="ctrl.view = 'activity'">Activity</a>
+        ng-click="ctrl.view = 'activity'"><small>Activity</small></a>
       <a class="button"
         ng-class="{'button-positive':ctrl.view === 'Fights'}"
-        ng-click="ctrl.view = 'fight'">Fights</a>
+        ng-click="ctrl.view = 'fight'"><small>Fights</small></a>
       <a class="button"
         ng-class="{'button-positive':ctrl.view === 'Comments'}"
-        ng-click="ctrl.view = 'comments'">Comments</a>
+        ng-click="ctrl.view = 'comments'"><small>Comments</small></a>
       <a class="button"
         ng-class="{'button-positive':ctrl.view === 'followings'}"
-        ng-click="ctrl.view = 'followings'">Followings</a>
+        ng-click="ctrl.view = 'followings'"><small>Followings</small></a>
     </div>
 
     <div class="list card"
@@ -41,7 +42,7 @@
         ng-if="ctrl.view === 'activity'">
       <div class="item item-avatar" ng-click = "ctrl.toProfile(item)">
         <img ng-src="{{ item.get('username').get('icon').url() }}" />
-        <h2>{{ item.get('username').get('name') }}</h2>
+        <h2>{{ item.get('user').get('name') }}</h2>
         <p>{{item.createdAt}}</p>
         </a>
       </div>
@@ -105,11 +106,11 @@
         </div>
         <div class="item tabs tabs-secondary tabs-icon-left">
           <a class="tab-item" ng-click="!ctrl.toggleFight(item)">
-            <div ng-show="!ctrl.isFight(item)">
+            <div ng-show="ctrl.isFight(item)">
               <i class="icon ion-thumbsup"></i>
               Fight
             </div>
-            <div ng-show="ctrl.isFight(item)">
+            <div ng-show="!ctrl.isFight(item)">
               <i class="icon ion-thumbsup"></i>
               Cancel
             </div>
