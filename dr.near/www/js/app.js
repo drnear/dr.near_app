@@ -5,7 +5,8 @@ if ( typeof( APP_CONFIG ) == "undefined" ) {
 angular.module("DrNEAR", ["ionic", "DrNEAR.controllers"])
     .run( function( $ionicPlatform ) {
         Parse.initialize( APP_CONFIG.PARSE_APP_KEY, APP_CONFIG.PARSE_APP_SECRET);
-        
+        Parse.serverURL = "https://nameless-reef-92930.herokuapp.com/parse";
+               
         if(!(ionic.Platform.isIOS() || ionic.Platform.isAndroid())){
             window.fbAsyncInit = function() {
                 Parse.FacebookUtils.init({
