@@ -1,4 +1,4 @@
-<ion-view view-title="Profile">
+f<ion-view view-title="Profile">
   <ion-nav-bar class="bar-positive" align-title="left">
     <ion-nav-buttons side="left">
       <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
@@ -13,12 +13,17 @@
         <div class="profile-picture profile-picture">
           <img ng-src="{{ctrl.user.iconurl}}">
         </div>
+        <div class="contact list">
+          <i class="icon ion-email" ng-click="ctrl.openThread( user )"></i>
+        </div>
         <a class="center" ng-repeat= "item in ctrl.user.diseases">
-          <div id="bio">
-            <h2 class="profile-name dark">{{ ctrl.user.username }}</h2>
-            <div class="profile-info">{{ item.get('to').get('name')}}</div>
-            <div class="profile-bio">{{ ctrl.user.bio }}</div>
+        <div id="bio">
+          <h2 class="profile-name dark">{{ ctrl.user.username }}</h2>
+          <div class="profile-info">{{ item.get('to').get('name')}}</div>
+          <div class="list card">
+           {{ ctrl.user.bio }}
           </div>
+        </div>
         </a>
       </ion-item>
     </div>

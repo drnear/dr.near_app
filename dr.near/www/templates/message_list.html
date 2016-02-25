@@ -9,8 +9,10 @@
   </ion-nav-bar>
   <ion-content>
     <ion-list>
-      <ion-item ng-repeat="item in ctrl.usersAndMessages" ng-click="ctrl.openThread( item.user )">
-        {{ item.user.get("name" )}} - {{ item.message.get("content") }}
+      <ion-item class="item item-avatar" ng-repeat="item in ctrl.usersAndMessages" ng-click="ctrl.openThread( item.user )">
+        <img ng-src="{{item.picture.thumbnail}}">
+        <h2>{{ item.username}}</h2>
+        <p>{{ item.sha1 }}</p>
       </ion-item>
     </ion-list>
   </ion-content>

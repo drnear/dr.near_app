@@ -18,7 +18,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     })
 
     .controller( 'ActivityCtrl', function(
-        $scope, $state, $stateParams, $rootScope, $location, $timeout, Profile, Session, Activity, FollowingDisease
+        $scope, $state, $stateParams, $rootScope, $location, $timeout, Profile, Session, Activity, FollowingDisease, FollowingActivity
     ) {
         this.items = [];
         var ctrl = this;
@@ -55,28 +55,33 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                                     query.descending( 'createdAt');
                                     query.find({
                                         success: function( replies ){
-/*
-                                            var fightActivityQuery = new Parse.Query( FollowingActivity );
-                                            query.containedIn('to',ctrl.items.map(function(item) {
-                                                return item.id;
-                                            }));
 
-                                            query.descending( 'createdAt');
-                                            query.find({
-                                                success: function( replies ){
+                                            var fightActivityQuery = new Parse.Query( FollowingActivity );
+                                            //query.containedIn('to',ctrl.items.map(function(item) {
+                                            //    return item.id;
+                                            //}));
+                                            fightActivityQuery.containedIn('to',ctrl.items);
+
+                                            fightActivityQuery.descending( 'createdAt');
+                                            fightActivityQuery.find({
+                                                success: function( fightTo ){
                                                     ctrl.items.forEach(function(activity){
-                                                    activity.fightActivities = replies.filter(function(){
-                                                        if (fightActivities == activity.id)
-                                                    })
-                                                
-                                            }})
-*/
+                                                        activity.fightActivities = fightTo.filter(function(fight, index){
+                                                            if (fight.get("to").id == activity.id) return true;
+                                                        }).map(function(followingActivity) {
+                                                            return followingActivity.get('from').id;
+                                                        });
+                                                    });
+                                                    $scope.$apply();
+                                                }
+                                            });
+
 
                                             ctrl.items.forEach(function(activity){
                                                 activity.comments = replies.filter(function(comment,index){
                                                     if (comment.get('commentTo') == activity.id) return true;
                                                 }); 
-                                            })
+                                            });
                                             $scope.$apply();
                                         }
                                     })
@@ -101,10 +106,20 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         
         ctrl.toggleFight = function(item){
             Session.user.toggleFollowing( item ).then(function(saved){
+                ctrl.toggleFightInner(item);
                 console.log('toggleFollowing');
                 $scope.$apply();
             });
-        }
+        };
+        ctrl.toggleFightInner = function(item) {
+            for(var i = 0; i < item.fightActivities.length; i++) {
+                if(item.fightActivities[i] == Session.user.object.id) {
+                    item.fightActivities.splice(i, 1);
+                    return;
+                }
+            }
+            item.fightActivities.push(Session.user.object.id);
+        };
         ctrl.isFight = function( item ){
             return Session.user.isFollowing( item );
             console.log('isLike');
@@ -137,8 +152,8 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             var user = Session.user.object;
 
             activity.set( 'user', user );
-            activity.set( 'title', entry.title );
-            activity.set( 'content', entry.content );
+            activity.set( 'title', ctrl.entry.title );
+            activity.set( 'content', ctrl.entry.content );
 
             activity.save().then( function(){
                 $state.go('app.activity');
@@ -198,7 +213,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         };
     })
 
-    .controller( 'toProfileCtrl', function( $scope, Profile, Session ) {
+    .controller( 'toProfileCtrl', function( Profile, Session, $scope, $state) {
         console.log( 'toProfileCtrl' );
 
         var ctrl = this;
@@ -227,10 +242,13 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         ctrl.isFight = function( item ){
             return Session.user.isFollowing( item );
             console.log('isLike');
-        };
+        }
         ctrl.reply = function( item ){
             console.log( 'comment' );
         }
+        ctrl.openThread = function( item ){
+                $state.go( 'app.message_thread',{ uid: ctrl.user.object.id });
+        }       
     })
     .controller( 'ProfileCtrl', function( $scope, Profile, Session ) {
         console.log( 'ProfileCtrl' );
@@ -402,10 +420,14 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         console.log( 'SettingPasswordCtrl' );
     })
 
-    .controller( 'MessageListCtrl', function( Session, Message, $timeout, $state ) {
+    .controller( 'MessageListCtrl', function( Session, Message, People, $timeout, $state ) {
         var ctrl = this;
         ctrl.usersAndMessages = [];
 
+        People.ready()
+                .then(function () {
+                    ctrl.usersAndMessages = People.all();
+                });
         // この方式ではなく、スレッド展開中のユーザーリストを持つ方が処理効率が良い
 
         var messageToUser = new Parse.Query( Message );
@@ -497,22 +519,64 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         };
     })
 
-    .controller('MessageThreadCtrl', function( Session, User, Message, $stateParams, $timeout ) {
+    .controller('MessageThreadCtrl', function( 
+        Session, User, Message, Profile, $scope, $rootScope, $state, $stateParams,
+        $ionicActionSheet, $ionicPopup, $ionicScrollDelegate, $timeout, $interval ) {
         var ctrl = this;
 
         ctrl.messages = [];
-
+        ctrl.user = Profile.user;
         // 表示
         var getUserQuery = new Parse.Query( User );
+        var user = Session.user.object;
+        var toUser = ctrl.user.object;
+        var messageCheckTimer;
+        var viewScroll = $ionicScrollDelegate.$getByHandle('userMessageScroll');
+        var footerBar; // gets set in $ionicView.enter
+        var scroller;
+        var txtInput; 
+
+        $scope.$on('$ionicView.enter', function() {
+
+          getUserQuery.get();
+          
+          $timeout(function() {
+            footerBar = document.body.querySelector('#userMessagesView .bar-footer');
+            scroller = document.body.querySelector('#userMessagesView .scroll-content');
+            txtInput = angular.element(footerBar.querySelector('textarea'));
+          }, 0);
+
+          messageCheckTimer = $interval(function() {
+            // here you could check for new messages if your app doesn't use push notifications or user disabled them
+          }, 20000);
+        });
+
+        $scope.$on('$ionicView.leave', function() {
+          console.log('leaving UserMessages view, destroying interval');
+          // Make sure that the interval is destroyed
+          if (angular.isDefined(messageCheckTimer)) {
+            $interval.cancel(messageCheckTimer);
+            messageCheckTimer = undefined;
+          }
+        });
+
+        $scope.$on('$ionicView.beforeLeave', function() {
+          if (!ctrl.sendMessageForm.messageField || ctrl.sendMessageForm.messageField === '') {
+            localStorage.removeItem('userMessage-' + ctrl.user.id);
+          }
+        });
+
         getUserQuery.get( $stateParams.uid, {
             success: function( user ){
+                $scope.doneLoading = true;
+
                 var messageFromUser = new Parse.Query( Message );
-                messageFromUser.equalTo( "from", user );
-                messageFromUser.equalTo( "to", Session.user.object );
+                messageFromUser.equalTo( "from", toUser );
+                messageFromUser.equalTo( "to", user );
 
                 var messageToUser = new Parse.Query( Message );
-                messageToUser.equalTo( "from", Session.user.object );
-                messageToUser.equalTo( "to", user );
+                messageToUser.equalTo( "from", user );
+                messageToUser.equalTo( "to", toUser );
 
                 var query = Parse.Query.or( messageFromUser, messageToUser );
                 query.include( "from", "to" );
@@ -520,12 +584,12 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                 query.descending( "createdAt" );
                 query.find({
                     success: function( messages ) {
-                        console.log( messages );
                         $timeout( function(){
                             ctrl.messages.splice(0);
                             for ( var i = 0; i < messages.length; i++ ) {
                                 ctrl.messages.push( messages[i] );
                             }
+                            viewScroll.scrollBottom();
                         });
                     },
                     error: function( err ) {
@@ -538,21 +602,93 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             }
         });
 
-        // 送信
-        ctrl.send = function( message ) {
+        $scope.$watch('ctrl.sendMessageForm.messageField', function(newValue, oldValue) {
+            console.log('ctrl.sendMessageForm.messageField $watch, newValue ' + newValue);
+            if (!newValue) newValue = '';
+            localStorage['userMessage-' + ctrl.user.id] = newValue;
+        });
+
+        ctrl.sendMessage　= function( sendMesssgeForm ) {
+            console.log('sendMessage');
+            keepKeyboardOpen();
+
+            console.log('sendMessage');
+            var Message = Parse.Object.extend( 'Message' ); 
             var msg = new Message();
-            var u = new User();
-            u.id = $stateParams.uid;
-            msg.save({
-                from    : Session.user.object,
-                to      : u,
-                content : message
-            }).then(function(){
-                $timeout( function(){
-                    ctrl.messageField = '';
-                });
-            });
-        };
+            var user =  Session.user.object
+            var toUser = Profile.user.object;
+
+            msg.set( 'from', user );
+            msg.set( 'to', toUser );
+            msg.set( 'content', ctrl.messageField );
+
+            msg.save().then( function(){
+                ctrl.messageField = '';
+            })
+            $timeout(function() {
+                keepKeyboardOpen();
+                viewScroll.scrollBottom(true);
+            }, 0);
+
+            $timeout(function() {
+                ctrl.messages.push();
+                keepKeyboardOpen();
+                viewScroll.scrollBottom(true);
+            }, 2000);
+        }
+        function keepKeyboardOpen() {
+          console.log('keepKeyboardOpen');
+          txtInput.one('blur', function() {
+            console.log('textarea blur, focus back on it');
+            txtInput[0].focus();
+          });
+        }
+
+        $scope.onMessageHold = function(e, itemIndex, message) {
+          console.log('onMessageHold');
+          console.log('message: ' + JSON.stringify(message, null, 2));
+          $ionicActionSheet.show({
+            buttons: [{
+              text: 'Copy Text'
+            }, {
+              text: 'Delete Message'
+            }],
+            buttonClicked: function(index) {
+              switch (index) {
+                case 0: // Copy Text
+                  //cordova.plugins.clipboard.copy(message.text);
+
+                  break;
+                case 1: // Delete
+                  // no server side secrets here :~)
+                  $scope.messages.splice(itemIndex, 1);
+                  $timeout(function() {
+                    viewScroll.resize();
+                  }, 0);
+
+                  break;
+              }
+              
+              return true;
+            }
+          });
+        }
+    $scope.$on('taResize', function(e, ta) {
+      console.log('taResize');
+      if (!ta) return;
+      
+      var taHeight = ta[0].offsetHeight;
+      console.log('taHeight: ' + taHeight);
+      
+      if (!footerBar) return;
+      
+      var newFooterHeight = taHeight + 10;
+      newFooterHeight = (newFooterHeight > 44) ? newFooterHeight : 44;
+      
+      footerBar.style.height = newFooterHeight + 'px';
+      scroller.style.bottom = newFooterHeight + 'px'; 
+    });
+
     })
 
     .controller( 'SignupCtrl', function( $scope, $timeout, $state, $location,$rootScope, $cordovaFacebook, AUTH_EVENTS, Session) {
