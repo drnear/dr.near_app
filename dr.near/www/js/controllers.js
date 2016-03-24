@@ -18,7 +18,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     })
 
     .controller( 'ActivityCtrl', function(
-        $scope, $state, $stateParams, $rootScope, $location, $timeout, Profile, Session, Activity, FollowingDisease
+        $scope, $state, $stateParams, $rootScope, $location, $timeout, Profile, Session, Activity, FollowingDisease, FollowingActivity
     ) {
         this.items = [];
         var ctrl = this;
@@ -61,6 +61,26 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                                     query.find({
                                         success: function( replies ){
 
+
+                                            var fightActivityQuery = new Parse.Query( FollowingActivity );
+
+                                            fightActivityQuery.containedIn('to',ctrl.items);
+
+                                            fightActivityQuery.descending( 'createdAt');
+                                            fightActivityQuery.find({
+                                                success: function( fightTo ){
+                                                    ctrl.items.forEach(function(activity){
+                                                        activity.fightActivities = fightTo.filter(function(fight, index){
+                                                            if (fight.get("to").id == activity.id) return true;
+                                                        }).map(function(followingActivity) {
+                                                            return followingActivity.get('from').id;
+                                                        });
+                                                    });
+                                                    $scope.$apply();
+                                                }
+                                            });
+
+
                                             ctrl.items.forEach(function(activity){
                                                 activity.comments = replies.filter(function(comment,index){
                                                     if (comment.get('commentTo') == activity.id) return true;
@@ -90,10 +110,20 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         
         ctrl.toggleFight = function(item){
             Session.user.toggleFollowing( item ).then(function(saved){
+                ctrl.toggleFightInner(item);
                 console.log('toggleFollowing');
                 $scope.$apply();
             });
         }
+        ctrl.toggleFightInner = function(item) {
+            for(var i = 0; i < item.fightActivities.length; i++) {
+                if(item.fightActivities[i] == Session.user.object.id) {
+                    item.fightActivities.splice(i, 1);
+                    return;
+                }
+            }
+            item.fightActivities.push(Session.user.object.id);
+        };
         ctrl.isFight = function( item ){
             return Session.user.isFollowing( item );
             console.log('isLike');
