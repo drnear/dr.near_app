@@ -10,8 +10,8 @@
   <ion-content>
     <div class="list card">
       <ion-item class="profile-item">
-        <div class="profile-picture profile-picture">
-          <img ng-src="{{ctrl.user.iconurl}}">
+        <div class="profile-picture-center">
+          <img ng-src="{{ ctrl.user.get('iconurl') }}">
         </div>
         <a class="center" ng-repeat= "item in ctrl.user.diseases">
           <div id="bio">

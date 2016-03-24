@@ -58,6 +58,11 @@ angular.module('DrNEAR.services',['ngResource'])
             this.object.set( "name", this.name );
             this.object.set( "bio", this.bio );
             this.object.set( "email", this.email );
+            this.object.set( "role", this.role );
+            if(this.iconurl) {
+                //this.object.set( "icon", this.icon);
+                this.object.set( "iconurl", this.iconurl);
+            }
             return this.object.save();
         };
 
@@ -65,6 +70,7 @@ angular.module('DrNEAR.services',['ngResource'])
             console.log('Session.load');
             this.username      = this.object.get('username');
             this.name          = this.object.get('name') || this.object.get('username');
+            this.icon          = this.object.get('icon');
             this.iconurl       = this.object.get('icon') ? this.object.get('icon').url() : 'img/material1.jpg';
             this.bio           = this.object.get('bio');
             this.email         = this.object.get('email');
@@ -337,40 +343,11 @@ angular.module('DrNEAR.services',['ngResource'])
       }
     ])
 
-    .factory('People', function ($http, $q) {
-        var people = [];
-        var n = 0;
-
-        var add = function (count) {
-            var qs = '?q=' + (n++) + '&results=' + count || 1;
-            return $http.get('http://api.randomuser.me/' + qs)
-                .then(function (response) {
-                    var newPeople = response.data.results
-                        .map(function (value) {
-                            return value.user;
-                        });
-                    people.push.apply(people, newPeople);
-                });
+    .filter('nl2br', ['$filter',
+      function($filter) {
+        return function(data) {
+          if (!data) return data;
+          return data.replace(/\n\r?/g, '<br />');
         };
-
-        var all = function () {
-            return people;
-        };
-
-        var init = function () {
-            var promises = [];
-            for (var i = 0; i < 7; i++) {
-                promises.push(add(100));
-            }
-            return $q.all(promises);
-        };
-
-        return {
-            add: add,
-            all: all,
-            ready: init,
-            total: function () {
-                return people.length;
-            }
-        };
-    })
+      }
+    ])

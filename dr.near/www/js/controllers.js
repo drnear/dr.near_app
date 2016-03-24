@@ -26,6 +26,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         Session.user.fetchFollowings().then(function(followings){
             Session.user.fetchDiseases().then( function(diseases){
                 Session.user.fetchFightActivities().then( function(fightActivities){
+                    $scope.doneLoading = true ;
 
                     var diseaseCommunityQuery = new Parse.Query( FollowingDisease );
                     diseaseCommunityQuery.containedIn( 'to', diseases.map(function(item){ return item.get('to'); }) );
@@ -46,6 +47,10 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                                 $timeout( function(){
                                     ctrl.items = results;
 
+                                    if ( Session.user.diseases.length == 0 ){
+                                        $state.go('intro');
+                                    }
+
                                     var CommentObject = Parse.Object.extend("CommentObject");
                                     var query = new Parse.Query( CommentObject );
 
@@ -55,22 +60,6 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                                     query.descending( 'createdAt');
                                     query.find({
                                         success: function( replies ){
-/*
-                                            var fightActivityQuery = new Parse.Query( FollowingActivity );
-                                            query.containedIn('to',ctrl.items.map(function(item) {
-                                                return item.id;
-                                            }));
-
-                                            query.descending( 'createdAt');
-                                            query.find({
-                                                success: function( replies ){
-                                                    ctrl.items.forEach(function(activity){
-                                                    activity.fightActivities = replies.filter(function(){
-                                                        if (fightActivities == activity.id)
-                                                    })
-                                                
-                                            }})
-*/
 
                                             ctrl.items.forEach(function(activity){
                                                 activity.comments = replies.filter(function(comment,index){
@@ -153,7 +142,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         console.log( 'AlertCtrl' );
     })
 
-    .controller( 'SearchCtrl', function( $timeout, FollowingUser, FollowingDisease, Session ) {
+    .controller( 'SearchCtrl', function( $scope, $timeout, FollowingUser, FollowingDisease, Session ) {
         var ctrl = this;
         ctrl.searchWord = '';
         ctrl.users      = [];
@@ -195,6 +184,17 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                     });
                 });
             },500);
+        };
+
+        ctrl.toggleSearch = function(item){
+            Session.user.toggleFollowing( item ).then(function(saved){
+                console.log('toggleSearch');
+                $scope.$apply();
+            });
+        }
+        ctrl.isSelectDisease = function( item ){
+            return Session.user.isFollowing( item );
+            console.log('isSelectDisease');
         };
     })
 
@@ -269,6 +269,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
 
     .controller('ProfEditCtrl', function( $state, $cordovaCamera, $timeout, Session ) {
         var ctrl = this;
+        ctrl.session = Session;
 
         this.useCamera = function() {
             console.log('useCamera');
@@ -496,28 +497,69 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             $state.go( 'app.message_thread', { uid: user.id } );
         };
     })
-
-    .controller('MessageThreadCtrl', function( Session, User, Message, $stateParams, $timeout ) {
+    .controller('MessageThreadCtrl', function( 
+        Session, User, Message, Profile, $scope, $rootScope, $state, $stateParams,
+        $ionicActionSheet, $ionicPopup, $ionicScrollDelegate, $timeout, $interval ) {
         var ctrl = this;
 
         ctrl.messages = [];
+        ctrl.user = Session.user; 
 
-        // 表示
         var getUserQuery = new Parse.Query( User );
+        var toUser = Profile.user.object; 
+        var messageCheckTimer;
+        var viewScroll = $ionicScrollDelegate.$getByHandle('userMessageScroll');
+        var footerBar;
+        var scroller;
+        var txtInput; 
+
+        $scope.$on('$ionicView.enter', function() {
+
+          getUserQuery.get();
+          
+          $timeout(function() {
+            footerBar = document.body.querySelector('#userMessagesView .bar-footer');
+            scroller = document.body.querySelector('#userMessagesView .scroll-content');
+            txtInput = angular.element(footerBar.querySelector('textarea'));
+          }, 0);
+
+          messageCheckTimer = $interval(function() {
+            // here you could check for new messages if your app doesn't use push notifications or user disabled them
+          }, 20000);
+        });
+
+        $scope.$on('$ionicView.leave', function() {
+          console.log('leaving UserMessages view, destroying interval');
+          // Make sure that the interval is destroyed
+          if (angular.isDefined(messageCheckTimer)) {
+            $interval.cancel(messageCheckTimer);
+            messageCheckTimer = undefined;
+          }
+        });
+
+        $scope.$on('$ionicView.beforeLeave', function() {
+          if (!ctrl.messageField || ctrl.messageField === '') {
+            localStorage.removeItem('userMessage-' + ctrl.user.id);
+          }
+        });
+
         getUserQuery.get( $stateParams.uid, {
             success: function( user ){
+                $scope.doneLoading = true;
+
                 var messageFromUser = new Parse.Query( Message );
-                messageFromUser.equalTo( "from", user );
+                messageFromUser.equalTo( "from", toUser );
                 messageFromUser.equalTo( "to", Session.user.object );
 
                 var messageToUser = new Parse.Query( Message );
                 messageToUser.equalTo( "from", Session.user.object );
-                messageToUser.equalTo( "to", user );
+                messageToUser.equalTo( "to", toUser );
 
                 var query = Parse.Query.or( messageFromUser, messageToUser );
                 query.include( "from", "to" );
                 query.limit( 50 );
-                query.descending( "createdAt" );
+                //query.descending( "createdAt" );
+                query.ascending( "createdAt" );// inaken
                 query.find({
                     success: function( messages ) {
                         console.log( messages );
@@ -538,21 +580,96 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             }
         });
 
-        // 送信
-        ctrl.send = function( message ) {
+        $scope.$watch('ctrl.sendMessageForm.messageField', function(newValue, oldValue) {
+            console.log('ctrl.sendMessageForm.messageField $watch, newValue ' + newValue);
+            if (!newValue) newValue = '';
+            localStorage['userMessage-' + ctrl.user.id] = newValue;
+        });
+
+        ctrl.sendMessage　= function( sendMesssgeForm ) {
+            console.log('sendMessage');
+            keepKeyboardOpen();
+
+            console.log('sendMessage');
+            var Message = Parse.Object.extend( 'Message' ); 
             var msg = new Message();
-            var u = new User();
-            u.id = $stateParams.uid;
-            msg.save({
-                from    : Session.user.object,
-                to      : u,
-                content : message
-            }).then(function(){
-                $timeout( function(){
-                    ctrl.messageField = '';
-                });
-            });
-        };
+            var user =  Session.user.object
+            var toUser = Profile.user.object;
+
+            msg.set( 'from', user );
+            msg.set( 'to', toUser );
+            msg.set( 'content', ctrl.messageField );
+
+            msg.save().then( function(){
+                ctrl.messages.push( msg );
+                ctrl.messageField = '';
+                $scope.$apply();
+            })
+            $timeout(function() {
+                keepKeyboardOpen();
+                viewScroll.scrollBottom(true);
+            }, 0);
+
+            $timeout(function() {
+                ctrl.messages.push();
+                keepKeyboardOpen();
+                viewScroll.scrollBottom(true);
+            }, 2000);
+        }
+        function keepKeyboardOpen() {
+          console.log('keepKeyboardOpen');
+          txtInput.one('blur', function() {
+            console.log('textarea blur, focus back on it');
+            txtInput[0].focus();
+          });
+        }
+
+        $scope.onMessageHold = function(e, itemIndex, message) {
+          console.log('onMessageHold');
+          console.log('message: ' + JSON.stringify(message, null, 2));
+          $ionicActionSheet.show({
+            buttons: [{
+              text: 'Copy Text'
+            }, {
+              text: 'Delete Message'
+            }],
+            buttonClicked: function(index) {
+              switch (index) {
+                case 0: // Copy Text
+                  //cordova.plugins.clipboard.copy(message.text);
+
+                  break;
+                case 1: // Delete
+                  // no server side secrets here :~)
+                  $scope.messages.splice(itemIndex, 1);
+                  $timeout(function() {
+                    viewScroll.resize();
+                  }, 0);
+
+                  break;
+              }
+              
+              return true;
+            }
+          });
+        }
+        
+        $scope.$on('taResize', function(e, ta) {
+          console.log('taResize');
+          if (!ta) return;
+          
+          var taHeight = ta[0].offsetHeight;
+          console.log('taHeight: ' + taHeight);
+          
+          if (!footerBar) return;
+          
+          var newFooterHeight = taHeight + 10;
+          newFooterHeight = (newFooterHeight > 44) ? newFooterHeight : 44;
+          
+          footerBar.style.height = newFooterHeight + 'px';
+          scroller.style.bottom = newFooterHeight + 'px'; 
+        });
+
     })
 
     .controller( 'SignupCtrl', function( $scope, $timeout, $state, $location,$rootScope, $cordovaFacebook, AUTH_EVENTS, Session) {
@@ -730,17 +847,16 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     })
 
     .controller( 'IntroCtrl',function($scope, $state, $stateParams, $ionicSlideBoxDelegate,
-                                      $ionicModal, $timeout, $location){
-        console.log( 'IntroCtrl' );
-        $scope.$parent.clearFabs();
-        $scope.isExpanded = false;
-        $scope.$parent.setExpanded(false);
-        $scope.$parent.setHeaderFab(false);
+                                      $ionicModal, $timeout, $location, Session){
+        var ctrl = this;
+        ctrl.view = 'patient';
+        ctrl.session = Session;
+        ctrl.searchWord = '';
+        ctrl.diseases   = [];
+        ctrl.timer = undefined;
 
-        // Called to navigate to the main app
-        $scope.startApp = function() {
-            $location.path('/signup');
-        };
+        console.log( 'IntroCtrl' );
+
         $scope.next = function() {
             $ionicSlideBoxDelegate.next();
         };
@@ -751,10 +867,152 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         $scope.slideChanged = function(index) {
             $scope.slideIndex = index;
         };
-        ctrl.signup = function() {
-            $location.path( '/signup' );
+        ctrl.changeRole = function() {
+          console.log($scope.ctrl.session.user.role); //-> 選択されたアイテムの値
+        }
+        ctrl.update = function() {
+            Session.user.save().then(function(saved){
+                $timeout(function(){
+                    $state.go( 'app.first' );
+                });
+            },function(err){
+                console.log(err);
+            });
         };
-        $scope.login = function() {
-            $location.path( '/login' );
+
+        $scope.changeItem = function() {
+          console.log($scope.selectedItem);  //-> 選択されたアイテムの値
+        }
+
+        this.useCamera = function() {
+            console.log('useCamera');
+            var options = {
+                quality: 50,
+                destinationType  : 0,    // 0:DATA_URL, 1:, 2:
+                sourceType       : 0,    // 0:LIBRARY, 1:CAMERA, 2:ALBUM
+                allowEdit        : true,
+                encodingType     : 0,    // JPEG
+                targetWidth      : 100,
+                targetHeight     : 100,
+                popoverOptions   : {},
+                saveToPhotoAlbum : false
+            };
+            $cordovaCamera.getPicture(options).then(function(imageData) {
+                document.getElementById('icon-image').src = "data:image/jpeg;base64," + imageData;
+            }, function(err) {
+                // error
+            });
+        };
+
+        this.selectIcon = function() {
+            document.getElementById('icon-handler').click();
+        };
+
+        this.uploadIcon = function( iconElem ) {
+            if ( iconElem.files[0] ) {
+                var reader = new FileReader();
+                reader.onload = function(ev){
+                    document.getElementById('icon-image').src = ev.target.result;
+                };
+                reader.readAsDataURL( iconElem.files[0] );
+            }
+        };
+    })
+    .controller( 'FirstCtrl',function($scope, $state, $stateParams, $timeout, $location, Session){
+        var ctrl = this;
+        ctrl.session = Session;
+        ctrl.searchWord = '';
+        ctrl.diseases   = [];
+        ctrl.timer = undefined;
+
+        ctrl.searchDisease = function(){
+            if (ctrl.timer !== undefined) {
+                $timeout.cancel(ctrl.timer);
+                ctrl.timer = undefined;
+            }
+
+            //ctrl.users.splice(0);
+            ctrl.diseases.splice(0);
+
+            if ( ctrl.searchWord === '' ) {
+                $timeout(function(){
+                    ctrl.users.splice(0);
+                    ctrl.diseases.splice(0);
+                });
+                return;
+            }
+
+            ctrl.timer = $timeout(function(){
+                var userQuery = new Parse.Query(Parse.User);
+                userQuery.matches( "name", new RegExp(".*" + ctrl.searchWord + ".*",'i') );
+                userQuery.notEqualTo( "objectId", Session.user.object.id );
+                userQuery.find().then(function(users){
+                    $timeout(function(){
+                        ctrl.users = users;
+                    },100);
+                });
+
+                var diseaseQuery = new Parse.Query(Parse.Object.extend("Disease"));
+                diseaseQuery.matches( "name", new RegExp(".*" + ctrl.searchWord + ".*",'i') );
+                diseaseQuery.find().then(function(diseases){
+                    $timeout(function(){
+                        ctrl.diseases = diseases;
+                    });
+                });
+            },500);
+        };
+
+        ctrl.select = function( disease ){
+            ctrl.diseasetag = true;
+            var user = Parse.User.current();
+
+            ctrl.searchWord = disease.get('name');
+
+            disease.relation("followers").add(user);
+            disease.save().then(function(saved){
+                console.log('saving disease succeeded',saved);
+                user.relation("diseases").add(saved);
+                user.save().then(function(saved){
+                    $timeout(function(){
+                        console.log('select');
+                        Session.update();
+                    });
+                },function(err){
+                    console.log('saving user failed',err);
+                });
+
+            }, function(err){
+                console.log('saving disease failed',err);
+                disease.relation('followers').remove(user);
+                disease.save();
+            });
+
+        };
+
+        ctrl.create = function( disease ) {
+            ctrl.diseasetag = true;
+            var Disease = Parse.Object.extend("Disease");
+            var disease = new Disease();
+            var query = new Parse.Query( Disease );
+            query.equalTo("name",ctrl.searchWord);
+            query.first().then(function(res){
+                if ( res ) {
+                    console.log( 'first', res );
+                    // ctrl.select( res);
+                }
+                else {
+                    var disease = new Disease();
+                    disease.set( "name", ctrl.searchWord );
+                    disease.save().then(function(obj){
+                        ctrl.select( obj );
+                    });
+                }
+
+            }, function(err){
+                disease.set( "name", ctrl.searchWord );
+                disease.save().then(function(obj){
+                    ctrl.select( obj );
+                });
+            });
         };
     });
