@@ -25,20 +25,34 @@
         <img ng-src="{{ user.get('icon').url() }}">
         <h2>{{ user.get("name") }}</h2>
         <p>{{ user.get("username") }}</p>
-        <button class="button"
-          ng-class="{ 'button-positive': !appctrl.isFollowing(user) }"
-          ng-click="appctrl.toggleFollowing(user)">
-          {{ appctrl.isFollowing(user) ? 'Unfollow' : 'Follow' }}
-        </button>
+        <a class="follow-button" ng-click="!ctrl.toggleSearch(user)">
+          <div ng-show="!ctrl.isSelectDisease(user)">
+            <button class="button"ng-class="button-positive">
+              Follow
+            </button>
+          </div>
+          <div ng-show="ctrl.isSelectDisease(user)">
+            <button class="button"ng-class="button-positive">
+              Unfollow
+            </button>
+          </div>
+        </a>
       </div>
       <div class="item item-divider" ng-if="ctrl.diseases.length">Diseases</div>
       <div class="item item-button-right" ng-repeat="disease in ctrl.diseases">
         <h2>{{ disease.get("name") }}</h2>
-        <button class="button"
-          ng-class="{ 'button-positive': !appctrl.isFollowing(disease) }"
-          ng-click="appctrl.toggleFollowing(disease)">
-          {{ appctrl.isFollowing(disease) ? 'Unfollow' : 'Follow' }}
-        </button>
+        <a class="follow-button" ng-click="!ctrl.toggleSearch(disease)">
+          <div ng-show="!ctrl.isSelectDisease(disease)">
+            <button class="button"ng-class="button-positive">
+              Follow
+            </button>
+          </div>
+          <div ng-show="ctrl.isSelectDisease(disease)">
+            <button class="button"ng-class="button-positive">
+              Unfollow
+            </button>
+          </div>
+        </a>
       </div>
     </div>
   </ion-content>

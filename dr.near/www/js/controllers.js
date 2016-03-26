@@ -216,17 +216,18 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             },500);
         };
 
-        ctrl.toggleSearch = function(item){
-            Session.user.toggleFollowing( item ).then(function(saved){
+        ctrl.toggleSearch = function( target ){
+            Session.user.toggleFollowing( target ).then(function(saved){
                 console.log('toggleSearch');
                 $scope.$apply();
             });
         }
-        ctrl.isSelectDisease = function( item ){
-            return Session.user.isFollowing( item );
+        ctrl.isSelectDisease = function( target ){
+            return Session.user.isFollowing( target );
             console.log('isSelectDisease');
         };
     })
+
 
     .controller( 'toProfileCtrl', function( $scope, Profile, Session ) {
         console.log( 'toProfileCtrl' );

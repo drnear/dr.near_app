@@ -145,6 +145,12 @@ angular.module('DrNEAR.services',['ngResource'])
             if ( target.className == 'Activity' ) {
                 this.fightActivities.push(d);
             }
+            else if ( target.className == 'Disease' ) {
+                this.diseases.push(d);
+            }
+            else if ( target.className == 'User' ) {
+                this.followings.push(d);
+            }
         };
 
         UserObject.prototype.removeFollowing = function( target, item ) {
@@ -153,6 +159,22 @@ angular.module('DrNEAR.services',['ngResource'])
                     if(this.fightActivities[i].get('to').id == item.get("to").id
                     && this.fightActivities[i].get('from').id == item.get("from").id) {
                         this.fightActivities.splice(i, 1);
+                    }
+                }
+            }
+            else if( target.className == 'Disease' ) {
+                for ( var i = 0;i < this.diseases.length; i++ ){
+                    if(this.diseases[i].get('to').id == item.get("to").id
+                    && this.diseases[i].get('from').id == item.get("from").id) {
+                        this.diseases.splice(i, 1);
+                    }
+                }
+            }
+            else if( target.className == 'User' ) {
+                for ( var i = 0;i < this.followings.length; i++ ){
+                    if(this.followings[i].get('to').id == item.get("to").id
+                    && this.followings[i].get('from').id == item.get("from").id) {
+                        this.followings.splice(i, 1);
                     }
                 }
             }
