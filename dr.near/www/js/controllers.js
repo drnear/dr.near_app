@@ -434,7 +434,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         console.log( 'SettingPasswordCtrl' );
     })
 
-    .controller( 'MessageListCtrl', function( Session, Message, $timeout, $state ) {
+    .controller( 'MessageListCtrl', function( Session, Message, Profile, $timeout, $state ) {
         var ctrl = this;
         ctrl.usersAndMessages = [];
 
@@ -471,8 +471,10 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             }
         });
 
-        ctrl.openThread = function( user ) {
-            $state.go( 'app.message_thread', { uid: user.id } );
+        ctrl.openThread = function( item ) {
+            Profile.update(item.user).then(function(profile) {
+               $state.go( 'app.message_thread', { uid: item.user.id } );
+            });
         };
     })
 
@@ -949,40 +951,31 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             }
         };
     })
-    .controller( 'FirstCtrl',function($scope, $state, $stateParams, $timeout, $location, Session){
+    .controller( 'FirstCtrl',function($scope, $state, $stateParams, $timeout, $location, Session, Activity){
+//SearchCtrl
         var ctrl = this;
-        ctrl.session = Session;
         ctrl.searchWord = '';
+        ctrl.users      = [];
         ctrl.diseases   = [];
         ctrl.timer = undefined;
 
-        ctrl.searchDisease = function(){
+        ctrl.search = function(){
             if (ctrl.timer !== undefined) {
                 $timeout.cancel(ctrl.timer);
                 ctrl.timer = undefined;
             }
 
-            //ctrl.users.splice(0);
+            ctrl.users.splice(0);
             ctrl.diseases.splice(0);
 
             if ( ctrl.searchWord === '' ) {
                 $timeout(function(){
-                    ctrl.users.splice(0);
                     ctrl.diseases.splice(0);
                 });
                 return;
             }
 
             ctrl.timer = $timeout(function(){
-                var userQuery = new Parse.Query(Parse.User);
-                userQuery.matches( "name", new RegExp(".*" + ctrl.searchWord + ".*",'i') );
-                userQuery.notEqualTo( "objectId", Session.user.object.id );
-                userQuery.find().then(function(users){
-                    $timeout(function(){
-                        ctrl.users = users;
-                    },100);
-                });
-
                 var diseaseQuery = new Parse.Query(Parse.Object.extend("Disease"));
                 diseaseQuery.matches( "name", new RegExp(".*" + ctrl.searchWord + ".*",'i') );
                 diseaseQuery.find().then(function(diseases){
@@ -992,58 +985,56 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                 });
             },500);
         };
-
-        ctrl.select = function( disease ){
-            ctrl.diseasetag = true;
-            var user = Parse.User.current();
-
-            ctrl.searchWord = disease.get('name');
-
-            disease.relation("followers").add(user);
-            disease.save().then(function(saved){
-                console.log('saving disease succeeded',saved);
-                user.relation("diseases").add(saved);
-                user.save().then(function(saved){
-                    $timeout(function(){
-                        console.log('select');
-                        Session.update();
-                    });
-                },function(err){
-                    console.log('saving user failed',err);
-                });
-
-            }, function(err){
-                console.log('saving disease failed',err);
-                disease.relation('followers').remove(user);
-                disease.save();
+        ctrl.toggleSearch = function( target ){
+            Session.user.toggleFollowing( target ).then(function(saved){
+                ctrl.searchWord = target.get('name');
+                console.log('toggleSearch');
+                $scope.$apply();
             });
-
+        }
+        ctrl.isSelectDisease = function( target ){
+            return Session.user.isFollowing( target );
+            console.log('isSelectDisease');
         };
-
-        ctrl.create = function( disease ) {
+        ctrl.create = function( target ) {
             ctrl.diseasetag = true;
             var Disease = Parse.Object.extend("Disease");
+            var diseaseQuery = new Parse.Query(Disease);
             var disease = new Disease();
-            var query = new Parse.Query( Disease );
-            query.equalTo("name",ctrl.searchWord);
-            query.first().then(function(res){
+            var user = Session.user.object;
+            diseaseQuery.equalTo("name",ctrl.searchWord);
+            diseaseQuery.first().then(function(res){
                 if ( res ) {
                     console.log( 'first', res );
                     // ctrl.select( res);
                 }
                 else {
-                    var disease = new Disease();
+                    disease.set( 'user', user );
                     disease.set( "name", ctrl.searchWord );
                     disease.save().then(function(obj){
-                        ctrl.select( obj );
+                        ctrl.toggleSearch( obj );
                     });
                 }
 
             }, function(err){
-                disease.set( "name", ctrl.searchWord );
+                    disease.set( 'user', user );
+                    disease.set( "name", ctrl.searchWord );
                 disease.save().then(function(obj){
-                    ctrl.select( obj );
+                    ctrl.toggleSearch( target );
                 });
             });
         };
+       ctrl.post = function(entry){
+            var Activity = Parse.Object.extend( 'Activity' );
+            var activity = new Activity();
+            var user = Session.user.object;
+
+            activity.set( 'user', user );
+            activity.set( 'title', "Welcoming people." );
+            activity.set( 'content', ctrl.entry.content );
+
+            activity.save().then( function(){
+                $state.go('app.activity');
+            })
+        }
     });

@@ -40,8 +40,8 @@
       </div>
       <div class="item item-divider" ng-if="ctrl.diseases.length">Diseases</div>
       <div class="item item-button-right" ng-repeat="disease in ctrl.diseases">
-        <h2>{{ disease.get("name") }}</h2>
-        <a class="follow-button" ng-click="!ctrl.toggleSearch(disease)">
+        <h3>{{ disease.get("name") }}</h3>
+        <a ng-click="!ctrl.toggleSearch(disease)">
           <div ng-show="!ctrl.isSelectDisease(disease)">
             <button class="button"ng-class="button-positive">
               Follow

@@ -9,7 +9,7 @@
   </ion-nav-bar>
   <ion-content>
     <ion-list>
-      <ion-item ng-repeat="item in ctrl.usersAndMessages" ng-click="ctrl.openThread( item.user )">
+      <ion-item ng-repeat="item in ctrl.usersAndMessages" ng-click="ctrl.openThread( item )">
         {{ item.user.get("name" )}} - {{ item.message.get("content") }}
       </ion-item>
     </ion-list>

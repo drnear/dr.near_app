@@ -147,7 +147,7 @@ p {
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
-  margin:0 0 0 20px;
+  margin:10px auto 0;
   width: 128px;
   height: 128px;
   overflow: hidden;
@@ -171,10 +171,14 @@ p {
   text-transform: capitalize;
 }
 
-/* message_thread
-==================================*/
 .bar-footer {
   overflow: visible !important;
+}
+
+.bar-footer-first {
+    overflow: visible !important;
+    height: 100px;
+    background-color: #f8f8f8;
 }
 
 .bar-footer textarea {
@@ -182,6 +186,16 @@ p {
   height: 25px;
 }
 
+.bar-footer-first textarea {
+    resize: none;
+    height: 100px;
+    width: 250px;
+}
+
+.bar-footer-firsrt textarea {
+  resize: none;
+  height: 25px;
+}
 /* fixes an ios bug bear */
 button.ion-android-send {
   padding-top: 2px;
@@ -207,6 +221,13 @@ div.message-item {
   white-space: nowrap;
 }
 
+div.message-item.first {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  height: 150px;
+}
+
 img.profile-pic {
   width: 40px;
   height: 40px;
@@ -219,10 +240,21 @@ img.profile-pic.left {
   left: 10px;
 }
 
+img.profile-pic.left.first {
+  width: 64px;
+  height: 64px;
+  bottom: 450px;
+}
+
 img.profile-pic.right {
   right: 10px;
 }
 
+img.profile-pic.right.first {
+  width: 64px;
+  height: 64px;
+  bottom: 150px;
+}
 .ion-email {
   float: center;
   font-size: 32px;
@@ -274,6 +306,12 @@ img.profile-pic.right {
   margin-left: 55px;
 }
 
+.chat-bubble.left.first {
+  background-color: #e6e5eb;
+  float: left;
+  margin-left: 85px;
+}
+
 .chat-bubble.left:before {
   background-color: #e6e5eb;
   left: 10px;
@@ -285,6 +323,12 @@ img.profile-pic.right {
   color: #fff;
   float: right;
   margin-right: 55px;
+}
+
+.chat-bubble.right.first {
+  background-color: #158ffe;
+  float: right;
+  margin-right: 85px;
 }
 
 .chat-bubble.right:before {
@@ -316,6 +360,10 @@ img.profile-pic.right {
 
 input, textarea, .item-input, .item-input-wrapper {
   background-color: #ffffff !important;
+}
+
+.item-input-wrapper-first {
+    width: 310px;
 }
 
 .bold {
