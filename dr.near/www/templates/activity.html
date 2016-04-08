@@ -20,7 +20,7 @@
       <div class="item item-avatar" ng-click = "ctrl.toProfile(item)">
         <img ng-src="{{ item.get('user').get('iconurl') }}" />
         <h2>{{ item.get('user').get('username') }}</h2>
-        <p>{{item.createdAt}}</p>
+        <p>{{ item.get('role') }}</p>
         </a>
       </div>
       <div class="item item-body">
@@ -48,7 +48,7 @@
       </div>
       <form class="form form-horizontal clearfix" name="comment" ng-show="item.showReply" ng-submit="ctrl.reply(item)">
         <div class="item item-avatar">
-          <img src="mcfly.jpg">
+          <img ng-src="{{ item.get('user').get('iconurl') }}">
           <label class="item-input">
           <input class="form-control" type="text" ng-model="item.commentContent" placeholder="Write a comment..." / required>
           <button type="submit" class="button button-small button-positive" ng-disabled="comment.$invalid">
@@ -58,7 +58,7 @@
         </div>
         <div ng-repeat="comment in item.comments">
           <div class="item item-avatar">
-            <img src="mcfly.jpg">
+            <img ng-src="{{ comment.get('user').get('iconurl') }}">
             <span>{{ comment.get('content') }}</span>
           </div>
         </div>

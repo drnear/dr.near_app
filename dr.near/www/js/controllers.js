@@ -136,6 +136,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
 
             comment.set( 'commentTo', item.id);
             comment.set( 'content', item.commentContent);
+            comment.set( 'iconurl', user.get('iconurl') );
             comment.set( 'user', user );
 
             comment.save().then(function(){
@@ -156,8 +157,9 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             var user = Session.user.object;
 
             activity.set( 'user', user );
-            activity.set( 'title', entry.title );
-            activity.set( 'content', entry.content );
+            activity.set( 'role', user.get('role') );
+            activity.set( 'title', ctrl.entry.title );
+            activity.set( 'content', ctrl.entry.content );
 
             activity.save().then( function(){
                 $state.go('app.activity');
@@ -263,15 +265,61 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             console.log( 'comment' );
         }
     })
-    .controller( 'ProfileCtrl', function( $scope, Profile, Session ) {
+    .controller( 'ProfileCtrl', function( $scope, $timeout, Profile, Session, Activity, FollowingActivity ) {
         console.log( 'ProfileCtrl' );
 
         var ctrl = this;
         ctrl.view = 'activity';
         ctrl.user = Session.user;
         //$scope.$apply(function () {
-            ctrl.activities = Session.activities;
+            //ctrl.activities = Session.activities;
         //});
+        var myPostQuery = new Parse.Query( Activity );
+        myPostQuery.equalTo( "user" , ctrl.user.object );
+  
+        myPostQuery.descending( "createdAt" );
+        myPostQuery.find({
+            success: function( replises ) {
+                $timeout( function(){
+                    ctrl.activities = replises;
+
+                    var CommentObject = Parse.Object.extend("CommentObject");
+                    var query = new Parse.Query( CommentObject );
+
+                    query.containedIn("commentTo",ctrl.activities.map(function(item){
+                        return item.id
+                    }));
+                    query.descending( 'createdAt' );
+                    query.find({
+                        success: function ( replies ){
+                            var fightActivityQuery = new Parse.Query( FollowingActivity );
+
+                            fightActivityQuery.containedIn('to',ctrl.activities);
+                            fightActivityQuery.descending( 'createdAt');
+                            fightActivityQuery.find({
+                                success: function( fightTo ){
+                                    ctrl.activities.forEach(function(activity){
+                                        activity.fightActivities = fightTo.filter( function  (fight, index) {
+                                            if (fight.get("to").id == activity.id) return true;
+                                        }).map(function(followingActivity) {
+                                            return followingActivity.get('from').id;
+                                        })
+                                    });
+                                    $scope.$apply();
+                                }
+                            });
+
+                            ctrl.activities.forEach(function(activity){
+                                activity.comments = replies.filter(function(comment,index){
+                                    if (comment.get('commentTo') == activity.id) return true;
+                                }); 
+                            })
+                            $scope.$apply();
+                        }
+                    })
+                })
+            }
+        });
 
         ctrl.toProfile = function( item ) {
             Profile.update(item.get('user')).then(function(profile) {
@@ -295,6 +343,20 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         };
         ctrl.reply = function( item ){
             console.log( 'comment' );
+            var CommentObject = Parse.Object.extend( 'CommentObject' );
+            var comment = new CommentObject();
+            var user = Session.user.object;
+
+            comment.set( 'commentTo', item.id);
+            comment.set( 'iconurl', user.get('iconurl') );
+            comment.set( 'content', item.commentContent);
+            comment.set( 'user', user );
+
+            comment.save().then(function(){
+                item.commentContent = '';
+                item.comments.unshift(comment);
+                $scope.$apply();
+            });
         }
     })
 
@@ -302,7 +364,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         var ctrl = this;
         ctrl.session = Session;
 
-        this.useCamera = function() {
+        ctrl.useCamera = function() {
             console.log('useCamera');
             var options = {
                 quality: 50,
@@ -322,28 +384,52 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             });
         };
 
-        this.selectIcon = function() {
+        ctrl.selectIcon = function() {
             document.getElementById('icon-handler').click();
         };
 
-        this.uploadIcon = function( iconElem ) {
+        ctrl.uploadIcon = function( iconElem ) {
             if ( iconElem.files[0] ) {
                 var reader = new FileReader();
                 reader.onload = function(ev){
                     document.getElementById('icon-image').src = ev.target.result;
                 };
                 reader.readAsDataURL( iconElem.files[0] );
+                Session.user.file = iconElem.files[0];
             }
         };
 
-        this.update = function() {
-            Session.user.save().then(function(saved){
-                $timeout(function(){
-                    $state.go( 'app.profile' );
+        ctrl.update = function() {
+            // 2/14 start
+            if(Session.user.file) {
+                var newFile = new Parse.File(Session.user.file.name, Session.user.file);
+                newFile.save({
+                    success: function() {
+                    },
+                    error: function(file, err) {
+                        console.log("File save error: "+ err.message);
+                    }
+                }).then(function(theFile) {
+                    Session.user.icon = theFile;
+                    Session.user.iconurl = theFile.url();
+                    Session.user.save().then(function(saved){
+                        $timeout(function(){
+                            $state.go( 'app.profile' );
+                        });
+                    },function(err){
+                        console.log(err);
+                    });
                 });
-            },function(err){
-                console.log(err);
-            });
+            } else {
+            // 2/14 end
+                Session.user.save().then(function(saved){
+                    $timeout(function(){
+                        $state.go( 'app.profile' );
+                    });
+                },function(err){
+                    console.log(err);
+                });
+            }
         };
     })
 
@@ -1024,12 +1110,13 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                 });
             });
         };
-       ctrl.post = function(entry){
+        ctrl.post = function(entry){
             var Activity = Parse.Object.extend( 'Activity' );
             var activity = new Activity();
             var user = Session.user.object;
 
             activity.set( 'user', user );
+            activity.set( 'role', user.get('role') );
             activity.set( 'title', "Welcoming people." );
             activity.set( 'content', ctrl.entry.content );
 

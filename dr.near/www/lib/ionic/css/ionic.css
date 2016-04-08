@@ -2513,7 +2513,10 @@ textarea {
   /* 2 */ }
 
 img {
-  -webkit-user-drag: none; }
+  -webkit-user-drag: none;
+  max-height: 280px;
+  max-width: 280px;
+  }
 
 /* ==========================================================================
    Tables

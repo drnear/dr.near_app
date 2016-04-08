@@ -147,7 +147,7 @@ p {
   -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box;
   box-sizing: content-box;
-  margin:10px auto 0;
+  margin:10px auto 20px;
   width: 128px;
   height: 128px;
   overflow: hidden;
@@ -159,14 +159,18 @@ p {
 }
 
 .profile-name {
-  padding-top: 20px;
   font-size: x-large !important;
   font-weight: bold !important;
   text-transform: capitalize;
 }
 
+.profile-info {
+  margin-top: 5px;
+  border-radius: 100%;
+}
+
 .profile-bio {
-  padding-top: 8px;
+  padding-top: 28px;
   font-size: 14px !important;
   text-transform: capitalize;
 }

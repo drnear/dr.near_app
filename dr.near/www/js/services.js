@@ -71,7 +71,7 @@ angular.module('DrNEAR.services',['ngResource'])
             this.username      = this.object.get('username');
             this.name          = this.object.get('name') || this.object.get('username');
             this.icon          = this.object.get('icon');
-            this.iconurl       = this.object.get('icon') ? this.object.get('iconurl') : 'img/material1.jpg';
+            this.iconurl       = this.object.get('icon') ? this.object.get('icon') : 'img/material1.jpg';
             this.bio           = this.object.get('bio');
             this.email         = this.object.get('email');
             this.emailVerified = this.object.get('emailVerified');
