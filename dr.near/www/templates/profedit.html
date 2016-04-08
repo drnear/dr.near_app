@@ -13,7 +13,7 @@
         <label class="item item-input">
           <span class="input-label">Icon</span>
           <button class="item item-avatar" ng-click="ctrl.selectIcon($event)">
-            <img id="icon-image" ng-src="{{ctrl.session.user.iconurl}}" />
+            <img id="icon-image" ng-src="{{ ctrl.session.user.object.get('iconurl') }}" />
           </button>
           <input id="icon-handler" type="file" style="display:none"
                  onchange="angular.element(this).scope().ctrl.uploadIcon(this)"
