@@ -148,14 +148,19 @@ p {
   -moz-box-sizing: content-box;
   box-sizing: content-box;
   margin:10px auto 20px;
-  width: 128px;
-  height: 128px;
+  max-width: 128px;
+  max-height: 128px;
   overflow: hidden;
 }
 
 .profile-picture img {
   width: 128px;
   border-radius: 100%;
+}
+
+.profile-picture-center img {
+  max-height: 200px;
+  max-width: 200px;
 }
 
 .profile-name {

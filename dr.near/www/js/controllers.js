@@ -1,9 +1,11 @@
 angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     .controller( 'AppCtrl', function(
-        $timeout, Session
+        $timeout, $scope, Session
     ){
         var ctrl = this;
         ctrl.session = Session;
+
+        $scope.doneLoading = false;
 
         ctrl.isFollowing = function( target ) {
             return Session.user.isFollowing( target );
@@ -25,8 +27,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
 
         Session.user.fetchFollowings().then(function(followings){
             Session.user.fetchDiseases().then( function(diseases){
-                Session.user.fetchFightActivities().then( function(fightActivities){
-                    $scope.doneLoading = true ;
+                Session.user.fetchFightActivities().then( function(fightActivities){;
 
                     var diseaseCommunityQuery = new Parse.Query( FollowingDisease );
                     diseaseCommunityQuery.containedIn( 'to', diseases.map(function(item){ return item.get('to'); }) );
@@ -45,6 +46,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                         query.find().then(
                             function( results ) {
                                 $timeout( function(){
+                                    $scope.doneLoading = true;
                                     ctrl.items = results;
 
                                     if ( Session.user.diseases.length == 0 ){
@@ -237,8 +239,9 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         var ctrl = this;
         ctrl.view = 'activity';
         ctrl.user = Profile.user;
+        ctrl.other = (ctrl.user.username != Session.user.username);
         //$scope.$apply(function () {
-            ctrl.activities = Profile.activities;
+        ctrl.activities = Profile.activities;
         //});
 
         ctrl.toProfile = function( item ) {
@@ -263,9 +266,23 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         };
         ctrl.reply = function( item ){
             console.log( 'comment' );
+            var CommentObject = Parse.Object.extend( 'CommentObject' );
+            var comment = new CommentObject();
+            var user = Session.user.object;
+
+            comment.set( 'commentTo', item.id);
+            comment.set( 'iconurl', user.get('iconurl') );
+            comment.set( 'content', item.commentContent);
+            comment.set( 'user', user );
+
+            comment.save().then(function(){
+                item.commentContent = '';
+                item.comments.unshift(comment);
+                $scope.$apply();
+            });
         }
     })
-    .controller( 'ProfileCtrl', function( $scope, $timeout, Profile, Session, Activity, FollowingActivity ) {
+    .controller( 'ProfileCtrl', function( $scope, $state, $timeout, Profile, Session, Activity, FollowingActivity ) {
         console.log( 'ProfileCtrl' );
 
         var ctrl = this;
@@ -321,10 +338,8 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             }
         });
 
-        ctrl.toProfile = function( item ) {
-            Profile.update(item.get('user')).then(function(profile) {
-                $state.go('app.toProfile');
-            });
+        ctrl.toProfile = function( ) {
+            $state.go('app.activity');
         };
         ctrl.toggleComment = function( item ) {
             console.log( 'comment' );
@@ -885,7 +900,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         };
     })
 
-    .controller( 'LoginCtrl', function( $scope, $state, $location, $rootScope, $timeout, Session, AUTH_EVENTS ) {
+    .controller( 'LoginCtrl', function( $scope, $state, $location, $rootScope, $timeout, $ionicPopup, Session, AUTH_EVENTS ) {
         Session.destroy();
 
         this.credentials = { username: '', password: ''};
@@ -894,7 +909,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         ctrl.signup = function() {
             $location.path( '/signup' );
         };
-        ctrl.login = function () {
+        ctrl.login = function (credentials) {
             Parse.User.logIn( ctrl.credentials.username, ctrl.credentials.password )
                 .then( function( user ) {
                     console.log('login');
@@ -902,10 +917,20 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                     console.log( 'success and update', Session);
                     $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
                 }, function(err) {
+                    $ionicPopup.alert({
+                        title: 'Login failed',
+                        template: 'Please check e-mail and password'
+                    });
+                    ctrl.credentials.error = true;
                     $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
                 });
         };
-
+        $scope.$watch('ctrl.credentials.username', function() {
+            ctrl.credentials.error = false; 
+        });
+        $scope.$watch('ctrl.credentials.password', function() {
+            ctrl.credentials.error = false; 
+        });
         ctrl.fbLogin = function(){        
           //Browser Login
           if(!(ionic.Platform.isIOS() || ionic.Platform.isAndroid())){         
