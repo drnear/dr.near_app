@@ -259,7 +259,7 @@ angular.module('DrNEAR.services',['ngResource'])
             }
         };
     })
-    .service('Profile', function(Activity, UserFactory, $timeout) {
+    .service('Profile', function(Activity, UserFactory, FollowingActivity, $timeout) {
         var service = {
             user            : undefined,
             activities      : [],
@@ -291,14 +291,30 @@ angular.module('DrNEAR.services',['ngResource'])
                             query.descending( 'createdAt');
                             query.find({
                                 success: function( replies ){
-                                    activities.forEach(function(activity){
-                                        activity.comments = replies.filter(function(comment,index){
-                                            if (comment.get('commentTo') == activity.id) return true;
-                                        });
-                                    })                                  
+                                    var fightActivityQuery = new Parse.Query( FollowingActivity );
+
+                                    fightActivityQuery.containedIn('to',activities);
+
+                                    fightActivityQuery.descending( 'createdAt');
+                                    fightActivityQuery.find({
+                                        success: function( fightTo ){
+                                            activities.forEach(function(activity){
+                                                activity.fightActivities = fightTo.filter(function(fight, index){
+                                                    if (fight.get("to").id == activity.id) return true;
+                                                }).map(function(followingActivity) {
+                                                    return followingActivity.get('from').id;
+                                                });
+                                            });
+                                            activities.forEach(function(activity){
+                                                activity.comments = replies.filter(function(comment,index){
+                                                    if (comment.get('commentTo') == activity.id) return true;
+                                                });
+                                            })
+                                        }
+                                    })
+                                resolve(service);
                                 }
-                            })
-                            resolve(service);
+                            });
                         });
                     }
                 );
