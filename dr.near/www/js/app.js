@@ -49,6 +49,11 @@ angular.module("DrNEAR", ["ionic", "DrNEAR.controllers"])
                 templateUrl: "templates/signup.html",
                 controller: "SignupCtrl as ctrl"
             })
+            .state("resetpassword", {
+                url: "/resetpassword",
+                templateUrl: "templates/resetpassword.html",
+                controller: "ResetPasswordCtrl as ctrl"
+            })
             .state("app", {
                 url: "/app",
                 templateUrl: "templates/app.html",

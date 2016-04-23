@@ -1,22 +1,18 @@
 angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     .controller( 'AppCtrl', function(
-        $timeout, $scope, Session
+        $timeout, $scope, $state, Session
     ){
-        var ctrl = this;
-        ctrl.session = Session;
+        var appctrl = this;
+        appctrl.session = Session;
 
         $scope.doneLoading = false;
 
-        ctrl.isFollowing = function( target ) {
-            return Session.user.isFollowing( target );
-        };
-
-        ctrl.toggleFollowing = function( target ) {
-            Session.user.toggleFollowing( target ).then(function(saved){
-                console.log('toggleFollowing');
-                Session.update();
+        appctrl.logout = function(){
+            Parse.User.logOut().then(() => {
+              var currentUser = Parse.User.current();  // this will now be null
             });
-        };
+            $state.go( 'login' );
+        }
     })
 
     .controller( 'ActivityCtrl', function(
@@ -422,7 +418,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                     success: function() {
                     },
                     error: function(file, err) {
-                        console.log("File save error: "+ err.message);
+                        console.log("File save error: "+ file.message);
                     }
                 }).then(function(theFile) {
                     Session.user.icon = theFile;
@@ -806,7 +802,25 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
 
     })
 
-    .controller( 'SignupCtrl', function( $scope, $timeout, $state, $location,$rootScope, $cordovaFacebook, AUTH_EVENTS, Session) {
+    .controller( 'ResetPasswordCtrl', function() {
+        var ctrl = this;
+        this.credentials = { mail: ''};
+
+        ctrl.reset = function( credentials ){
+            Parse.User.requestPasswordReset(ctrl.credentials.mail,{
+                success: function(){
+
+                },
+                error: function( error ){
+                    alert("Error:" + error.code );
+                }
+            })
+
+
+        }
+    })
+
+    .controller( 'SignupCtrl', function( $scope, $timeout, $state,$rootScope, $cordovaFacebook, AUTH_EVENTS, Session) {
         Session.destroy();
         console.log( Session ); 
         this.credentials = {username: '', email:'', password:''};
@@ -815,7 +829,10 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         ctrl.signup = function(credentials) {
             console.log( 'signup' );
             var user = new Parse.User();
-            user.set( 'username', ctrl.credentials.username );
+            indexUsername = ctrl.credentials.email.indexOf("@");
+            var username = ctrl.credentials.email.substr(0,indexUsername);
+
+            user.set( 'username', username );
             user.set( 'email', ctrl.credentials.email );
             user.set( 'password', ctrl.credentials.password );
             user.signUp(null, {
@@ -835,7 +852,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         };
 
         ctrl.backTo = function(){
-            $location.path('/login');
+            $state.go('login');
         }
 
         ctrl.fbLogin = function(){         
@@ -900,30 +917,48 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         };
     })
 
-    .controller( 'LoginCtrl', function( $scope, $state, $location, $rootScope, $timeout, $ionicPopup, Session, AUTH_EVENTS ) {
-        Session.destroy();
+    .controller( 'LoginCtrl', function( $scope, $state, $rootScope, $timeout, $ionicPopup, User, Session, AUTH_EVENTS ) {
 
-        this.credentials = { username: '', password: ''};
-
+        this.credentials = { email: '', password: ''};
         var ctrl = this;
+
         ctrl.signup = function() {
-            $location.path( '/signup' );
+            $state.go( 'signup' );
         };
         ctrl.login = function (credentials) {
-            Parse.User.logIn( ctrl.credentials.username, ctrl.credentials.password )
-                .then( function( user ) {
-                    console.log('login');
-                    Session.update();
-                    console.log( 'success and update', Session);
-                    $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
-                }, function(err) {
-                    $ionicPopup.alert({
-                        title: 'Login failed',
-                        template: 'Please check e-mail and password'
-                    });
-                    ctrl.credentials.error = true;
-                    $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
-                });
+            var queryEmail = new Parse.Query( User );
+            queryEmail.equalTo( "email", ctrl.credentials.email );
+            queryEmail.find().then(
+                function( Users ) {
+                    if (typeof Users[0] === "undefined") {
+                        ctrl.credentials.error = true;
+                        $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+                        $ionicPopup.alert({
+                            title: 'Login failed',
+                            template: 'Please check e-mail'
+                        });
+                    }   else
+                        {                        
+                            console.log(Users);
+                            var loginUsername = Users[0].get('username');
+                            Parse.User.logIn( loginUsername, ctrl.credentials.password )
+                                .then( function( user ) {
+                                    console.log('login');
+                                    Session.update();
+                                    console.log( 'success and update', Session);
+                                    $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+                                }, function(err) {
+                                    $ionicPopup.alert({
+                                        title: 'Login failed',
+                                        template: 'Please check e-mail and password'
+                                    });
+                                    ctrl.showAlert = err.message;
+                                    ctrl.credentials.error = true;
+                                    $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+                                });
+                        }
+                }
+            )
         };
         $scope.$watch('ctrl.credentials.username', function() {
             ctrl.credentials.error = false; 
@@ -987,6 +1022,15 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
          
           }
          
+        };
+        ctrl.resetpassword = function() {
+            $state.go( 'resetpassword' );
+        }
+        ctrl.showAlert = function (){
+            $ionicPopup.alert({
+              title: 'Success',
+              content: 'Hello World!!!'
+            })
         };
     })
 

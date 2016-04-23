@@ -150,6 +150,8 @@ p {
   margin:10px auto 20px;
   max-width: 128px;
   max-height: 128px;
+  min-height: 100px;
+  min-width: 100px;
   overflow: hidden;
 }
 
