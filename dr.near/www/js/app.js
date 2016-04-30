@@ -39,11 +39,6 @@ angular.module("DrNEAR", ["ionic", "DrNEAR.controllers"])
         //Parse.FacebookUtils.init({appId: APP_CONFIG.FACEBOOK_APP_ID});
         $ionicConfigProvider.views.maxCache(0);
         $stateProvider
-            .state("login", {
-                url: "/login",
-                templateUrl: "templates/login.html",
-                controller: "LoginCtrl as ctrl"
-            })
             .state("signup", {
                 url: "/signup",
                 templateUrl: "templates/signup.html",
@@ -54,21 +49,32 @@ angular.module("DrNEAR", ["ionic", "DrNEAR.controllers"])
                 templateUrl: "templates/resetpassword.html",
                 controller: "ResetPasswordCtrl as ctrl"
             })
-            .state("app", {
-                url: "/app",
-                templateUrl: "templates/app.html",
-                controller: "AppCtrl as appctrl"
-            })
             .state("intro", {
                 url: "/intro",
                 templateUrl: "templates/intro.html",
                 controller:"IntroCtrl as ctrl"
             })
+            .state("app", {
+                url: "/app",
+                templateUrl: "templates/app.html",
+                controller: "AppCtrl as appctrl"
+            })
+           .state("login", {
+                url: "/login",                
+                //views: {
+                    //"appContent":{
+                        templateUrl: "templates/login.html",
+                        controller: "LoginCtrl as ctrl"
+                    //}
+                //}
+            })
             .state("app.activity",{
                 url: "/activity",
+/* when 'app.actiity' is activated
                 data: {
                     authorizedRoles: [USER_ROLES.all]
                 },
+*/
                 views: {
                     "appContent":{
                         templateUrl: "templates/activity.html",
@@ -223,11 +229,11 @@ angular.module("DrNEAR", ["ionic", "DrNEAR.controllers"])
                 }
             }
         });
-
+/*
         $rootScope.$on( AUTH_EVENTS.notAuthenticated, function( event ) {
-            $state.go( "login" );
+            $state.go( 'login' );
         });
-
+*/
         $rootScope.$on( AUTH_EVENTS.loginSuccess, function( event ) {
             console.log('success');
             $state.go( "app.activity" );
