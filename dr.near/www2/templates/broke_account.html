@@ -1,0 +1,39 @@
+<ion-view title="Cancel Account">
+  <ion-nav-bar class="bar-positive"align-title="left">
+  </ion-nav-bar>
+  <ion-content padding="true" scroll="true" class="has-header">
+  <div class="alert alert-danger" ng-if="error != ''">{{ error }}</div>
+  <form ng-submit="ctrl.send(cancel)" name="cancelAcount" novalidate>
+    <div class="card">
+      <div class="item item-divider">
+        Tell us why you're leaving
+      </div>
+      <div ng-repeat="select in ctrl.selects">
+        <ion-checkbox ng-model="select.checked" ng-checked="select.checked" ng-required="true">{{ select.reason }}</ion-checkbox>
+      </div>
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Can tell us more?</span>
+        <textarea rows="6" ng-model="ctrl.cancel.description"></textarea>
+      </label>
+      <label class="item">
+        <span class="input-label">Can we contact you for more details?</span>
+        <div ng-repeat=" detail in ctrl.details">
+          <ion-checkbox ng-model="detail.checked" ng-checked="detail.checked" ng-required="true">{{ detail.answer }}</ion-checkbox>
+        </div>
+      </label>
+      <label class="item">
+        <span class="input-label">What's going to happen<br>・Your profile and any listings will disappear.<br>・We'll miss you terribly.</span>
+      </label>
+    </div>
+    <div class="row">
+      <div class="col">
+        <button class="button button-block button-assertive" type="submit"
+        ng-disabled="cancelAccount.$invalid">Cancel my account</button>
+      </div>
+      <div class="col">
+        <button class="button button-block button-stable" ui-sref="app.setting">Don't cancel account</button>
+      </div>
+    </div>
+  </form>
+  </ion-content>
+</ion-view>

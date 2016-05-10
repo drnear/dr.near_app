@@ -10,6 +10,16 @@
           <span class="input-label">Username</span>
           <input type="text" placeholder="Name" ng-model="ctrl.session.user.username" />
         </label>
+        <label class="item item-input item-select">
+          <div class="input-label">Types</div>
+          <select ng-change="ctrl.changeRole" ng-model="ctrl.session.user.role">
+            <option>Patient</option>
+            <option>Relatives</option>
+            <option>Researcher</option>
+            <option>Doctor</option>
+            <option>Visitor</option>  
+          </select>
+        </label>
         <label class="item item-input">
           <span class="input-label">Icon</span>
           <button class="item item-avatar" ng-click="ctrl.selectIcon($event)">
@@ -18,6 +28,10 @@
           <input id="icon-handler" type="file" style="display:none"
                  onchange="angular.element(this).scope().ctrl.uploadIcon(this)"
                  />
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Email</span>
+          <input type="text" placeholder="Email Address" ng-model="ctrl.session.user.email" />
         </label>
         <label class="item item-input"> 
           <span class="input-label">Bio</span>

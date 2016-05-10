@@ -2,12 +2,11 @@
   <ion-nav-bar class="bar-positive" ng-class="{expanded: isExpanded, 'has-header-fab-left': hasHeaderFabLeft, 'has-header-fab-right': hasHeaderFabRight}" align-title="left">
   </ion-nav-bar>
   <ion-content padding="true" scroll="false" class="has-header">
-  <div class="alert alert-danger" ng-if="error != ''">{{ error }}</div>
   <form ng-submit="login(credentials)" name="loginForm" novalidate>
     <ion-list>
         <label class="item item-input">
-          <span class="input-label">Username</span>
-          <input type="text" placeholder="" ng-model="ctrl.credentials.username" ng-required="true">
+          <span class="input-label">Email</span>
+          <input type="text" placeholder="" ng-model="ctrl.credentials.email" ng-required="true">
         </label>
         <label class="item item-input">
           <span class="input-label">Password</span>
@@ -18,7 +17,10 @@
       ng-disabled="loginForm.$invalid">Login with Email</button>
   </form>
   <button class="button button-block button-positive" ng-click="ctrl.fbLogin()">Login with Facebook</button>
-  <button class="button button-small button-assertive button-clear button-block" ng-show="ctrl.credentials.error" ng-click="ctrl.credentialsError">Forgot e-mail/password?</span>
+  <button class="button button-small button-assertive button-clear button-block" ng-show="ctrl.credentials.error" ng-click="ctrl.resetpassword()">Forgot e-mail/password?</span>
+  <button class="button button-clear button-assertive" ng-show="ctrl.success.resetEmail">A link to reset your password has been sent to {{ ctrl.credentials.mail }}</button>
   <button class="button button-positive button-clear button-block" ng-click="ctrl.signup()">Or create an account</button>
+  <textarea rows="80" cols="40" ng-model="ctrl.currentUser">
   </ion-content>
+ <div rows="80" cols="40" ng-model="ctrl.showAlert"></div>
 </ion-view>

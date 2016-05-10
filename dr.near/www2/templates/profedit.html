@@ -1,0 +1,47 @@
+<ion-view view-title="Edit Profile">
+  <ion-nav-bar class="bar-positive" align-title="left">
+    <ion-nav-buttons side="left">
+      <button class="button button-icon button-clear ion-ios-arrow-back" ui-sref="app.profile"></button>
+    </ion-nav-buttons>
+  </ion-nav-bar>
+  <ion-content>
+      <div class="list">
+        <label class="item item-input">
+          <span class="input-label">Username</span>
+          <input type="text" placeholder="Name" ng-model="ctrl.session.user.username" />
+        </label>
+        <label class="item item-input item-select">
+          <div class="input-label">Types</div>
+          <select ng-change="ctrl.changeRole" ng-model="ctrl.session.user.role">
+            <option>Patient</option>
+            <option>Relatives</option>
+            <option>Researcher</option>
+            <option>Doctor</option>
+            <option>Visitor</option>  
+          </select>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Icon</span>
+          <button class="item item-avatar" ng-click="ctrl.selectIcon($event)">
+            <img id="icon-image" ng-src="{{ ctrl.session.user.object.get('iconurl') }}" />
+          </button>
+          <input id="icon-handler" type="file" style="display:none"
+                 onchange="angular.element(this).scope().ctrl.uploadIcon(this)"
+                 />
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Email</span>
+          <input type="text" placeholder="Email Address" ng-model="ctrl.session.user.email" />
+        </label>
+        <label class="item item-input"> 
+          <span class="input-label">Bio</span>
+          <textarea placeholder="Bio" rows="5" ng-model="ctrl.session.user.bio"></textarea>
+        </label>
+      </div>
+      <button type="submit" class="button button-block button-calm ink"
+          data-ink-color="#9AAAFF" data-ink-opacity="1" ng-click="ctrl.update()">
+          Submit
+      </button>
+    </form>
+  </ion-content>
+</ion-view>

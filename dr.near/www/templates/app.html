@@ -6,16 +6,10 @@
 
   <ion-side-menu side="left">
     <ion-header-bar class="bar bar-header bar-stable">
-      <span class="avatar" style="background: url({{ appctrl.session.user.iconurl }}); background-size: cover;"></span>
       <h1 class="title">{{ appctrl.session.user.username }}</h2>
     </ion-header-bar>
     <ion-content class="stable-bg has-expanded-header">
       <ion-list>
-        <ion-item nav-clear menu-close ui-sref="app.activity">
-          <span class="avatar" style="background: url({{ appctrl.session.user.iconurl }}); background-size: cover;"></span>
-        </ion-item>
-        <ion-item nav-clear menu-close ui-sref="app.activity">
-        </ion-item>
         <ion-item nav-clear menu-close ui-sref="app.activity">
           Activity
         </ion-item>
@@ -34,7 +28,7 @@
         <ion-item nav-clear menu-close ui-sref="app.friends">
           Help
         </ion-item>
-        <ion-item nav-clear menu-close ui-sref="login">
+        <ion-item nav-clear menu-close ng-click="appctrl.logout()">
           Logout
         </ion-item>
       </ion-list>

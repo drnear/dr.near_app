@@ -20,7 +20,12 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     ) {
         this.items = [];
         var ctrl = this;
+        Session.update();
 
+
+        if ( !Session.user ){
+            $state.go('login');
+        }
         Session.user.fetchFollowings().then(function(followings){
             Session.user.fetchDiseases().then( function(diseases){
                 Session.user.fetchFightActivities().then( function(fightActivities){;
@@ -147,7 +152,28 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     .controller( 'ActivityPostCtrl', function( $state, Activity, Session ){
         var ctrl =　this;
         ctrl.view = 'feedback';
+        ctrl.placeholder = {};
         console.log(ctrl.view);
+
+        if  ( ctrl.view == 'feedback') {
+            ctrl.placeholder.title = 'Test title feedback';
+            ctrl.placeholder.content = 'Test content feedback';
+        } else if ( ctrl.view == 'treatment') {
+            ctrl.placeholder.title = 'Test title treatment';
+            ctrl.placeholder.content= 'Test content treatment';
+            $scope.$apply();
+        } else if ( ctrl.view == 'sideeffects') {
+            ctrl.placeholder.title = 'Test title sideeffects';
+            ctrl.placeholder.content = 'Test content sideeffects';
+        } else if ( ctrl.view == 'others') {
+            ctrl.placeholder.title = 'Test title others';
+            ctrl.placeholder.content= 'Test content others';
+        }
+        ctrl.view.treatment = function() {
+            ctrl.placeholder.title = 'Test title treatment';
+            ctrl.placeholder.content= 'Test content treatment';
+            $scope.$apply();
+        }
 
         ctrl.post = function(entry){
             var Activity = Parse.Object.extend( 'Activity' );
@@ -156,12 +182,13 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
 
             activity.set( 'user', user );
             activity.set( 'role', user.get('role') );
+            if ( ctrl.entry)
             activity.set( 'title', ctrl.entry.title );
             activity.set( 'content', ctrl.entry.content );
 
             activity.save().then( function(){
                 $state.go('app.activity');
-            })
+            });
         }
 
     })
@@ -523,12 +550,71 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         };
     })
 
-    .controller( 'SettingCtrl', function() {
+    .controller( 'SettingCtrl', function( Session ) {
+        var ctrl = this;
+        ctrl.user = Session.user;
         console.log( 'SettingCtrl' );
+
+        ctrl.update = function() {
+            Session.user.save().then(function(saved){
+                $timeout(function(){
+                    $state.go( 'app.activity' );
+                });
+            },function(err){
+                console.log(err);
+            });
+        };       
     })
 
     .controller( 'SettingPasswordCtrl', function() {
         console.log( 'SettingPasswordCtrl' );
+    })
+    
+    .controller( 'BrokeAccountCtrl', function( $state, Session ) {
+        var ctrl = this;
+        ctrl.cancel = [];
+
+        ctrl.selects = [
+            { id: 1, reason: 'I have safety concerns.', checked: false},
+            { id: 2, reason: 'I have privacy concerns.', checked: false},
+            { id: 3, reason: "I don't find it useful.", checked: false},
+            { id: 4, reason: "I don't understand how to use it.", checked: false},
+            { id: 5, reason: "It's temporary; I'll be back.", checked: false},
+            { id: 6, reason: 'Other', checked: false}
+        ];
+
+        ctrl.details = [
+            { id: 1, answer: 'Yes',checked: false },
+            { id: 2, answer: 'No',checked: false }
+        ];
+
+        ctrl.send = function(){
+
+            var BrokeAccount = Parse.Object.extend( 'BrokeAccount' );
+            var brokeAccount = new BrokeAccount();
+            var user = Session.user.object;
+
+            brokeAccount.set( 'user', user );
+/*
+            angular.forEach( ctrl.selects, function( select ) {
+            if ( select.checked == true ) {
+                brokeAccount.set( "reason", select );
+                brokeAccount.set( "id", user.id );
+                }
+            });
+
+            brokeAccount.set( 'detail', ctrl.cancel.description );         
+
+            angular.forEach( ctrl.details, function( detail ) {
+            if ( detail.checked == true ) {
+                brokeAccount.set( "detail", detail );
+                }   
+            });
+*/
+            brokeAccount.save().then( function(){
+                  $state.go('login');
+            })
+        };
     })
 
     .controller( 'MessageListCtrl', function( Session, Message, Profile, $timeout, $state ) {
@@ -802,16 +888,22 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
 
     })
 
-    .controller( 'ResetPasswordCtrl', function() {
+    .controller( 'ResetPasswordCtrl', function( $scope, $state, $ionicPopup ) {
         var ctrl = this;
-        this.credentials = { mail: ''};
+        ctrl.credentials = { mail: ''};
+        $scope.success = { resetEmail: ''};
 
         ctrl.reset = function( credentials ){
             Parse.User.requestPasswordReset(ctrl.credentials.mail,{
                 success: function(){
-
+                    $scope.success.email = true;
+                    $state.go( 'login' );
                 },
                 error: function( error ){
+                    $ionicPopup.alert({
+                            title: 'No account exists',
+                            template: 'Maybe you signed up using a different/incorrect e-mail address.'
+                        });
                     alert("Error:" + error.code );
                 }
             })
@@ -921,6 +1013,12 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
 
         this.credentials = { email: '', password: ''};
         var ctrl = this;
+        $scope.success = { resetEmail: ''};
+
+        var currentUser = Parse.User.current();
+        if (currentUser){
+            ctrl.currentUser = currentUser.get('name');
+        }
 
         ctrl.signup = function() {
             $state.go( 'signup' );

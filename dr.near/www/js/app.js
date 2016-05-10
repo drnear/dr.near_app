@@ -5,8 +5,10 @@ if ( typeof( APP_CONFIG ) == "undefined" ) {
 angular.module("DrNEAR", ["ionic", "DrNEAR.controllers"])
     .run( function( $ionicPlatform ) {
         Parse.initialize( APP_CONFIG.PARSE_APP_KEY, APP_CONFIG.PARSE_APP_SECRET);
-        Parse.serverURL = "https://nameless-reef-92930.herokuapp.com/parse";
-               
+        //Parse.serverURL = "https://nameless-reef-92930.herokuapp.com/parse";
+        //Parse.serverURL = "http://27.120.92.29/parse";
+        Parse.serverURL = "http://182.163.60.45/parse";//いなけんさん
+
         if(!(ionic.Platform.isIOS() || ionic.Platform.isAndroid())){
             window.fbAsyncInit = function() {
                 Parse.FacebookUtils.init({
@@ -160,6 +162,15 @@ angular.module("DrNEAR", ["ionic", "DrNEAR.controllers"])
                     "appContent":{
                         templateUrl: "templates/setting_password.html",
                         controller: "SettingPasswordCtrl as ctrl"
+                    }
+                }
+            })
+            .state("app.broke_account",{
+                url: "/broke_account",
+                views: {
+                    "appContent":{
+                        templateUrl: "templates/broke_account.html",
+                        controller: "BrokeAccountCtrl as ctrl"
                     }
                 }
             })
