@@ -7,10 +7,10 @@
   <ion-content>
     <div class="bar bar-header">
       <div class="tabs">
-        <a class="tab-item" ng-class="{'button-positive': ctrl.view === 'Feedback'}" ng-click="ctrl.view = 'feedback'">Feedback</a>
-        <a class="tab-item" ng-class="{'button-positive': ctrl.view === 'Treatments'}" ng-click="ctrl.view.treatments()">Treatments</a>
-        <a class="tab-item" ng-class="{'button-positive': ctrl.view === 'Sideeffects'}" ng-click="ctrl.view = 'sideeffects'">Side effects</a>
-        <a class="tab-item" ng-class="{'button-positive': ctrl.view === 'Others'}" ng-click="ctrl.view = 'others'">Others</a>
+        <a class="tab-item" ng-click="ctrl.postFeedback()">Feedback</a>
+        <a class="tab-item" ng-click="ctrl.postTreatments()">Treatments</a>
+        <a class="tab-item" ng-click="ctrl.postSideeffects()">Side effects</a>
+        <a class="tab-item" ng-click="ctrl.postOthers()">Others</a>
       </div>
     </div>
     <form ng-submit="ctrl.post(entry)">

@@ -153,26 +153,24 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         var ctrl =　this;
         ctrl.view = 'feedback';
         ctrl.placeholder = {};
+        ctrl.posttype = {};
         console.log(ctrl.view);
 
-        if  ( ctrl.view == 'feedback') {
+        ctrl.postFeedback = function() {
             ctrl.placeholder.title = 'Test title feedback';
             ctrl.placeholder.content = 'Test content feedback';
-        } else if ( ctrl.view == 'treatment') {
+        }
+        ctrl.postTreatments = function() {
             ctrl.placeholder.title = 'Test title treatment';
             ctrl.placeholder.content= 'Test content treatment';
-            $scope.$apply();
-        } else if ( ctrl.view == 'sideeffects') {
+        }
+        ctrl.postSideeffects = function() {
             ctrl.placeholder.title = 'Test title sideeffects';
             ctrl.placeholder.content = 'Test content sideeffects';
-        } else if ( ctrl.view == 'others') {
+        }
+        ctrl.postOthers = function() {
             ctrl.placeholder.title = 'Test title others';
             ctrl.placeholder.content= 'Test content others';
-        }
-        ctrl.view.treatment = function() {
-            ctrl.placeholder.title = 'Test title treatment';
-            ctrl.placeholder.content= 'Test content treatment';
-            $scope.$apply();
         }
 
         ctrl.post = function(entry){
