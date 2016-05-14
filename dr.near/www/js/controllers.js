@@ -180,7 +180,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
 
             activity.set( 'user', user );
             activity.set( 'role', user.get('role') );
-            if ( ctrl.entry)
+            if ( ctrl.entry )
             activity.set( 'title', ctrl.entry.title );
             activity.set( 'content', ctrl.entry.content );
 
@@ -570,10 +570,10 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     
     .controller( 'BrokeAccountCtrl', function( $state, Session ) {
         var ctrl = this;
-        ctrl.cancel = [];
+        ctrl.cancel = {};
 
         ctrl.selects = [
-            { id: 1, reason: 'I have safety concerns.', checked: false},
+            { id: 1, reason: 'I have safety concerns.', checked: true },
             { id: 2, reason: 'I have privacy concerns.', checked: false},
             { id: 3, reason: "I don't find it useful.", checked: false},
             { id: 4, reason: "I don't understand how to use it.", checked: false},
@@ -582,17 +582,20 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         ];
 
         ctrl.details = [
-            { id: 1, answer: 'Yes',checked: false },
+            { id: 1, answer: 'Yes',checked: true },
             { id: 2, answer: 'No',checked: false }
         ];
 
-        ctrl.send = function(){
+        ctrl.send = function(cancel){
+
+            console.log( cancel );
 
             var BrokeAccount = Parse.Object.extend( 'BrokeAccount' );
             var brokeAccount = new BrokeAccount();
             var user = Session.user.object;
 
             brokeAccount.set( 'user', user );
+            brokeAccount.set( 'reason', ctrl.cancel.reason );
 /*
             angular.forEach( ctrl.selects, function( select ) {
             if ( select.checked == true ) {
