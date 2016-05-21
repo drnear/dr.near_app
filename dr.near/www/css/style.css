@@ -260,6 +260,10 @@ img.profile-pic.right.first {
   font-size: 14px;
 }
 
+.message-footer {
+  bottom: 0;
+}
+
 .message-detail {
   white-space: nowrap;
   font-size: 14px;
@@ -323,7 +327,7 @@ img.profile-pic.right.first {
 .chat-bubble.right.first {
   background-color: #158ffe;
   float: right;
-  margin-right: 85px;
+  margin-right: 35px;
 }
 
 .chat-bubble.right:before {

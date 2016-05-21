@@ -3451,9 +3451,10 @@ a.subdued {
   border-bottom-width: 0;
   background-position: top;
   height: 44px; }
-  .bar-footer.item-input-inset {
+/*
+    .bar-footer.item-input-inset {
     position: absolute; }
-
+*/
 .bar-tabs {
   padding: 0; }
 

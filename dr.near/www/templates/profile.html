@@ -15,7 +15,7 @@
         <div class="profile-picture-center">
           <img ng-src="{{ ctrl.user.object.get('iconurl') }}">
         </div>
-        <div ng-show="ctrl.other">
+        <div ng-show="ctrl.other" ng-click="ctrl.openThread()">
           <i class="icon ion-email"></i>
         </div>
         <h2>{{ ctrl.user.role }}</h2>
