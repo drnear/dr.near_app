@@ -637,7 +637,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         };
     })
 
-    .controller( 'MessageListCtrl', function( Session, Message, Profile, $timeout, $state ) {
+    .controller( 'MessageListCtrl', function( Session, User, Message, Profile, $timeout, $state ) {
         var ctrl = this;
         ctrl.usersAndMessages = [];
 
@@ -673,6 +673,18 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                 });
             }
         });
+
+        ctrl.openThreadCS = function() {
+            var query = new Parse.Query( User );
+            query.get("c6yyEv6Ryc",{
+                success:function( cs ){
+                    Profile.update(cs).then(function(profile) {
+                       $state.go( 'app.message_thread', { uid: cs.id } );
+                    });
+                }
+
+            }) 
+        }
 
         ctrl.openThread = function( item ) {
             Profile.update(item.user).then(function(profile) {
@@ -739,11 +751,12 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         var ctrl = this;
 
         ctrl.messages = [];
-        ctrl.user = Session.user; 
-        ctrl.toUsername = Profile.user.username
+        ctrl.user = Session.user;
+        ctrl.toUsername = Profile.user.username;
 
-        var getUserQuery = new Parse.Query( User );
         var toUser = Profile.user.object; 
+        var getUserQuery = new Parse.Query( User );
+
         var messageCheckTimer;
         var viewScroll = $ionicScrollDelegate.$getByHandle('userMessageScroll');
         var footerBar;
@@ -830,7 +843,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             console.log('sendMessage');
             var Message = Parse.Object.extend( 'Message' ); 
             var msg = new Message();
-            var user =  Session.user.object
+            var user =  Session.user.object;
             var toUser = Profile.user.object;
 
             msg.set( 'from', user );
