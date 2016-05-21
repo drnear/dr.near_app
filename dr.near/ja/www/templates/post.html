@@ -1,4 +1,4 @@
-<ion-view title="Post">
+<ion-view title="投稿">
   <ion-nav-bar class="bar-positive" align-title="left">
     <ion-nav-buttons side="left">
       <button class="button button-icon button-clear ion-ios-arrow-back" ui-sref="app.activity"></button>
@@ -7,27 +7,27 @@
   <ion-content>
     <div class="bar bar-header">
       <div class="tabs">
-        <a class="tab-item" ng-class="{'button-positive': ctrl.view === 'Feedback'}" ng-click="ctrl.view = 'feedback'">Feedback</a>
-        <a class="tab-item" ng-class="{'button-positive': ctrl.view === 'Treatments'}" ng-click="ctrl.view.treatments()">Treatments</a>
-        <a class="tab-item" ng-class="{'button-positive': ctrl.view === 'Sideeffects'}" ng-click="ctrl.view = 'sideeffects'">Side effects</a>
-        <a class="tab-item" ng-class="{'button-positive': ctrl.view === 'Others'}" ng-click="ctrl.view = 'others'">Others</a>
+        <a class="tab-item" ng-click="ctrl.postFeedback()">検査・結果</a>
+        <a class="tab-item" ng-click="ctrl.postTreatments()">治療</a>
+        <a class="tab-item" ng-click="ctrl.postSideeffects()">副作用</a>
+        <a class="tab-item" ng-click="ctrl.postOthers()">その他</a>
       </div>
     </div>
     <form ng-submit="ctrl.post(entry)">
       <div class="padding"></div><div class="padding"></div>
       <div class="list">
         <label class="item item-input item-stacked-label">
-          <span class="input-label">Title</span>
+          <span class="input-label">タイトル</span>
           <input type="text" ng-model="ctrl.entry.title" placeholder="{{ ctrl.placeholder.title }}">
         </label>
         <label class="item item-input item-stacked-label">
-          <span class="input-label">Content</span>
-          <textarea type="text" ng-model="ctrl.entry.content" placeholder="{{ ctrl.placeholder.content }}" ></textarea>
+          <span class="input-label">内容</span>
+          <textarea type="text" rows="8" ng-model="ctrl.entry.content" placeholder="{{ ctrl.placeholder.content }}" ></textarea>
         </label>
       </div>
       
       <div class="padding">
-        <button type="submit" class="button button-block button-positive">Send</button>
+        <button type="submit" class="button button-block button-positive">投稿する</button>
       </div>
       <button class="button button-clear button-assertive" ng-show="ctrl.entry.text.error">メールアドレスの形式が正しくありません。</button>
     </form>

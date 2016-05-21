@@ -254,7 +254,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     })
 
 
-    .controller( 'toProfileCtrl', function( $scope, Profile, Session ) {
+    .controller( 'toProfileCtrl', function( $scope, $state, Profile, Session ) {
         console.log( 'toProfileCtrl' );
 
         var ctrl = this;
@@ -302,6 +302,9 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                 $scope.$apply();
             });
         }
+        ctrl.openThread = function( item ){
+                $state.go( 'app.message_thread',{ uid: ctrl.user.object.id });
+        } 
     })
     .controller( 'ProfileCtrl', function( $scope, $state, $timeout, Profile, Session, Activity, FollowingActivity ) {
         console.log( 'ProfileCtrl' );
@@ -655,11 +658,12 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             }
         });
 
+
         ctrl.openThread = function( item ) {
             Profile.update(item.user).then(function(profile) {
-               $state.go( 'app.message_thread', { uid: item.user.id } );
+            $state.go( 'app.message_thread', { uid: user.id } );
             });
-        };
+        }
     })
 
     .controller( 'MessageAppendCtrl', function( Session, FollowingUser, $timeout, $state ) {
@@ -720,10 +724,11 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         var ctrl = this;
 
         ctrl.messages = [];
-        ctrl.user = Session.user; 
+        ctrl.user = Profile.user; 
 
         var getUserQuery = new Parse.Query( User );
-        var toUser = Profile.user.object; 
+        var user = Session.user.object;
+        var toUser = ctrl.user.object;
         var messageCheckTimer;
         var viewScroll = $ionicScrollDelegate.$getByHandle('userMessageScroll');
         var footerBar;
@@ -766,25 +771,24 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
 
                 var messageFromUser = new Parse.Query( Message );
                 messageFromUser.equalTo( "from", toUser );
-                messageFromUser.equalTo( "to", Session.user.object );
+                messageFromUser.equalTo( "to", user );
 
                 var messageToUser = new Parse.Query( Message );
-                messageToUser.equalTo( "from", Session.user.object );
+                messageToUser.equalTo( "from", user );
                 messageToUser.equalTo( "to", toUser );
 
                 var query = Parse.Query.or( messageFromUser, messageToUser );
                 query.include( "from", "to" );
                 query.limit( 50 );
-                //query.descending( "createdAt" );
-                query.ascending( "createdAt" );// inaken
+                query.descending( "createdAt" );
                 query.find({
                     success: function( messages ) {
-                        console.log( messages );
                         $timeout( function(){
                             ctrl.messages.splice(0);
                             for ( var i = 0; i < messages.length; i++ ) {
                                 ctrl.messages.push( messages[i] );
                             }
+                            viewScroll.scrollBottom();
                         });
                     },
                     error: function( err ) {
@@ -797,8 +801,8 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             }
         });
 
-        $scope.$watch('ctrl.sendMessageForm.messageField', function(newValue, oldValue) {
-            console.log('ctrl.sendMessageForm.messageField $watch, newValue ' + newValue);
+        $scope.$watch('ctrl.messageField', function(newValue, oldValue) {
+            console.log('ctrl.messageField $watch, newValue ' + newValue);
             if (!newValue) newValue = '';
             localStorage['userMessage-' + ctrl.user.id] = newValue;
         });
@@ -818,9 +822,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             msg.set( 'content', ctrl.messageField );
 
             msg.save().then( function(){
-                ctrl.messages.push( msg );
                 ctrl.messageField = '';
-                $scope.$apply();
             })
             $timeout(function() {
                 keepKeyboardOpen();
@@ -870,25 +872,23 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             }
           });
         }
-        
-        $scope.$on('taResize', function(e, ta) {
-          console.log('taResize');
-          if (!ta) return;
-          
-          var taHeight = ta[0].offsetHeight;
-          console.log('taHeight: ' + taHeight);
-          
-          if (!footerBar) return;
-          
-          var newFooterHeight = taHeight + 10;
-          newFooterHeight = (newFooterHeight > 44) ? newFooterHeight : 44;
-          
-          footerBar.style.height = newFooterHeight + 'px';
-          scroller.style.bottom = newFooterHeight + 'px'; 
-        });
+    $scope.$on('taResize', function(e, ta) {
+      console.log('taResize');
+      if (!ta) return;
+      
+      var taHeight = ta[0].offsetHeight;
+      console.log('taHeight: ' + taHeight);
+      
+      if (!footerBar) return;
+      
+      var newFooterHeight = taHeight + 10;
+      newFooterHeight = (newFooterHeight > 44) ? newFooterHeight : 44;
+      
+      footerBar.style.height = newFooterHeight + 'px';
+      scroller.style.bottom = newFooterHeight + 'px'; 
+    });
 
     })
-
     .controller( 'ResetPasswordCtrl', function( $scope, $state, $ionicPopup ) {
         var ctrl = this;
         ctrl.credentials = { mail: ''};

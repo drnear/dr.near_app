@@ -13,6 +13,16 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
             });
             $state.go( 'login' );
         }
+        appctrl.isFollowing = function( target ) {
+            return Session.user.isFollowing( target );
+        };
+
+        appctrl.toggleFollowing = function( target ) {
+            Session.user.toggleFollowing( target ).then(function(saved){
+                console.log('toggleFollowing');
+                Session.update();
+            });
+        };
     })
 
     .controller( 'ActivityCtrl', function(
@@ -155,24 +165,24 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         ctrl.placeholder = {};
         console.log(ctrl.view);
 
-        if  ( ctrl.view == 'feedback') {
-            ctrl.placeholder.title = 'Test title feedback';
-            ctrl.placeholder.content = 'Test content feedback';
-        } else if ( ctrl.view == 'treatment') {
-            ctrl.placeholder.title = 'Test title treatment';
-            ctrl.placeholder.content= 'Test content treatment';
-            $scope.$apply();
-        } else if ( ctrl.view == 'sideeffects') {
-            ctrl.placeholder.title = 'Test title sideeffects';
-            ctrl.placeholder.content = 'Test content sideeffects';
-        } else if ( ctrl.view == 'others') {
-            ctrl.placeholder.title = 'Test title others';
-            ctrl.placeholder.content= 'Test content others';
+        ctrl.placeholder.title = '上の４つから投稿の種類を選んでみよう';
+        ctrl.placeholder.content = 'つぶやくように、気軽に投稿しても大丈夫です。みんなこの病気について、知りたがっています。';
+
+        ctrl.postFeedback = function() {
+            ctrl.placeholder.title = '例；定期検診を受けてきました。 ';
+            ctrl.placeholder.content = '例：今日は、ペットCTを3ヶ月ぶりにしました。病状の判定がこれしかないのは少し不安です。皆さんが、病気の進行を知るためにしている他の検査とかあったら、是非知りたいです。';
         }
-        ctrl.view.treatment = function() {
-            ctrl.placeholder.title = 'Test title treatment';
-            ctrl.placeholder.content= 'Test content treatment';
-            $scope.$apply();
+        ctrl.postTreatments = function() {
+            ctrl.placeholder.title = '例：治療方針の変更';
+            ctrl.placeholder.content= '例：治療方針を主治医の先生とどうしようか、悩んでいます。これまで分子標的薬と呼ばれる薬を処方していました。皆さんは今どんな薬を飲んでいますか？';
+        }
+        ctrl.postSideeffects = function() {
+            ctrl.placeholder.title = '例：副作用がひどい';
+            ctrl.placeholder.content = '例：食後に服用しているのですが、吐き気を催しています。顔のはれも治らない感じです。みなさん副作用はありますか？';
+        }
+        ctrl.postOthers = function() {
+            ctrl.placeholder.title = '例：セカンドオピニオンについて';
+            ctrl.placeholder.content= '例：現在の主治医以外の先生のお話も聞いてみたいと思っています。誰かおすすめの先生いらっしゃったら、メッセージでもいいので教えて下さい。';
         }
 
         ctrl.post = function(entry){
@@ -182,7 +192,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
 
             activity.set( 'user', user );
             activity.set( 'role', user.get('role') );
-            if ( ctrl.entry)
+            if ( ctrl.entry )
             activity.set( 'title', ctrl.entry.title );
             activity.set( 'content', ctrl.entry.content );
 
@@ -256,7 +266,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     })
 
 
-    .controller( 'toProfileCtrl', function( $scope, Profile, Session ) {
+    .controller( 'toProfileCtrl', function( $scope, $state, Profile, Session ) {
         console.log( 'toProfileCtrl' );
 
         var ctrl = this;
@@ -304,6 +314,9 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                 $scope.$apply();
             });
         }
+        ctrl.openThread = function() {
+            $state.go( 'app.message_thread', { uid: ctrl.user.object.id } );
+        };
     })
     .controller( 'ProfileCtrl', function( $scope, $state, $timeout, Profile, Session, Activity, FollowingActivity ) {
         console.log( 'ProfileCtrl' );
@@ -572,24 +585,25 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     
     .controller( 'BrokeAccountCtrl', function( $state, Session ) {
         var ctrl = this;
-        ctrl.reasons = [];
-        ctrl.cancel = [];
+        ctrl.cancel = {};
 
         ctrl.selects = [
-            { id: 1, reason: 'I have safety concerns.', checked: false},
-            { id: 2, reason: 'I have privacy concerns.', checked: false},
-            { id: 3, reason: "I don't find it useful.", checked: false},
-            { id: 4, reason: "I don't understand how to use it.", checked: false},
-            { id: 5, reason: "It's temporary; I'll be back.", checked: false},
-            { id: 6, reason: 'Other', checked: false}
+            { id: 1, reason: '安全性に対する心配', checked: true },
+            { id: 2, reason: '個人のプライバシーに関する問題', checked: false},
+            { id: 3, reason: "役に立つと思わなかったから", checked: false},
+            { id: 4, reason: "利用方法が分かりづらいから", checked: false},
+            { id: 5, reason: "一時的な問題で、また利用します", checked: false},
+            { id: 6, reason: '他の理由です', checked: false}
         ];
 
         ctrl.details = [
-            { id: 1, answer: 'Yes',checked: false },
-            { id: 2, answer: 'No',checked: false }
+            { id: 1, answer: 'はい',checked: true },
+            { id: 2, answer: 'いいえ',checked: false }
         ];
 
-        ctrl.send = function(){
+        ctrl.send = function(cancel){
+
+            console.log( cancel );
 
             var BrokeAccount = Parse.Object.extend( 'BrokeAccount' );
             var brokeAccount = new BrokeAccount();
@@ -597,28 +611,26 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
 
             brokeAccount.set( 'user', user );
 
+            brokeAccount.set( 'cause', ctrl.cancel.reason );
+            brokeAccount.set( 'detail', ctrl.cancel.detail );
+            brokeAccount.set( 'description', ctrl.cancel.description );
+          
+/*
             angular.forEach( ctrl.selects, function( select ) {
             if ( select.checked == true ) {
-                ctrl.reasons = select;
-                //ctrl.reasons.push( select );
-                //brokeAccount.set( "id", user.id );
+                brokeAccount.set( "reason", select );
+                brokeAccount.set( "id", user.id );
                 }
             });
-            //console.log( ctrl.reasons.reason.class );
-            //console.log( ctrl.cancel.description.typeof );       
 
-            brokeAccount.set( "select", ctrl.reasons.reason );
-            brokeAccount.set( 'detail', ctrl.cancel.description );  
+            brokeAccount.set( 'detail', ctrl.cancel.description );         
 
             angular.forEach( ctrl.details, function( detail ) {
             if ( detail.checked == true ) {
-                ctrl.details = detail;
-                //brokeAccount.set( "contactBrokeAccount", detail );
+                brokeAccount.set( "detail", detail );
                 }   
             });
-
-            brokeAccount.set( "contactBrokeAccount", ctrl.details.id );
-
+*/
             brokeAccount.save().then( function(){
                   $state.go('login');
             })
@@ -896,16 +908,22 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
 
     })
 
-    .controller( 'ResetPasswordCtrl', function() {
+    .controller( 'ResetPasswordCtrl', function( $scope, $state, $ionicPopup ) {
         var ctrl = this;
         ctrl.credentials = { mail: ''};
+        $scope.success = { resetEmail: ''};
 
         ctrl.reset = function( credentials ){
             Parse.User.requestPasswordReset(ctrl.credentials.mail,{
                 success: function(){
-
+                    $scope.success.email = true;
+                    $state.go( 'login' );
                 },
                 error: function( error ){
+                    $ionicPopup.alert({
+                            title: 'No account exists',
+                            template: 'Maybe you signed up using a different/incorrect e-mail address.'
+                        });
                     alert("Error:" + error.code );
                 }
             })
@@ -1012,10 +1030,10 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
     })
 
     .controller( 'LoginCtrl', function( $scope, $state, $rootScope, $timeout, $ionicPopup, User, Session, AUTH_EVENTS ) {
-        
-        
+
         this.credentials = { email: '', password: ''};
         var ctrl = this;
+        $scope.success = { resetEmail: ''};
 
         var currentUser = Parse.User.current();
         if (currentUser){
@@ -1286,11 +1304,15 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
 
             activity.set( 'user', user );
             activity.set( 'role', user.get('role') );
-            activity.set( 'title', "Welcoming people." );
+            activity.set( 'title', "初めての投稿です！優しくしてあげて下さい by Dr.NEAR 運営" );
             activity.set( 'content', ctrl.entry.content );
 
             activity.save().then( function(){
                 $state.go('app.activity');
             })
         }
-    });
+    })
+    .controller( 'ThanksCtrl', function() {   
+    })
+    .controller( 'HelpCtrl', function() {   
+    })

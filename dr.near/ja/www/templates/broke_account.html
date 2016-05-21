@@ -1,4 +1,4 @@
-<ion-view title="Cancel Account">
+<ion-view title="退会申し込み">
   <ion-nav-bar class="bar-positive"align-title="left">
   </ion-nav-bar>
   <ion-content padding="true" scroll="true" class="has-header">
@@ -6,7 +6,7 @@
   <form ng-submit="ctrl.send(cancel)" name="cancelAcount" novalidate>
     <div class="card">
       <div class="item item-divider">
-        Tell us why you're leaving
+        退会理由を教えて下さい。 
       </div>
 
       <div ng-repeat="select in ctrl.selects">
@@ -14,32 +14,27 @@
         </ion-radio>
       </div>
 
-        <ion-radio ng-model="cancel.val" ng-value="'{{ctrl.selects[0].reason}}'">{{ ctrl.selects[0] }}
-        </ion-radio>
-
-        <ion-radio ng-model="cancel.val" ng-value="'foo'">Sample 1</ion-radio>
-
       <label class="item item-input item-stacked-label">
-        <span class="input-label">Can tell us more?</span>
+        <span class="input-label"><small>こちらに宜しければ詳細を教えて下さい。開発のアドバイスとさせてもらいます。</small></span>
         <textarea rows="6" ng-model="ctrl.cancel.description"></textarea>
       </label>
       <label class="item">
-        <span class="input-label">Can we contact you for more details?</span>
+        <span class="input-label"><small>アドバイスをお伺いしたいので、もう少しお聞きしても宜しいですか？</small></span>
         <div ng-repeat=" detail in ctrl.details">
-          <ion-checkbox ng-model="cancel.detail" ng-checked="detail.checked" ng-required="true">{{ detail.answer }}</ion-checkbox>
+          <ion-checkbox ng-model="ctrl.cancel.detail" ng-checked="detail.checked" ng-required="true">{{ detail.answer }}</ion-checkbox>
         </div>
       </label>
       <label class="item">
-        <span class="input-label">What's going to happen<br>・Your profile and any listings will disappear.<br>・We'll miss you terribly.</span>
+        <span class="input-label">以下の事が生じます。<br>・あなたのプロフィールやまつわる情報が消えます.<br>・私たちはあなたとのお別れを惜しみます.</span>
       </label>
     </div>
     <div class="row">
       <div class="col">
         <button class="button button-block button-assertive" type="submit"
-        ng-disabled="cancelAccount.$invalid">Cancel my account</button>
+        ng-disabled="cancelAccount.$invalid">消去する</button>
       </div>
       <div class="col">
-        <button class="button button-block button-stable" ui-sref="app.setting">Don't cancel account</button>
+        <button class="button button-block button-stable" ui-sref="app.setting">消去しない</button>
       </div>
     </div>
   </form>

@@ -198,8 +198,8 @@ angular.module("DrNEAR", ["ionic", "DrNEAR.controllers"])
                     "appContent": {
                         templateUrl: "templates/message_thread.html",
                         controller: "MessageThreadCtrl as ctrl"
-                    }
-                }
+                    }   
+                }             
             })
             .state("app.first", {
                 url: "/first",
@@ -209,6 +209,16 @@ angular.module("DrNEAR", ["ionic", "DrNEAR.controllers"])
                         controller: "FirstCtrl as ctrl"
                     }
                 }
+            })
+            .state("thanks", {
+                url: "/thanks",
+                templateUrl: "templates/thanks.html",
+                controller:"ThanksCtrl as ctrl"
+            })
+            .state("help", {
+                url: "/help",
+                templateUrl: "templates/help.html",
+                controller:"HelpCtrl as ctrl"
             })
             .state("disease1", {
                 url: "/disease",

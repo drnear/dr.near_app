@@ -1,4 +1,4 @@
-<ion-view view-title="Activity">
+<ion-view view-title="メイン（同病のコミュニティ）">
   <ion-nav-bar class="bar-positive"align-title="left">
     <ion-nav-buttons side="left">
       <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
@@ -26,24 +26,24 @@
       <div class="item item-body">
         <p><strong>{{item.get('title')}}<br></strong> {{item.get("content")}}</p>
         <p>
-          <a href="#" class="subdued">{{ item.fightActivities.length }} Fight</a>
-          <a href="#" class="subdued">{{ item.comments.length }} Comments</a>
+          <a href="#" class="subdued">{{ item.fightActivities.length }} ガンバ</a>
+          <a href="#" class="subdued">{{ item.comments.length }} コメント</a>
         </p>
       </div>
       <div class="item tabs tabs-secondary tabs-icon-left">
         <a class="tab-item" ng-click="!ctrl.toggleFight(item)">
           <div ng-show="!ctrl.isFight(item)">
             <i class="icon ion-thumbsup"></i>
-            Fight
+            ガンバ
           </div>
           <div ng-show="ctrl.isFight(item)">
             <i class="icon ion-thumbsup"></i>
-            Cancel
+            キャンセル
           </div>
         </a>
         <a class="tab-item" ng-click="ctrl.toggleComment(item)">
           <i class="icon ion-chatbox"></i>
-          Comment
+          コメント
         </a>
       </div>
       <form class="form form-horizontal clearfix" name="comment" ng-show="item.showReply" ng-submit="ctrl.reply(item)">
@@ -52,7 +52,7 @@
           <label class="item-input">
           <input class="form-control" type="text" ng-model="item.commentContent" placeholder="Write a comment..." / required>
           <button type="submit" class="button button-small button-positive" ng-disabled="comment.$invalid">
-            Submit
+            送信する
           </button>
           </label>
         </div>

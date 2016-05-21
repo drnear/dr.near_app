@@ -1,4 +1,4 @@
-<ion-view view-title="Account Setting">
+<ion-view view-title="設定">
   <ion-nav-bar class="bar-positive" align-title="left">
     <ion-nav-buttons side="left">
       <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
@@ -7,20 +7,20 @@
   <ion-content>
     <div class="list">
       <label class="item item-input">
-        <span class="input-label">Username</span>
+        <span class="input-label">ユーザーネーム</span>
         <input type="text" placeholder="Name" ng-model="ctrl.user.username" />
       </label>
       <label class="item item-input">
-        <span class="input-label">Email</span>
+        <span class="input-label">Eメール</span>
         <input type="text" placeholder="Email Address" ng-model="ctrl.user.email" />
       </label>
-      <button class="button button-block button-light" ui-sref="app.setting_password">Change Password</button>
+      <button class="button button-block button-light" ui-sref="app.setting_password">パスワードの変更</button>
     </div>
     <button class="button button-block button-positive"
         data-ink-color="#9DEAFF" data-ink-opacity="1"
         ng-click="ctrl.update()">
-        Submit
+        更新する
     </button>
-    <button class="button button-small button-block button-clear button-assertive" ui-sref="app.broke_account">Cancel my account</button>
+    <button class="button button-small button-block button-clear button-assertive" ui-sref="app.broke_account">アカウントの削除</button>
   </ion-content>
 </ion-view>

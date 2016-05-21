@@ -18,6 +18,7 @@
   </form>
   <button class="button button-block button-positive" ng-click="ctrl.fbLogin()">Login with Facebook</button>
   <button class="button button-small button-assertive button-clear button-block" ng-show="ctrl.credentials.error" ng-click="ctrl.resetpassword()">Forgot e-mail/password?</span>
+  <button class="button button-clear button-assertive" ng-show="ctrl.success.resetEmail">A link to reset your password has been sent to {{ ctrl.credentials.mail }}</button>
   <button class="button button-positive button-clear button-block" ng-click="ctrl.signup()">Or create an account</button>
   <textarea rows="80" cols="40" ng-model="ctrl.currentUser">
   </ion-content>

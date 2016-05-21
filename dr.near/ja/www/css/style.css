@@ -186,11 +186,27 @@ p {
   overflow: visible !important;
 }
 
+.bar-footer-first {
+    overflow: visible !important;
+    height: 100px;
+    background-color: #f8f8f8;
+}
+
 .bar-footer textarea {
   resize: none;
   height: 25px;
 }
 
+.bar-footer-first textarea {
+    resize: none;
+    height: 100px;
+    width: 250px;
+}
+
+.bar-footer-firsrt textarea {
+  resize: none;
+  height: 25px;
+}
 /* fixes an ios bug bear */
 button.ion-android-send {
   padding-top: 2px;

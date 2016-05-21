@@ -3,19 +3,21 @@
     <ion-nav-buttons side="left">
       <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
     </ion-nav-buttons>
-    <ion-nav-buttons side="right">
-      <button class="button button-icon button-clear ion-edit" ui-sref="app.profedit"></button>
-    </ion-nav-buttons>
   </ion-nav-bar>
 
   <ion-content>
     <div class="list card">
       <ion-item class="profile-item">
+    <div ng-hide="ctrl.other">
+      <iion-item class="item-button-right">
+        <button class="button button-icon button-clear ion-edit" ui-sref="app.profedit"></button>
+      </ion-item>
+    </div>
         <h2 class="profile-name dark">{{ ctrl.user.username }}</h2>
         <div class="profile-picture-center">
           <img ng-src="{{ ctrl.user.object.get('iconurl') }}">
         </div>
-        <div ng-show="ctrl.other">
+        <div ng-show="ctrl.other" ng-click="ctrl.openThread()">
           <i class="icon ion-email"></i>
         </div>
         <h2>{{ ctrl.user.role }}</h2>
@@ -26,7 +28,7 @@
     <div class="button-bar">
         <a class="button"
         ng-class="{'button-stable':ctrl.view === 'activity'}"
-        ng-click="ctrl.view = 'activity'"><small>Activity</small></a>
+        ng-click="ctrl.view = 'activity'"><small>活動</small></a>
 <!--
       <a class="button"
         ng-class="{'button-positive':ctrl.view === 'fights'}"

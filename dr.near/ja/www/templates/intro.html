@@ -1,0 +1,103 @@
+<ion-view view-title="Dr.NEAR へようこそ！">
+    <ion-nav-bar class="bar-positive">
+        <ion-nav-buttons side="left">
+            <button class="button button-clear "ng-click="startApp()" ng-show="!slideIndex">
+            
+            </button>
+            <button class="button  button-clear no-animation"
+            ng-click="previous()" ng-show="slideIndex > 0">
+            ←
+            </button>
+        </ion-nav-buttons>
+
+        <ion-nav-buttons side="right"> 
+            <button class="button  button-clear no-animation"
+            ng-click="next()" ng-show="slideIndex != 2" >
+            →
+            </button>
+            <button class="button  button-clear no-animation" ng-show="slideIndex == 2">          
+            </button>
+        </ion-nav-buttons>
+    </ion-nav-bar>
+    <ion-content class="animate-fade-slide-in">
+        <ion-slide-box on-slide-changed="slideChanged(index)">
+            <ion-slide>
+            <h3>難病患者のコミュニティ</h3>
+            <div id="logo">
+                <img src="/img/intro01.jpg">
+            </div>
+            <p>
+                実は、作った中の人も難病患者の人です。
+            </p>
+            <p>
+                自分の味わった辛い経験から、このアプリは生まれました。
+            </p>
+            </ion-slide>
+            <ion-slide>
+            <h3>このアプリの使い方</h3>
+
+            <div id="list">
+                <h5>まだまだ開発のための、資金も、人も、足りません。<br>ですが日々進歩してます。<br>ご了承下さいませ。</h5>
+                <ol>
+                    <li>同じ病気の人とつながる</li>
+                    <li>専門医に色々聞ける：現在開発中</li>
+                    <li>病気の情報が知れる：現在開発中</li>
+                </ol>
+            </div>
+            </ion-slide>
+            <ion-slide>
+                <div class="list" name="intro">
+                    <button class="profile-picture profile-picture" ng-click="ctrl.selectIcon($event)">
+                      <img id="icon-image" ng-src="{{ctrl.session.user.iconurl}}" />
+                    </button>
+                    <input id="icon-handler" type="file" style="display:none"
+                           onchange="angular.element(this).scope().ctrl.uploadIcon(this)"
+                           />
+                    <label class="item item-input item-stacked-label" name="question1">
+                        <span class="input-label">質問1:ユーザーネーム</span>
+                        <input type="text" name="intro.question1.username" ng-required="true" placeholder="このアプリだけで使用されますので、ご安心下さい。" ng-model="ctrl.session.user.username" />
+                    </label>                
+                    <label class="item item-input item-select">
+                        <div class="input-label"><small>質問2:あなたはどのタイプですか？
+                        </small></div>
+                         <select ng-change="ctrl.changeRole" ng-model="ctrl.session.user.role" name="intro.role" ng-required="true">
+                            <option>患者</option>
+                            <option>身内等が患者</option>
+                            <option>研究者・医療関係</option>
+                            <option>医者</option>
+                            <option>訪問目的</option>
+                        </select>
+                    </label>
+                    <div ng-if="ctrl.session.user.role === '患者'">
+                        <label class="item item-input item-stacked-label">
+                        <span class="input-label">自己紹介</span>
+                        <textarea rows='5' type="text" name="intro.bio" ng-required="true" ng-model="ctrl.session.user.bio" placeholder="病気に対して、どんな療法(治療・食事等)を行っていますか？" ></textarea>
+                    </div>
+                    <div ng-if="ctrl.session.user.role === '身内等が患者'">
+                        <label class="item item-input item-stacked-label">
+                        <span class="input-label">知りたい事について</span>
+                        <textarea rows='3' type="text" name="intro.bio" ng-required="true" ng-model="ctrl.session.user.bio" placeholder="同じ病気の人にどのような事を訪ねたいですか？" ></textarea>
+                    </div>
+                    <div ng-if="ctrl.session.user.role === '研究者・医療関係'">
+                        <label class="item item-input item-stacked-label">
+                        <span class="input-label">興味がある事</span>
+                        <textarea rows='5' type="text" name="intro.bio" ng-required="true" ng-model="ctrl.session.user.bio" placeholder="患者の方に対して、どんな形で関係を持ちたいか教えて下さい" ></textarea>
+                    </div>
+                    <div ng-if="ctrl.session.user.role === '医者'">
+                        <label class="item item-input item-stacked-label">
+                        <span class="input-label">自己紹介</span>
+                        <textarea rows='5' type="text" name="intro.bio" ng-required="true" ng-model="ctrl.session.user.bio" placeholder="患者さんとどんな関係を望んでいますか？" ></textarea>
+                    </div>
+                    <div ng-if="ctrl.session.user.role === '訪問目的'">
+                        <label class="item item-input item-stacked-label">
+                        <span class="input-label">自己紹介</span>
+                        <textarea rows='5' type="text" name="intro.bio" ng-required="true"  ng-model="ctrl.session.user.bio" placeholder="どうしてこのアプリを使っていますか？" ></textarea>
+                    </div>
+                    <div class="padding">
+                        <button type="submit" ng-disabled="intro.$error.required" class="button button-block button-positive" ng-click="ctrl.update()">Dr.NEARに参加する</button>
+                    </div>
+                </div>
+            </ion-slide>
+        </ion-slide-box>
+    </ion-content>
+</ion-view>

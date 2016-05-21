@@ -5,12 +5,13 @@
     </ion-nav-buttons>
   </ion-nav-bar>
 
-  <ion-content has-bouncing="true" class="has-header has-footer" delegate-handle="userMessageScroll">
-    <div class="loader-center" ng-if="!doneLoading">
+  <div class="loader-center" ng-if="!doneLoading">
       <div class="loader">
         <i class="icon ion-loading-c"></i>
       </div>
-    </div>
+  </div>
+
+  <ion-content has-bouncing="true" class="has-header has-footer" delegate-handle="userMessageScroll">
     <div ng-repeat="message in ctrl.messages" class="message-wrapper"
     on-hold="onMessageHold($event, $index, message)">
       <div ng-if="ctrl.user.object.id != message.get('from').id" class="message-item">
