@@ -56,9 +56,9 @@
             </div>
         </div>
         <form ng-submit="ctrl.post(entry)" novalidate>
-            <ion-footer-bar class="message-footer bar-stable item-input-inset message-footer" keyboad-attach>
+            <ion-footer-bar class="message-footer bar-stable item-input-inset-first message-footer" keyboad-attach>
               <label class="item-input-wrapper item-stacked-label">
-                  <input type="text" ng-model="ctrl.entry.content" value="" placeholder="簡単な挨拶とその病気について" required minlength="1" maxlength="300" msd-elastic>
+                  <input type="text" ng-model="ctrl.entry.content" value="" placeholder="挨拶・病気について" required minlength="1" maxlength="300" msd-elastic>
               </label>
               <div class="footer-btn-wrap">
                 <button class="button button-icon icon ion-android-send footer-btn" type="submit"

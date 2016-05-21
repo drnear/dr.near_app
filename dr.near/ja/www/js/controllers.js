@@ -740,6 +740,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
 
         ctrl.messages = [];
         ctrl.user = Session.user; 
+        ctrl.toUsername = Profile.user.username
 
         var getUserQuery = new Parse.Query( User );
         var toUser = Profile.user.object; 

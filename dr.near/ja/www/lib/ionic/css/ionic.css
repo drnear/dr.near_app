@@ -3453,6 +3453,8 @@ a.subdued {
   height: 44px; }
   .bar-footer.item-input-inset {
     position: absolute; }
+  .bar-footer.item-input-inset-first {
+    position: relative; }
 
 .bar-tabs {
   padding: 0; }
