@@ -1,0 +1,47 @@
+<ion-view view-title="プロフィール編集">
+  <ion-nav-bar class="bar-positive" align-title="left">
+    <ion-nav-buttons side="left">
+      <button class="button button-icon button-clear ion-ios-arrow-back" ui-sref="app.profile"></button>
+    </ion-nav-buttons>
+  </ion-nav-bar>
+  <ion-content>
+      <div class="list">
+        <label class="item item-input">
+          <span class="input-label">ユーザーネーム</span>
+          <input type="text" placeholder="Name" ng-model="ctrl.session.user.username" />
+        </label>
+        <label class="item item-input item-select">
+          <div class="input-label">タイプ</div>
+          <select ng-change="ctrl.changeRole" ng-model="ctrl.session.user.role">
+            <option>患者</option>
+            <option>身内等が患者</option>
+            <option>研究者・医療関係</option>
+            <option>医者</option>
+            <option>訪問目的</option>  
+          </select>
+        </label>
+        <label class="item item-input">
+          <span class="input-label">写真</span>
+          <button class="item item-avatar" ng-click="ctrl.selectIcon($event)">
+            <img id="icon-image" ng-src="{{ ctrl.session.user.object.get('iconurl') }}" />
+          </button>
+          <input id="icon-handler" type="file" style="display:none"
+                 onchange="angular.element(this).scope().ctrl.uploadIcon(this)"
+                 />
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Eメール</span>
+          <input type="text" placeholder="Email Address" ng-model="ctrl.session.user.email" />
+        </label>
+        <label class="item item-input"> 
+          <span class="input-label">自己紹介</span>
+          <textarea placeholder="Bio" rows="5" ng-model="ctrl.session.user.bio"></textarea>
+        </label>
+      </div>
+      <button type="submit" class="button button-block button-calm ink"
+          data-ink-color="#9AAAFF" data-ink-opacity="1" ng-click="ctrl.update()">
+          更新する
+      </button>
+    </form>
+  </ion-content>
+</ion-view>

@@ -1,0 +1,102 @@
+<ion-view view-title="WELCOME">
+    <ion-nav-bar class="bar-positive">
+        <ion-nav-buttons side="left">
+            <button class="button button-clear "ng-click="startApp()" ng-show="!slideIndex">
+            
+            </button>
+            <button class="button  button-clear no-animation"
+            ng-click="previous()" ng-show="slideIndex > 0">
+            ←
+            </button>
+        </ion-nav-buttons>
+
+        <ion-nav-buttons side="right"> 
+            <button class="button  button-clear no-animation"
+            ng-click="next()" ng-show="slideIndex != 2" >
+            →
+            </button>
+            <button class="button  button-clear no-animation" ng-show="slideIndex == 2">          
+            </button>
+        </ion-nav-buttons>
+    </ion-nav-bar>
+    <ion-content class="animate-fade-slide-in">
+        <ion-slide-box on-slide-changed="slideChanged(index)">
+            <ion-slide>
+            <h3>Thank you for choosing the Awesome App!</h3>
+            <div id="logo">
+                <img src="/images/logo.jpg">
+            </div>
+            <p>
+                We have worked super hard to make you happy.
+            </p>
+            <p>
+                But if you are angry, too bad.
+            </p>
+            </ion-slide>
+            <ion-slide>
+            <h3>Using Awesome</h3>
+
+            <div id="list">
+                <h5>Just three steps:</h5>
+                <ol>
+                    <li>Be awesome</li>
+                    <li>Stay awesome</li>
+                    <li>There is no step 3</li>
+                </ol>
+            </div>
+            </ion-slide>
+            <ion-slide>
+                <div class="list">
+                    <button class="profile-picture profile-picture" ng-click="ctrl.selectIcon($event)">
+                      <img id="icon-image" ng-src="{{ctrl.session.user.iconurl}}" />
+                    </button>
+                    <input id="icon-handler" type="file" style="display:none"
+                           onchange="angular.element(this).scope().ctrl.uploadIcon(this)"
+                           />
+                    <label class="item item-input item-stacked-label">
+                        <span class="input-label">Username</span>
+                        <input type="text" placeholder="Name" ng-model="ctrl.session.user.username" />
+                    </label>                
+                    <label class="item item-input item-select">
+                        <div class="input-label">Your type</div>
+                         <select ng-change="ctrl.changeRole" ng-model="ctrl.session.user.role">
+                            <option>Patient</option>
+                            <option>Relatives</option>
+                            <option>Researcher</option>
+                            <option>Doctor</option>
+                            <option>Visitor</option>
+                        </select>
+                    </label>
+                    <div ng-if="ctrl.session.user.role === 'Patient'">
+                        <label class="item item-input item-stacked-label">
+                        <span class="input-label">Bio</span>
+                        <textarea rows='5' type="text" ng-model="ctrl.session.user.bio" placeholder="How do you treat with your disease?" ></textarea>
+                    </div>
+                    <div ng-if="ctrl.session.user.role === 'Relatives'">
+                        <label class="item item-input item-stacked-label">
+                        <span class="input-label">Bio</span>
+                        <textarea rows='3' type="text" ng-model="ctrl.session.user.bio" placeholder="It's ok." ></textarea>
+                    </div>
+                    <div ng-if="ctrl.session.user.role === 'Resercher'">
+                        <label class="item item-input item-stacked-label">
+                        <span class="input-label">Bio</span>
+                        <textarea rows='5' type="text" ng-model="ctrl.session.user.bio" placeholder="It's ok." ></textarea>
+                    </div>
+                    <div ng-if="ctrl.session.user.role === 'Doctor'">
+                        <label class="item item-input item-stacked-label">
+                        <span class="input-label">Bio</span>
+                        <textarea rows='5' type="text" ng-model="ctrl.session.user.bio" placeholder="It's ok." ></textarea>
+                    </div>
+                    <div ng-if="ctrl.session.user.role === 'Visitor'">
+                        <label class="item item-input item-stacked-label">
+                        <span class="input-label">Bio</span>
+                        <textarea rows='5' type="text" ng-model="ctrl.session.user.bio" placeholder="It's ok." ></textarea>
+                    </div>
+                    <div class="padding">
+                        <button type="submit" class="button button-block button-positive" ng-click="ctrl.update()">Just join!</button>
+                    </div>
+                </div>
+            </ion-slide>
+        </ion-slide-box>
+    </ion-content>
+</ion-view>

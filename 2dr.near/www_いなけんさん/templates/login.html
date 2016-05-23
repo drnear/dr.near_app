@@ -1,0 +1,24 @@
+<ion-view title="Login">
+  <ion-nav-bar class="bar-positive" ng-class="{expanded: isExpanded, 'has-header-fab-left': hasHeaderFabLeft, 'has-header-fab-right': hasHeaderFabRight}" align-title="left">
+  </ion-nav-bar>
+  <ion-content padding="true" scroll="false" class="has-header">
+  <form ng-submit="login(credentials)" name="loginForm" novalidate>
+    <ion-list>
+        <label class="item item-input">
+          <span class="input-label">Email</span>
+          <input type="text" placeholder="" ng-model="ctrl.credentials.email" ng-required="true">
+        </label>
+        <label class="item item-input">
+          <span class="input-label">Password</span>
+          <input type="password" placeholder="" ng-model="ctrl.credentials.password" ng-required="true">
+        </label>
+      </ion-list>
+      <button class="button button-block button-light" type="submit" ng-click="ctrl.login()" 
+      ng-disabled="loginForm.$invalid">Login with Email</button>
+  </form>
+  <button class="button button-block button-positive" ng-click="ctrl.fbLogin()">Login with Facebook</button>
+  <button class="button button-small button-assertive button-clear button-block" ng-show="ctrl.credentials.error" ng-click="ctrl.resetpassword()">Forgot e-mail/password?</span>
+  <button class="button button-positive button-clear button-block" ng-click="ctrl.signup()">Or create an account</button>
+  </ion-content>
+ <div rows="80" cols="40" ng-model="ctrl.showAlert"></div>
+</ion-view>

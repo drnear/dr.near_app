@@ -1,0 +1,175 @@
+<ion-view view-title="Profile">
+  <ion-nav-bar class="bar-positive" align-title="left">
+    <ion-nav-buttons side="left">
+      <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+      <button class="button button-icon button-clear ion-edit" ui-sref="app.profedit"></button>
+    </ion-nav-buttons>
+  </ion-nav-bar>
+
+  <ion-content>
+    <div class="list card">
+      <ion-item class="profile-item">
+        <h2 class="profile-name dark">{{ ctrl.user.username }}</h2>
+        <div class="profile-picture-center">
+          <img ng-src="{{ ctrl.user.object.get('iconurl') }}">
+        </div>
+        <div ng-show="ctrl.other" ng-click="ctrl.openThread()">
+          <i class="icon ion-email"></i>
+        </div>
+        <h2>{{ ctrl.user.role }}</h2>
+        <div class="profile-info" ng-repeat= "item in ctrl.user.diseases" >{{ item.get('to').get('name')}}</div>
+        <div class="item item-text-wrap" ng-bind-html="ctrl.user.bio"></div>
+      </ion-item>
+    </div>
+    <div class="button-bar">
+        <a class="button"
+        ng-class="{'button-stable':ctrl.view === 'activity'}"
+        ng-click="ctrl.view = 'activity'"><small>Activity</small></a>
+<!--
+      <a class="button"
+        ng-class="{'button-positive':ctrl.view === 'fights'}"
+        ng-click="ctrl.view = 'fights'"><small>Fights</small></a>
+      <a class="button"
+        ng-class="{'button-positive':ctrl.view === 'comments'}"
+        ng-click="ctrl.view = 'comments'"><small>Comments</small></a>
+      <a class="button"
+        ng-class="{'button-positive':ctrl.view === 'followings'}"
+        ng-click="ctrl.view = 'followings'"><small>Followings</small></a>
+-->
+    </div>
+
+    <div class="list card"
+        ng-repeat="item in ctrl.activities"
+        ng-if="ctrl.view === 'activity'">
+      <div class="item item-avatar" ng-click = "ctrl.toProfile(item)">
+        <img ng-src="{{ ctrl.user.object.get('iconurl') }}" />
+        <h2>{{ ctrl.user.username }}</h2>
+        <p>{{ item.get('role') }}</p>
+        </a>
+      </div>
+      <div class="item item-body">
+        <p><strong>{{item.get('title')}}</strong> {{item.get("content")}}</p>
+        <p>
+          <a href="#" class="subdued">{{ item.fightActivities.length }} Fights</a>
+          <a href="#" class="subdued">{{ item.comments.length }} Comments</a>
+        </p>
+      </div>
+      <div class="item tabs tabs-secondary tabs-icon-left">
+        <a class="tab-item" ng-click="!ctrl.toggleFight(item)">
+          <div ng-show="!ctrl.isFight(item)">
+            <i class="icon ion-thumbsup"></i>
+            Fight
+          </div>
+          <div ng-show="ctrl.isFight(item)">
+            <i class="icon ion-thumbsup"></i>
+            Cancel
+          </div>
+        </a>
+        <a class="tab-item" ng-click="ctrl.toggleComment(item)">
+          <i class="icon ion-chatbox"></i>
+          Comment
+        </a>
+      </div>
+      <form class="form form-horizontal clearfix" name="comment" ng-show="item.showReply" ng-submit="ctrl.reply(item)">
+        <div class="item item-avatar">
+          <img ng-src="{{ ctrl.user.object.get('iconurl') }}">
+          <label class="item-input">
+          <input class="form-control" type="text" ng-model="item.commentContent" placeholder="Write a comment..." / required>
+          <button type="submit" class="button button-small button-positive" ng-disabled="comment.$invalid">
+            Submit
+          </button>
+          </label>
+        </div>
+        <div ng-repeat="comment in item.comments">
+          <div class="item item-avatar">
+            <img ng-src="{{ comment.get('iconurl') }}">
+            <span>{{ comment.get('content') }}</span>
+          </div>
+        </div>
+      </form> 
+    </div>
+<!--
+    <div class="list card" ng-if="ctrl.view === 'fights'">
+      <div class="item item-button-right" ng-repeat="item in ctrl.user.fightActivities">
+        <div class="item item-avatar" ng-click = "ctrl.toProfile(item)">
+          <a img ng-src="{{ item.get('username').get('icon').url() }}" />
+          <h2>{{ ctrl.username.fightActivities.get('name') }}</h2>
+          <h2>{{ item.get('to').get('username') }}</h2>
+          </a>
+        </div>
+        <div class="item item-body">
+          <p><strong>{{ item.get('to').get('title') }}</strong> 
+            {{ item.get('to').get('content') }}</p>
+          <p>
+            <a href="#" class="subdued">1 Fight</a>
+            <a href="#" class="subdued">5 Comments</a>
+          </p>
+        </div>
+        <div class="item tabs tabs-secondary tabs-icon-left">
+          <a class="tab-item" ng-click="!ctrl.toggleFight(item)">
+            <div ng-show="ctrl.isFight(item)">
+              <i class="icon ion-thumbsup"></i>
+              Fight
+            </div>
+            <div ng-show="!ctrl.isFight(item)">
+              <i class="icon ion-thumbsup"></i>
+              Cancel
+            </div>
+          </a>
+          <a class="tab-item" ng-click="ctrl.toggleComment(item)">
+            <i class="icon ion-chatbox"></i>
+            Comment
+          </a>
+        </div>
+        <form class="form form-horizontal clearfix" ng-show="item.showReply">
+          <div class="item item-avatar">
+            <img src="mcfly.jpg">
+            <label class="item-input">
+            <input class="form-control" type="text" ng-model="item.commentContent" placeholder="Write a comment..." />
+            <button type="submit" class="button button-small button-positive" ng-click="ctrl.reply(item)">
+              Submit
+            </button>
+            </label>
+          </div>
+          <div ng-repeat="comment in item.comments">
+            <div class="item item-avatar">
+              <img src="mcfly.jpg">
+              <strong>{{ comment.createdAt }}</strong>
+              <span>{{ comment.get('content') }}</span>
+            </div>
+          </div>
+        </form> 
+      </div>
+    </div>
+
+    <div class="list" ng-if="ctrl.view === 'comments'">
+      <div class="item item-avatar item-button-right" ng-repeat="item in appctrl.session.user.followers" >
+        <img ng-src="{{ item.get('from').get('icon').url() || 'img/material1.jpg' }}" />
+        <h2>{{ item.get('from').get('name') }}</h2
+        <p>{{ item.get('from').get('bio') }}</p>
+        <button class="button"
+          ng-class="{'button-positive': !appctrl.isFollowing(item.get('from')) }"
+          ng-click="appctrl.toggleFollowing(item.get('from'))">
+          {{ appctrl.session.user.isFollowing( item.get('from') ) ? 'Unfollow' : 'Follow' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="list" ng-if="ctrl.view === 'followings'">
+      <div class="item item-avatar item-button-right" ng-repeat="item in appctrl.session.user.followings" >
+        <img ng-src="{{ item.get('to').get('icon').url() }}" />
+        <h2>{{ item.get('to').get('name') }}</h2
+        <p>{{ item.get('to').get('bio') }}</p>
+        <button class="button"
+          ng-class="{'button-positive': !appctrl.isFollowing(item.get('to')) }"
+          ng-click="appctrl.toggleFollowing(item.get('to'))">
+          {{ appctrl.session.user.isFollowing( item.get('to') ) ? 'Unfollow' : 'Follow' }}
+        </button>
+      </div>
+    </div>
+-->
+
+  </ion-content>
+</ion-view>

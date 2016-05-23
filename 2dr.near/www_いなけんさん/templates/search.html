@@ -1,0 +1,59 @@
+<ion-view>
+  <ion-nav-bar class="bar-positive" align-title="left">
+    <ion-nav-buttons side="left">
+      <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+    </ion-nav-buttons>
+
+    <ion-nav-title>
+      <div class="bar item-input-inset"
+           style="margin:0px; padding: 0px;">
+        <label class="item-input-wrapper">
+          <i class="icon ion-ios-search placeholder-icon"></i>
+          <input type="search" placeholder="Search"
+                 ng-model="ctrl.searchWord"
+                 ng-keyup="ctrl.search()"
+                 >
+        </label>
+      </div>
+    </ion-nav-title>
+  </ion-nav-bar>
+
+  <ion-content class="animate-fade-slide-in">
+    <div class="list">
+      <div class="item item-divider" ng-if="ctrl.users.length">Users</div>
+      <div class="item item-avatar item-button-right" ng-repeat="user in ctrl.users">
+        <img ng-src="{{ user.get('icon').url() }}">
+        <h2>{{ user.get("name") }}</h2>
+        <p>{{ user.get("username") }}</p>
+        <a class="follow-button" ng-click="!ctrl.toggleSearch(user)">
+          <div ng-show="!ctrl.isSelectDisease(user)">
+            <button class="button"ng-class="button-positive">
+              Follow
+            </button>
+          </div>
+          <div ng-show="ctrl.isSelectDisease(user)">
+            <button class="button"ng-class="button-positive">
+              Unfollow
+            </button>
+          </div>
+        </a>
+      </div>
+      <div class="item item-divider" ng-if="ctrl.diseases.length">Diseases</div>
+      <div class="item item-button-right" ng-repeat="disease in ctrl.diseases">
+        <h3>{{ disease.get("name") }}</h3>
+        <a ng-click="!ctrl.toggleSearch(disease)">
+          <div ng-show="!ctrl.isSelectDisease(disease)">
+            <button class="button"ng-class="button-positive">
+              Follow
+            </button>
+          </div>
+          <div ng-show="ctrl.isSelectDisease(disease)">
+            <button class="button"ng-class="button-positive">
+              Unfollow
+            </button>
+          </div>
+        </a>
+      </div>
+    </div>
+  </ion-content>
+</ion-view>
