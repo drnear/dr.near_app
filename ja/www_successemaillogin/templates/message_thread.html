@@ -1,0 +1,55 @@
+<ion-view title="{{ ctrl.toUsername }}" id="userMessagesView">
+  <ion-nav-bar class="bar-positive" align-title="left">
+    <ion-nav-buttons side="left">
+      <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+    </ion-nav-buttons>
+  </ion-nav-bar>
+
+  <div class="loader-center" ng-if="!doneLoading">
+      <div class="loader">
+        <i class="icon ion-loading-c"></i>
+      </div>
+  </div>
+
+  <ion-content has-bouncing="true" class="has-header has-footer" delegate-handle="userMessageScroll">
+    <div ng-repeat="message in ctrl.messages" class="message-wrapper"
+    on-hold="onMessageHold($event, $index, message)">
+      <div ng-if="ctrl.user.object.id != message.get('from').id" class="message-item">
+        <img ng-src="{{ message.get('from').get('iconurl') || 'mcfly.jpg'}}" class="profile-pic left"/>
+        <div class="chat-bubble left">
+          <div class="message" ng-bind-html="message.get('content') | nl2br" autolinker></div>        
+          <div class="message-detail">
+            <span ng-click="viewProfile(message)" class="bold">{{ massage.get('from').get('username') }}</span>
+            <span am-time-ago="message.date"></span>
+          </div>
+        </div>
+
+      </div>
+
+      <div ng-if="ctrl.user.object.id == message.get('from').id" class="message-item ">
+        <img ng-src="{{ message.get('from').get('iconurl') || 'mcfly.jpg' }}" class="profile-pic right"/>
+        <div class="chat-bubble right">
+          <div class="message" ng-bind-html="message.get('content')  | nl2br" autolinker></div> 
+          <div class="message-detail">
+            <span ng-click="viewProfile(message)" class="bold">{{ massage.get('from').get('username') }}</span>
+            <span am-time-ago="message.date"></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </ion-content>
+
+  <form name="sendMessageForm" ng-submit="ctrl.sendMessage(sendMessageForm)" novalidate>
+    <ion-footer-bar class="bar-stable item-input-inset message-footer" keyboad-attach>
+      <label class="item-input-wrapper">
+          <textarea class="bar-footer-first" ng-model="ctrl.messageField" value="" placeholder="メッセージを入力..." required minlength="1" maxlength="300" msd-elastic></textarea>
+      </label>
+      <div class="footer-btn-wrap">
+        <button class="button button-icon icon ion-android-send footer-btn" type="submit"
+            ng-disabled="!ctrl.messageField || ctrl.messageField === ''">
+        </button>
+      </div>
+    </ion-footer-bar>
+  </form>
+</ion-view>

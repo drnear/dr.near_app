@@ -16,7 +16,8 @@
   },
   "cordovaPlugins": [
     "cordova-plugin-camera",
-    "phonegap-facebook-plugin"
+    "phonegap-facebook-plugin",
+    "cordova-plugin-whitelist"
   ],
   "cordovaPlatforms": [
     "ios",

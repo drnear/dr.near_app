@@ -1,0 +1,17 @@
+<ion-view title="メッセージリスト">
+  <ion-nav-bar class="bar-positive" align-title="left">
+    <ion-nav-buttons side="left">
+      <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+    </ion-nav-buttons>
+  </ion-nav-bar>
+  <ion-content>
+    <ion-list>
+      <ion-item  class="stable-bg" ng-click="ctrl.openThreadCS()">
+        ドクニア運営 - 気軽にご相談ください。 
+      </ion-item>
+      <ion-item ng-repeat="item in ctrl.usersAndMessages" ng-click="ctrl.openThread( item )">
+        {{ item.user.get("username" )}} - {{ item.message.get("content") }}
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

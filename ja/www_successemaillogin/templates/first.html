@@ -1,0 +1,71 @@
+<ion-view title="最初の活動">
+  	<ion-nav-bar class="bar-positive" align-title="left">
+    	<ion-nav-buttons side="left">
+    	</ion-nav-buttons>
+  	</ion-nav-bar>
+
+  	<ion-content>
+        <div class="message-item first">
+            <img class="profile-pic left first" src="img/logo.jpg">
+            <div class="chat-bubble left first">
+                <div class="message ng-binding" autolinker>初めまして。Dr.NEAR運営事務局です。<br> 初めに興味のある病気を教えて下さい。<br> 
+                選んだ病気の人とつながることができます。
+                </div>               
+            </div>
+        </div>
+        <div class="list">
+          <label class="item item-input item-floating-label">
+            <span class="input-label">病名</span>
+            <input type="text" placeholder="病気の名前をこちらにどうぞ" ng-model="ctrl.searchWord"
+                   ng-change="ctrl.search()" />
+          </label>
+        </div>
+        <div class="list">
+          <div class="item item-input-inset" ng-repeat="disease in ctrl.diseases" ng-if="ctrl.diseases.length">
+            <div class="col col-75">{{ disease.get("name") }}</div>
+            <div class="col">
+            <a ng-click="!ctrl.toggleSearch(disease)">
+              <div ng-show="!ctrl.isSelectDisease(disease)">
+                <button class="button button-positive"ng-class="button-positive">
+                  フォロー
+                </button>
+              </div>
+              <div ng-show="ctrl.isSelectDisease(disease)">
+                <button class="button"ng-class="button-positive">
+                  アンフォロー
+                </button>
+              </div>
+            </a>
+            </div>
+          </div>
+          <div class="item item-input-inset" ng-hide="ctrl.diseases.length > 0">
+            <div class="col col-75">
+              {{ctrl.searchWord}}
+            </div>
+            <div class="col">
+              <button class="button button-right button-positive"
+                      ng-click="ctrl.create()" >登録する</button>
+            </div>
+          </div>
+        </div>
+        <div class="message-item first">
+            <div class="chat-bubble right first">
+                <div class="message ng-binding" autolinker>最後に同じ病気の人たちに最初の挨拶を簡単に<br>してみましょう。その病気の聞きたいことを<br>
+                聞くと、みんな興味があることなので反応しても<br>
+                らいやすいです。</div>               
+            </div>
+        </div>
+        <form ng-submit="ctrl.post(entry)" novalidate>
+            <ion-footer-bar class="message-footer bar-stable item-input-inset-first message-footer" keyboad-attach>
+              <label class="item-input-wrapper item-stacked-label">
+                  <input type="text" ng-model="ctrl.entry.content" value="" placeholder="挨拶・病気について" required minlength="1" maxlength="300" msd-elastic>
+              </label>
+              <div class="footer-btn-wrap">
+                <button class="button button-icon icon ion-android-send footer-btn" type="submit"
+                    ng-disabled="!ctrl.entry.content || ctrl.entry.content === ''">
+                </button>
+              </div>
+            </ion-footer-bar>
+        </form>
+	</ion-content>
+</ion-view>

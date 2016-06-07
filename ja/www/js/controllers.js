@@ -8,7 +8,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         $scope.doneLoading = false;
 
         appctrl.logout = function(){
-            Parse.User.logOut().then(() => {
+            Parse.User.logOut().then( function() {
               var currentUser = Parse.User.current();  // this will now be null
             });
             $state.go( 'login' );
@@ -1043,7 +1043,7 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
         };
     })
 
-    .controller( 'LoginCtrl', function( $scope, $state, $rootScope, $timeout, $ionicPopup, User, Session, AUTH_EVENTS ) {
+    .controller( 'LoginCtrl', function( $scope, $state, $rootScope, $timeout, $cordovaFacebook, $ionicPopup, User, Session, AUTH_EVENTS ) {
 
         this.credentials = { email: '', password: ''};
         var ctrl = this;
@@ -1103,14 +1103,20 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
           if(!(ionic.Platform.isIOS() || ionic.Platform.isAndroid())){         
             Parse.FacebookUtils.logIn(null, {
               success: function(user) {
-                console.log(user);
-                Session.update();
-                console.log( 'success and update',Session);
-                $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+                if(!user.existed()) {
+                    console.log("DrNEAR threw facebook login");
+                    Session.update();
+                    $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);  
+                } else {
+                    console.log("DrNEAR threw facebook login 2");
+                    Session.update();
+                    $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
+                }
               },
               error: function(user, error) {
                 $timeout( function(){
-                    ctrl.err = error;
+                    console.log("DrNEAR threw facebook login 3");
+                    ctrl.err = user;
                     $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
                 });                
               }
@@ -1139,11 +1145,13 @@ angular.module('DrNEAR.controllers', ['ngCordova','DrNEAR.services'])
                 success: function(user) {
                   console.log(user);
                   Session.update();
-                  console.log( 'success and update', Session);
+                  console.log( 'DrNEAR success and update', Session);
                   $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
                 },
                 error: function(user, error) {
                   $timeout( function(){
+                    console.log("DrNEAR"+error);
+                    console.log( 'DrNEAR error and update', Session);
                     $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
                   });
                 }

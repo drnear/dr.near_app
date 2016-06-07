@@ -14,6 +14,8 @@ angular.module("DrNEAR", ["ionic", "DrNEAR.controllers"])
                 Parse.FacebookUtils.init({
                     appId      : APP_CONFIG.FACEBOOK_APP_ID,
                     version    : 'v2.5',
+                    status     : true, // check login status
+                    cookie     : true, // enable cookies to allow Parse to access the
                     xfbml      : true
                 });
             };
