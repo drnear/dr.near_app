@@ -387,5 +387,16 @@ angular.module('DrNEAR.services',['ngResource'])
           if (!data) return data;
           return data.replace(/\n\r?/g, '<br />');
         };
+<<<<<<< HEAD:ja/www/js/services.js
+=======
+    })
+
+    .filter('nl2br', ['$filter',
+      function($filter) {
+        return function(data) {
+          if (!data) return data;
+          return data.replace(/\n\r?/g, '<br />');
+        };
+>>>>>>> c5cd6ec34a2fd475e466a43a792fcdbab84f26c6:dr.near/www/js/services.js
       }
     ])

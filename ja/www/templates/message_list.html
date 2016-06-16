@@ -6,11 +6,18 @@
   </ion-nav-bar>
   <ion-content>
     <ion-list>
+<<<<<<< HEAD:ja/www/templates/message_list.html
       <ion-item  class="stable-bg" ng-click="ctrl.openThreadCS()">
         ドクニア運営 - 気軽にご相談ください。 
       </ion-item>
       <ion-item ng-repeat="item in ctrl.usersAndMessages" ng-click="ctrl.openThread( item )">
         {{ item.user.get("username" )}} - {{ item.message.get("content") }}
+=======
+      <ion-item class="item item-avatar" ng-repeat="item in ctrl.usersAndMessages" ng-click="ctrl.openThread( item.user )">
+        <img ng-src="{{item.picture.thumbnail}}">
+        <h2>{{ item.username}}</h2>
+        <p>{{ item.sha1 }}</p>
+>>>>>>> c5cd6ec34a2fd475e466a43a792fcdbab84f26c6:dr.near/www/templates/message_list.html
       </ion-item>
     </ion-list>
   </ion-content>
