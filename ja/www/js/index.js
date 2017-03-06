@@ -11,9 +11,9 @@ if (!databaseUri) {
 }
 
 var api = new ParseServer({
-	serverURL: "http://27.120.92.29/parse ",
+	serverURL: "http://27.120.92.29/parse",
 	facebookAppIds: ['694111927364944'],
-    databaseURI: process.env.DATABASE_URI || 'mongodb://localhost:27017/dev',  
+    databaseURI: process.env.DATABASE_URI || 'mongodb://shintaro0221:ans8hj3we@ds061415.mongolab.com:61415/drnear',  
     cloud: process.env.CLOUD_CODE_MAIN || __dirname + '/cloud/main.js',  
     appId: '7sQi0lLjmfSyfDtXDvi0pk4jcXz6jDBMRGAnVH24',  
     masterKey: 'pMgGwh8jrQ4wAImJAEe7txBcE6CQC14Xl8opg3XL'
